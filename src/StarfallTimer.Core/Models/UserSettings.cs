@@ -144,42 +144,28 @@ public class UserSettings
     }
 
     /// <summary>
+    /// Returns all events that are currently enabled for HUD tracking.
+    /// </summary>
+    public List<EventDefinition> GetEnabledEvents()
+    {
+        if (Events == null || Events.Count == 0)
+        {
+            Events = GetDefaultEvents();
+        }
+
+        var enabled = Events.Where(e => e.IsEnabled).ToList();
+        if (enabled.Count == 0)
+        {
+            var active = GetActiveEvent();
+            active.IsEnabled = true;
+            enabled.Add(active);
+        }
+
+        return enabled;
+    }
+
+    /// <summary>
     /// Generates the default event presets for Once Human.
     /// </summary>
-    public static List<EventDefinition> GetDefaultEvents() => new()
-    {
-        new EventDefinition
-        {
-            Id = "gravity-abyss",
-            Name = "Gravity Abyss (Starfall Inversion)",
-            CycleMinutes = 60,
-            StartMinute = 22,
-            DurationMinutes = 30,
-            TimeOffsetSeconds = 0,
-            ColorHex = "#00E5FF",
-            Description = "Once Human Starfall Inversion / Gravity Abyss hourly event with low-gravity tide and Stardust Crystals."
-        },
-        new EventDefinition
-        {
-            Id = "cargo-scramble",
-            Name = "Cargo Scramble",
-            CycleMinutes = 60,
-            StartMinute = 0,
-            DurationMinutes = 20,
-            TimeOffsetSeconds = 0,
-            ColorHex = "#F59E0B",
-            Description = "Once Human Cargo Scramble PvP truck dynamic event."
-        },
-        new EventDefinition
-        {
-            Id = "custom-wheel",
-            Name = "Custom Wheel Event",
-            CycleMinutes = 60,
-            StartMinute = 0,
-            DurationMinutes = 15,
-            TimeOffsetSeconds = 0,
-            ColorHex = "#10B981",
-            Description = "User-defined custom cyclic event schedule."
-        }
-    };
+    public static List<EventDefinition> GetDefaultEvents() => DefaultEventPresets.CreateDefaultEvents();
 }

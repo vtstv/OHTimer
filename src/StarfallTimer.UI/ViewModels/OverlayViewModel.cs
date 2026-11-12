@@ -46,6 +46,9 @@ public partial class OverlayViewModel : ObservableObject
     private bool _alwaysOnTop = true;
 
     [ObservableProperty]
+    private bool _compactMode = false;
+
+    [ObservableProperty]
     private double _opacity = 0.92;
 
     [ObservableProperty]
@@ -64,7 +67,6 @@ public partial class OverlayViewModel : ObservableObject
     private string _driftSyncText = string.Empty;
 
     public Action? RequestOpenSettings { get; set; }
-    public Action? RequestOpenAbout { get; set; }
     public Action? RequestHideOverlay { get; set; }
     public Action<bool>? RequestClickThroughChanged { get; set; }
 
@@ -84,6 +86,7 @@ public partial class OverlayViewModel : ObservableObject
         _loc.LanguageChanged += OnLanguageChanged;
 
         UpdateFromSnapshot(_scheduler.CurrentSnapshot);
+        InitializeMultiTimer();
     }
 
     private void ApplySettings(UserSettings settings)
@@ -93,6 +96,7 @@ public partial class OverlayViewModel : ObservableObject
         IsClickThrough = settings.IsClickThrough;
         IsLocked = settings.IsLocked;
         AlwaysOnTop = settings.AlwaysOnTop;
+        CompactMode = settings.CompactMode;
     }
 
     private void OnSettingsChanged(object? sender, UserSettings settings)
@@ -203,9 +207,11 @@ public partial class OverlayViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void OpenAbout()
+    private async Task ToggleCompactModeAsync()
     {
-        RequestOpenAbout?.Invoke();
+        CompactMode = !CompactMode;
+        _settingsService.Settings.CompactMode = CompactMode;
+        await _settingsService.SaveAsync();
     }
 
     [RelayCommand]

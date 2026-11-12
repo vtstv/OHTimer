@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         Title="{loc:Loc Settings_Title}"
         Icon="/Assets/app.ico"
-        Width="670" Height="560"
+        Width="780" Height="660"
         WindowStartupLocation="CenterScreen"
         Background="{StaticResource BgDarkBrush}"
         Foreground="{StaticResource TextPrimaryBrush}"
@@ -46,7 +46,7 @@
             <TabItem Header="{loc:Loc Settings_TabEvents}">
                 <Grid Margin="14">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="220" />
+                        <ColumnDefinition Width="270" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
@@ -62,13 +62,25 @@
                                  SelectedItem="{Binding SelectedEvent}">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <StackPanel Margin="2">
-                                        <StackPanel Orientation="Horizontal">
-                                            <Ellipse Width="7" Height="7" Fill="{Binding ColorHex}" Margin="0,0,6,0" VerticalAlignment="Center" />
-                                            <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="11.5" Foreground="{StaticResource TextPrimaryBrush}" TextTrimming="CharacterEllipsis" MaxWidth="170" />
+                                    <Grid Margin="2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <CheckBox Grid.Column="0"
+                                                  IsChecked="{Binding IsEnabled, Mode=TwoWay}"
+                                                  Style="{StaticResource ModernCheckBoxStyle}"
+                                                  VerticalAlignment="Center"
+                                                  Margin="0,0,6,0"
+                                                  ToolTip="{loc:Loc Settings_EventEnabled}" />
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Ellipse Width="7" Height="7" Fill="{Binding ColorHex}" Margin="0,0,6,0" VerticalAlignment="Center" />
+                                                <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="11.5" Foreground="{StaticResource TextPrimaryBrush}" TextTrimming="CharacterEllipsis" MaxWidth="195" />
+                                            </StackPanel>
+                                            <TextBlock Text="{Binding Description}" FontSize="9.5" Foreground="{StaticResource TextSecondaryBrush}" TextTrimming="CharacterEllipsis" MaxWidth="210" Margin="13,2,0,0" />
                                         </StackPanel>
-                                        <TextBlock Text="{Binding Description}" FontSize="9.5" Foreground="{StaticResource TextSecondaryBrush}" TextTrimming="CharacterEllipsis" MaxWidth="190" Margin="13,2,0,0" />
-                                    </StackPanel>
+                                    </Grid>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
@@ -89,7 +101,7 @@
                     <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
                         <StackPanel Margin="6,0,6,0">
                             <!-- Active Status / Action -->
-                            <Grid Margin="0,0,0,10">
+                            <Grid Margin="0,0,0,8">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
@@ -114,10 +126,20 @@
                                         VerticalAlignment="Center" />
                             </Grid>
 
-                            <Rectangle Height="1" Fill="{StaticResource BorderDarkBrush}" Margin="0,0,0,10" />
+                            <Rectangle Height="1" Fill="{StaticResource BorderDarkBrush}" Margin="0,0,0,8" />
+
+                            <!-- Enable in Multi-Timer HUD -->
+                            <Grid Margin="0,0,0,6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{loc:Loc Settings_EventEnabled}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11.5" />
+                                <CheckBox Grid.Column="1" IsChecked="{Binding SelectedEventIsEnabled, Mode=TwoWay}" Style="{StaticResource ModernCheckBoxStyle}" VerticalAlignment="Center" />
+                            </Grid>
 
                             <!-- Event Configuration Fields -->
-                            <Grid Margin="0,0,0,8">
+                            <Grid Margin="0,0,0,6">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="170" />
@@ -126,7 +148,7 @@
                                 <TextBox Grid.Column="1" Text="{Binding SelectedEventName, UpdateSourceTrigger=PropertyChanged}" />
                             </Grid>
 
-                            <Grid Margin="0,0,0,8">
+                            <Grid Margin="0,0,0,6">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="80" />
@@ -135,7 +157,7 @@
                                 <TextBox Grid.Column="1" Text="{Binding SelectedEventCycleMinutes, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center" />
                             </Grid>
 
-                            <Grid Margin="0,0,0,8">
+                            <Grid Margin="0,0,0,6">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="80" />
@@ -144,7 +166,7 @@
                                 <TextBox Grid.Column="1" Text="{Binding SelectedEventStartMinute, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center" />
                             </Grid>
 
-                            <Grid Margin="0,0,0,8">
+                            <Grid Margin="0,0,0,6">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="80" />
@@ -153,7 +175,7 @@
                                 <TextBox Grid.Column="1" Text="{Binding SelectedEventDurationMinutes, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center" />
                             </Grid>
 
-                            <Grid Margin="0,0,0,8">
+                            <Grid Margin="0,0,0,6">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="80" />
@@ -162,7 +184,7 @@
                                 <TextBox Grid.Column="1" Text="{Binding SelectedEventTimeOffsetSeconds, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center" />
                             </Grid>
 
-                            <Grid Margin="0,0,0,10">
+                            <Grid Margin="0,0,0,8">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="100" />
@@ -177,7 +199,7 @@
                                     BorderThickness="1"
                                     CornerRadius="6"
                                     Padding="10"
-                                    Margin="0,4,0,0">
+                                    Margin="0,2,0,0">
                                 <StackPanel>
                                     <TextBlock Text="{loc:Loc Settings_SyncToGame}"
                                                FontWeight="Bold"
@@ -293,7 +315,7 @@
                             <ColumnDefinition Width="140" />
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="{loc:Loc Settings_Opacity}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" />
-                        <Slider Grid.Column="1" Minimum="0.3" Maximum="1.0" Value="{Binding Opacity}" SmallChange="0.05" LargeChange="0.1" VerticalAlignment="Center" />
+                        <Slider Grid.Column="1" Minimum="0.2" Maximum="1.0" Value="{Binding Opacity}" SmallChange="0.05" LargeChange="0.1" VerticalAlignment="Center" />
                     </Grid>
 
                     <Grid Margin="0,0,0,12">
@@ -305,6 +327,7 @@
                         <Slider Grid.Column="1" Minimum="0.8" Maximum="1.6" Value="{Binding Scale}" SmallChange="0.05" LargeChange="0.1" VerticalAlignment="Center" />
                     </Grid>
 
+                    <CheckBox Content="{loc:Loc Settings_CompactMode}" IsChecked="{Binding CompactMode}" Style="{StaticResource ModernCheckBoxStyle}" Margin="0,0,0,10" />
                     <CheckBox Content="{loc:Loc Settings_AlwaysOnTop}" IsChecked="{Binding AlwaysOnTop}" Style="{StaticResource ModernCheckBoxStyle}" Margin="0,0,0,10" />
                     <CheckBox Content="{loc:Loc Settings_LockPosition}" IsChecked="{Binding IsLocked}" Style="{StaticResource ModernCheckBoxStyle}" Margin="0,0,0,10" />
                     <CheckBox Content="{loc:Loc Settings_ClickThrough}" IsChecked="{Binding IsClickThrough}" Style="{StaticResource ModernCheckBoxStyle}" Margin="0,0,0,12" />
@@ -352,14 +375,87 @@
                 </StackPanel>
             </TabItem>
 
-            <!-- Tab 5: About -->
+            <!-- Tab 5: About & Updates -->
             <TabItem Header="{loc:Loc Settings_TabAbout}">
-                <StackPanel Margin="16">
-                    <TextBlock Text="{loc:Loc App_Title}" FontSize="15" FontWeight="Bold" Foreground="{StaticResource AccentWaitingBrush}" Margin="0,0,0,6" />
-                    <TextBlock Text="Version 1.1.0" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,10" />
-                    <TextBlock Text="{loc:Loc About_Desc}" TextWrapping="Wrap" Foreground="{StaticResource TextSecondaryBrush}" FontSize="13" Margin="0,0,0,12" />
-                    <TextBlock Text="{loc:Loc About_Author}" Foreground="{StaticResource TextMutedBrush}" FontSize="12" />
-                </StackPanel>
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="16">
+                        <TextBlock Text="{loc:Loc App_Title}" FontSize="15" FontWeight="Bold" Foreground="{StaticResource AccentWaitingBrush}" Margin="0,0,0,6" />
+                        <TextBlock Text="Version 1.2.0" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,10" />
+                        <TextBlock Text="{loc:Loc About_Desc}" TextWrapping="Wrap" Foreground="{StaticResource TextSecondaryBrush}" FontSize="13" Margin="0,0,0,12" />
+                        <TextBlock Text="{loc:Loc About_Author}" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,16" />
+
+                        <!-- Software Updates Section -->
+                        <Border Background="#161B26" BorderBrush="{StaticResource BorderDarkBrush}" BorderThickness="1" CornerRadius="6" Padding="14">
+                            <StackPanel>
+                                <TextBlock Text="{loc:Loc Update_SectionTitle}" FontWeight="Bold" FontSize="13" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,10" />
+
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,8">
+                                    <Button Style="{StaticResource ModernDarkButtonStyle}"
+                                            Command="{Binding CheckForUpdatesCommand}"
+                                            Content="{loc:Loc Update_CheckButton}"
+                                            Padding="12,6"
+                                            Margin="0,0,12,0" />
+
+                                    <TextBlock Text="{Binding UpdateStatusMessage}"
+                                               VerticalAlignment="Center"
+                                               FontSize="12"
+                                               Foreground="{StaticResource TextSecondaryBrush}"
+                                               TextTrimming="CharacterEllipsis"
+                                               MaxWidth="420" />
+                                </StackPanel>
+
+                                <!-- Update Available & Changelog Panel -->
+                                <Border Margin="0,8,0,0"
+                                        Background="#1E2430"
+                                        BorderBrush="{StaticResource AccentWaitingBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="4"
+                                        Padding="12"
+                                        Visibility="{Binding ShowUpdateAvailablePanel, Converter={StaticResource BoolToVis}}">
+                                    <StackPanel>
+                                        <TextBlock Text="{loc:Loc Update_ReleaseNotes}"
+                                                   FontWeight="SemiBold"
+                                                   FontSize="12"
+                                                   Foreground="{StaticResource AccentWaitingBrush}"
+                                                   Margin="0,0,0,6" />
+
+                                        <Border MaxHeight="140"
+                                                Background="#0B0F17"
+                                                BorderBrush="{StaticResource BorderDarkBrush}"
+                                                BorderThickness="1"
+                                                CornerRadius="4"
+                                                Padding="8"
+                                                Margin="0,0,0,10">
+                                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                                <TextBlock Text="{Binding ReleaseNotes}"
+                                                           Foreground="{StaticResource TextSecondaryBrush}"
+                                                           FontSize="11"
+                                                           FontFamily="Consolas, monospace"
+                                                           TextWrapping="Wrap" />
+                                            </ScrollViewer>
+                                        </Border>
+
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <Button Style="{StaticResource PrimaryAccentButtonStyle}"
+                                                    Command="{Binding ApplyUpdateCommand}"
+                                                    Content="{loc:Loc Update_DownloadAndApply}"
+                                                    Padding="14,6"
+                                                    Margin="0,0,12,0" />
+
+                                            <ProgressBar Width="180" Height="8"
+                                                         Minimum="0" Maximum="100"
+                                                         Value="{Binding UpdateDownloadProgress}"
+                                                         Foreground="{StaticResource AccentWaitingBrush}"
+                                                         Background="#0B0F17"
+                                                         BorderBrush="{StaticResource BorderDarkBrush}"
+                                                         Visibility="{Binding IsUpdating, Converter={StaticResource BoolToVis}}" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
             </TabItem>
         </TabControl>
 

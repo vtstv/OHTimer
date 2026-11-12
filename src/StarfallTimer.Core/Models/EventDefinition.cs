@@ -49,6 +49,11 @@ public class EventDefinition
     public string Description { get; set; } = string.Empty;
 
     /// <summary>
+    /// Whether this event is enabled for multi-timer tracking in the overlay.
+    /// </summary>
+    public bool IsEnabled { get; set; } = true;
+
+    /// <summary>
     /// Creates an exact clone of the event definition.
     /// </summary>
     public EventDefinition Clone()
@@ -62,7 +67,8 @@ public class EventDefinition
             DurationMinutes = DurationMinutes,
             TimeOffsetSeconds = TimeOffsetSeconds,
             ColorHex = ColorHex,
-            Description = Description
+            Description = Description,
+            IsEnabled = IsEnabled
         };
     }
 }

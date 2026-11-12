@@ -11,6 +11,7 @@ using StarfallTimer.Core.Services;
 using StarfallTimer.Infrastructure.Audio;
 using StarfallTimer.Infrastructure.Notifications;
 using StarfallTimer.Infrastructure.Storage;
+using StarfallTimer.Infrastructure.Updates;
 using StarfallTimer.Infrastructure.Win32;
 using StarfallTimer.UI.Localization;
 using StarfallTimer.UI.ViewModels;
@@ -27,12 +28,11 @@ public partial class App : Application
     private ServiceProvider? _serviceProvider;
     private Win32TrayService? _trayService;
     private SettingsWindow? _settingsWindow;
-    private AboutWindow? _aboutWindow;
 
     protected override async void OnStartup(StartupEventArgs e)
     {
         // Enforce single instance
-        const string mutexName = "OnceHuman_StarfallInversionTimer_Mutex_V1";
+        const string mutexName = "OnceHuman_EventTimer_Mutex_V1";
         _singleInstanceMutex = new Mutex(true, mutexName, out bool isNewInstance);
         if (!isNewInstance)
         {
@@ -66,6 +66,7 @@ public partial class App : Application
         var audio = _serviceProvider.GetRequiredService<IAudioService>();
         var notifications = _serviceProvider.GetRequiredService<INotificationService>();
 
+        scheduler.SetTrackedEvents(settingsService.Settings.Events, settingsService.Settings.ActiveEventId, settingsService.Settings.GlobalTimeOffsetSeconds);
         scheduler.SetActiveEvent(settingsService.Settings.GetActiveEvent(), settingsService.Settings.GlobalTimeOffsetSeconds);
         scheduler.ConfigureSchedule(
             settingsService.Settings.StartMinute,
@@ -108,7 +109,6 @@ public partial class App : Application
 
         // 5. Wire Overlay Actions
         overlayVm.RequestOpenSettings = OpenSettingsWindow;
-        overlayVm.RequestOpenAbout = OpenAboutWindow;
         overlayVm.RequestHideOverlay = () => overlayWindow.Hide();
 
         // 6. Setup Hotkeys
@@ -156,6 +156,7 @@ public partial class App : Application
         services.AddSingleton<INotificationService, WindowsNotificationService>();
         services.AddSingleton<IEventScheduler, StarfallEventScheduler>();
         services.AddSingleton<IHotkeyService, Win32HotkeyService>();
+        services.AddSingleton<IUpdateService, GitHubUpdateService>();
 
         services.AddSingleton<OverlayViewModel>();
         services.AddTransient<SettingsViewModel>();
@@ -214,19 +215,6 @@ public partial class App : Application
         _settingsWindow = new SettingsWindow(vm);
         _settingsWindow.Closed += (s, e) => _settingsWindow = null;
         _settingsWindow.Show();
-    }
-
-    private void OpenAboutWindow()
-    {
-        if (_aboutWindow != null && _aboutWindow.IsLoaded)
-        {
-            _aboutWindow.Activate();
-            return;
-        }
-
-        _aboutWindow = new AboutWindow();
-        _aboutWindow.Closed += (s, e) => _aboutWindow = null;
-        _aboutWindow.Show();
     }
 
     private void ShutdownApp()

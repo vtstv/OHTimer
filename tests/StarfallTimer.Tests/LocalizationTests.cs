@@ -68,6 +68,35 @@ public class LocalizationTests
     }
 
     [Fact]
+    public void RussianCatalog_ContainsAllKeysDefinedInEnglishCatalog()
+    {
+        var englishKeys = EnglishCatalog.GetEntries().Keys;
+        var russianEntries = RussianCatalog.GetEntries();
+
+        foreach (var key in englishKeys)
+        {
+            Assert.True(russianEntries.ContainsKey(key), $"RussianCatalog is missing key '{key}'");
+            Assert.False(string.IsNullOrWhiteSpace(russianEntries[key]), $"RussianCatalog has empty value for key '{key}'");
+        }
+    }
+
+    [Fact]
+    public void Catalogs_TranslateEventNamesCorrectly()
+    {
+        _loc.SetLanguage("en-US");
+        Assert.Equal("Gravity Abyss (Starfall Inversion)", _loc.GetString("Event_GravityAbyss_Name"));
+        Assert.Equal("Cargo Scramble (Sproutlet Truck)", _loc.GetString("Event_CargoScramble_Name"));
+
+        _loc.SetLanguage("de-DE");
+        Assert.Equal("Gravitationsabgrund (Sternenfall-Inversion)", _loc.GetString("Event_GravityAbyss_Name"));
+        Assert.Equal("Frachtgerangel (Spross-LKW)", _loc.GetString("Event_CargoScramble_Name"));
+
+        _loc.SetLanguage("ru-RU");
+        Assert.Equal("Гравитационный провал (Инверсия Звездопада)", _loc.GetString("Event_GravityAbyss_Name"));
+        Assert.Equal("Заварушка с грузом (Грузовик со спорками)", _loc.GetString("Event_CargoScramble_Name"));
+    }
+
+    [Fact]
     public void MissingKey_FallsBackToEnglishOrKeyName()
     {
         _loc.SetLanguage("ru-RU");

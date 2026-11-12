@@ -131,9 +131,18 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 # 6. Copy Bundled Documentation and Assets
-Write-Host "[5/6] Bundling documentation and licenses..." -ForegroundColor Yellow
+Write-Host "[5/6] Bundling documentation, changelog, and licenses..." -ForegroundColor Yellow
 Copy-Item (Join-Path $repoRoot "LICENSE") -Destination $releaseTargetDir -Force
 Copy-Item (Join-Path $repoRoot "README.md") -Destination $releaseTargetDir -Force
+
+$changelogSrc = Join-Path $repoRoot "CHANGELOG.md"
+if (Test-Path $changelogSrc) {
+    Copy-Item $changelogSrc -Destination $releaseTargetDir -Force
+    # Generate release/CHANGELOG.txt for GitHub releases
+    $changelogContent = Get-Content $changelogSrc -Raw
+    Set-Content -Path (Join-Path $releaseBaseDir "CHANGELOG.txt") -Value $changelogContent -Encoding UTF8
+    Set-Content -Path (Join-Path $releaseTargetDir "CHANGELOG.txt") -Value $changelogContent -Encoding UTF8
+}
 
 # 7. Create ZIP Package
 Write-Host "[6/6] Creating ZIP archive..." -ForegroundColor Yellow

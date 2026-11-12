@@ -18,6 +18,7 @@ public partial class SettingsViewModel : ObservableObject
     private readonly IEventScheduler _scheduler;
     private readonly IAudioService _audio;
     private readonly ILocalizationService _loc;
+    private readonly IUpdateService? _updateService;
 
     [ObservableProperty]
     private int _startMinute;
@@ -73,6 +74,24 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private string _toggleClickThroughHotkey;
 
+    partial void OnOpacityChanged(double value)
+    {
+        _settingsService.Settings.Opacity = value;
+        _settingsService.NotifyChanged();
+    }
+
+    partial void OnScaleChanged(double value)
+    {
+        _settingsService.Settings.Scale = value;
+        _settingsService.NotifyChanged();
+    }
+
+    partial void OnCompactModeChanged(bool value)
+    {
+        _settingsService.Settings.CompactMode = value;
+        _settingsService.NotifyChanged();
+    }
+
     [ObservableProperty]
     private bool _showSavedNotification;
 
@@ -85,12 +104,14 @@ public partial class SettingsViewModel : ObservableObject
         ISettingsService settingsService,
         IEventScheduler scheduler,
         IAudioService audio,
-        ILocalizationService loc)
+        ILocalizationService loc,
+        IUpdateService? updateService = null)
     {
         _settingsService = settingsService;
         _scheduler = scheduler;
         _audio = audio;
         _loc = loc;
+        _updateService = updateService;
 
         var current = _settingsService.Settings;
         _startMinute = current.StartMinute;
@@ -176,6 +197,7 @@ public partial class SettingsViewModel : ObservableObject
         s.DurationMinutes = activeEvent.DurationMinutes;
 
         _loc.SetLanguage(SelectedLanguage.Code);
+        _scheduler.SetTrackedEvents(s.Events, s.ActiveEventId, s.GlobalTimeOffsetSeconds);
         _scheduler.SetActiveEvent(activeEvent, GlobalTimeOffsetSeconds);
         _scheduler.ConfigureSchedule(activeEvent.StartMinute, activeEvent.DurationMinutes, AlertMinutesBefore, AlertMinutesBeforeEnd);
 

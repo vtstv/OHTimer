@@ -51,6 +51,24 @@ internal static class RussianCatalog
         ["Settings_EventName"] = "Название события:",
         ["Settings_EventColor"] = "Цвет акцента:",
         ["Settings_EventDesc"] = "Описание:",
+        ["Settings_EventEnabled"] = "Отображать в HUD (Мульти-таймер)",
+
+        ["Event_GravityAbyss_Name"] = "Гравитационный провал (Инверсия Звездопада)",
+        ["Event_GravityAbyss_Desc"] = "Ежечасное событие Once Human Инверсия Звездопада / Гравитационный провал с зоной низкой гравитации и кристаллами Звездной пыли.",
+        ["Event_CargoScramble_Name"] = "Заварушка с грузом (Грузовик со спорками)",
+        ["Event_CargoScramble_Desc"] = "Динамическое PvP-событие «Заварушка с грузом» по перехвату грузовика со спорками.",
+        ["Event_LunarOracle_Name"] = "Лунное Оракул (Кровавая Луна)",
+        ["Event_LunarOracle_Desc"] = "Ночное событие «Кровавая Луна» с высокоуровневыми аберрантными мутациями.",
+        ["Event_LunarRevelry_Name"] = "Лунное пиршество (Повелитель лунного света)",
+        ["Event_LunarRevelry_Desc"] = "Фестиваль сбора Повелителя лунного света с эксклюзивным космическим лутом.",
+        ["Event_AberrantProgeny_Name"] = "Порождения аберраций (Прилив спор)",
+        ["Event_AberrantProgeny_Desc"] = "Волна вторжения «Прилив спор» с обороной от монстров аберрантного улья.",
+        ["Event_DissonantResonance_Name"] = "Диссонирующий резонанс",
+        ["Event_DissonantResonance_Desc"] = "Аномалия звуковых волн, требующая использования акустических резонаторов.",
+        ["Event_CrateLootReset_Name"] = "Сброс лута в ящиках (4 часа)",
+        ["Event_CrateLootReset_Desc"] = "4-часовой глобальный цикл обновления лута в мистических ящиках и опорных пунктах.",
+        ["Event_CustomWheel_Name"] = "Пользовательское событие",
+        ["Event_CustomWheel_Desc"] = "Настраиваемое пользователем циклическое расписание события.",
 
         ["Settings_AlertBeforeStart"] = "Оповещать до начала за (мин):",
         ["Settings_AlertBeforeEnd"] = "Предупреждать до конца за (мин):",
@@ -88,6 +106,16 @@ internal static class RussianCatalog
         ["About_Desc"] = "Стильный и быстрый HUD-оверлей таймер для событий Once Human: Инверсия Звездопада (Гравитационный провал), Заварушка с грузом (Cargo Scramble) и настраиваемые события.",
         ["About_Author"] = "Разработано Murr (https://github.com/vtstv) для сообщества Once Human.",
         ["About_GitHub"] = "Репозиторий GitHub",
-        ["About_License"] = "Лицензия MIT"
+        ["About_License"] = "Лицензия MIT",
+
+        ["Update_SectionTitle"] = "Обновления программы",
+        ["Update_CheckButton"] = "Проверить обновления",
+        ["Update_Checking"] = "Проверка обновлений...",
+        ["Update_Available"] = "Доступно обновление: v{0}",
+        ["Update_UpToDate"] = "У вас установлена последняя версия.",
+        ["Update_Error"] = "Не удалось проверить обновления.",
+        ["Update_DownloadAndApply"] = "Обновить и перезапустить",
+        ["Update_Downloading"] = "Загрузка обновления... ({0}%)",
+        ["Update_ReleaseNotes"] = "Список изменений:"
     };
 }

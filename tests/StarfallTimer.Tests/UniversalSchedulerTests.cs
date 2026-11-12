@@ -24,7 +24,7 @@ public class UniversalSchedulerTests
         var settings = new UserSettings();
 
         Assert.NotNull(settings.Events);
-        Assert.Equal(3, settings.Events.Count);
+        Assert.Equal(8, settings.Events.Count);
         Assert.Equal("gravity-abyss", settings.ActiveEventId);
 
         var active = settings.GetActiveEvent();
@@ -32,6 +32,13 @@ public class UniversalSchedulerTests
         Assert.Equal(60, active.CycleMinutes);
         Assert.Equal(22, active.StartMinute);
         Assert.Equal(30, active.DurationMinutes);
+        Assert.Equal(-31, active.TimeOffsetSeconds);
+        Assert.Equal("#00F0FF", active.ColorHex);
+        Assert.True(active.IsEnabled);
+
+        var enabled = settings.GetEnabledEvents();
+        Assert.Single(enabled);
+        Assert.Equal("gravity-abyss", enabled[0].Id);
     }
 
     [Fact]

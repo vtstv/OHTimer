@@ -51,6 +51,24 @@ internal static class EnglishCatalog
         ["Settings_EventName"] = "Event Name:",
         ["Settings_EventColor"] = "Accent Color:",
         ["Settings_EventDesc"] = "Description:",
+        ["Settings_EventEnabled"] = "Track in HUD (Multi-Timer)",
+
+        ["Event_GravityAbyss_Name"] = "Gravity Abyss (Starfall Inversion)",
+        ["Event_GravityAbyss_Desc"] = "Once Human Starfall Inversion / Gravity Abyss hourly event with low-gravity tide and Stardust Crystals.",
+        ["Event_CargoScramble_Name"] = "Cargo Scramble (Sproutlet Truck)",
+        ["Event_CargoScramble_Desc"] = "Cargo Scramble PvP sproutlet truck dynamic encounter.",
+        ["Event_LunarOracle_Name"] = "Lunar Oracle (Blood Moon)",
+        ["Event_LunarOracle_Desc"] = "Lunar Oracle Blood Moon nocturnal event with high-tier aberrant mutations.",
+        ["Event_LunarRevelry_Name"] = "Lunar Revelry (Lord of Moonlight)",
+        ["Event_LunarRevelry_Desc"] = "Lord of Moonlight gathering festival with exclusive cosmic loot drops.",
+        ["Event_AberrantProgeny_Name"] = "Aberrant Progeny (Spore Tide)",
+        ["Event_AberrantProgeny_Desc"] = "Spore Tide invasion wave defending against aberrant hive monsters.",
+        ["Event_DissonantResonance_Name"] = "Dissonant Resonance",
+        ["Event_DissonantResonance_Desc"] = "Dissonant soundwave anomaly requiring acoustic tuning devices.",
+        ["Event_CrateLootReset_Name"] = "Crate Loot Reset (4-Hour)",
+        ["Event_CrateLootReset_Desc"] = "4-hour global refresh cycle for high-tier mystical crates and stronghold loot.",
+        ["Event_CustomWheel_Name"] = "Custom Wheel Event",
+        ["Event_CustomWheel_Desc"] = "User-defined custom cyclic event schedule.",
 
         ["Settings_AlertBeforeStart"] = "Alert Before Start (minutes):",
         ["Settings_AlertBeforeEnd"] = "Warning Before End (minutes):",
@@ -88,6 +106,16 @@ internal static class EnglishCatalog
         ["About_Desc"] = "A stylish, low-latency HUD overlay timer for Once Human in-game events, including Gravity Abyss (Starfall Inversion), Cargo Scramble, and custom wheel schedules.",
         ["About_Author"] = "Created by Murr (https://github.com/vtstv) for the Once Human community.",
         ["About_GitHub"] = "GitHub Repository",
-        ["About_License"] = "MIT License"
+        ["About_License"] = "MIT License",
+
+        ["Update_SectionTitle"] = "Software Updates",
+        ["Update_CheckButton"] = "Check for Updates",
+        ["Update_Checking"] = "Checking for updates...",
+        ["Update_Available"] = "Update available: v{0}",
+        ["Update_UpToDate"] = "You are on the latest version.",
+        ["Update_Error"] = "Unable to check for updates.",
+        ["Update_DownloadAndApply"] = "Update & Restart",
+        ["Update_Downloading"] = "Downloading update... ({0}%)",
+        ["Update_ReleaseNotes"] = "Release Notes:"
     };
 }

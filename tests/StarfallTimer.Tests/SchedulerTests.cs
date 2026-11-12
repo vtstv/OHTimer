@@ -16,6 +16,7 @@ public class SchedulerTests
     {
         var loc = new LocalizationService();
         _scheduler = new StarfallEventScheduler(loc);
+        _scheduler.SetTimeOffset(0);
         _scheduler.ConfigureSchedule(
             startMinute: 22,
             durationMinutes: 30,

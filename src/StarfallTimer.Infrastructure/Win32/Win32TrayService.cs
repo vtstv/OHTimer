@@ -1,6 +1,7 @@
 // Copyright (c) Murr (https://github.com/vtstv). All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Interop;
 using StarfallTimer.Core.Services;
@@ -28,6 +29,7 @@ public sealed class Win32TrayService : IDisposable
     private nint _hwnd;
     private HwndSource? _hwndSource;
     private NativeMethods.NOTIFYICONDATA _nid;
+    private nint _hLoadedIcon;
     private bool _isInitialized;
 
     public Win32TrayService(
@@ -52,8 +54,8 @@ public sealed class Win32TrayService : IDisposable
         _hwndSource = HwndSource.FromHwnd(hwnd);
         _hwndSource?.AddHook(HwndHook);
 
-        // Load standard system application icon (IDI_APPLICATION = 32512)
-        nint hIcon = NativeMethods.LoadIcon(0, (nint)32512);
+        // Load application icon (app.ico / process icon with Once Human diamond)
+        _hLoadedIcon = LoadApplicationIcon();
 
         _nid = new NativeMethods.NOTIFYICONDATA
         {
@@ -62,14 +64,59 @@ public sealed class Win32TrayService : IDisposable
             uID = TRAY_ID,
             uFlags = NativeMethods.NIF_MESSAGE | NativeMethods.NIF_ICON | NativeMethods.NIF_TIP,
             uCallbackMessage = NativeMethods.WM_TRAYICON,
-            hIcon = hIcon,
-            szTip = "Once Human — Starfall Inversion Timer",
+            hIcon = _hLoadedIcon,
+            szTip = "Once Human — Event Timer",
             szInfo = string.Empty,
             szInfoTitle = string.Empty
         };
 
         NativeMethods.Shell_NotifyIcon(NativeMethods.NIM_ADD, ref _nid);
         _isInitialized = true;
+    }
+
+    private static nint LoadApplicationIcon()
+    {
+        // 1. Look for app.ico next to executable or in Assets directory
+        string baseDir = AppContext.BaseDirectory;
+        string[] candidatePaths =
+        [
+            Path.Combine(baseDir, "app.ico"),
+            Path.Combine(baseDir, "Assets", "app.ico")
+        ];
+
+        foreach (var path in candidatePaths)
+        {
+            if (File.Exists(path))
+            {
+                nint hLoaded = NativeMethods.LoadImage(0, path, NativeMethods.IMAGE_ICON, 16, 16, NativeMethods.LR_LOADFROMFILE);
+                if (hLoaded != 0) return hLoaded;
+
+                hLoaded = NativeMethods.LoadImage(0, path, NativeMethods.IMAGE_ICON, 0, 0, NativeMethods.LR_LOADFROMFILE | NativeMethods.LR_DEFAULTSIZE);
+                if (hLoaded != 0) return hLoaded;
+            }
+        }
+
+        // 2. Extract embedded icon from process executable if available
+        try
+        {
+            string? procPath = Environment.ProcessPath;
+            if (!string.IsNullOrEmpty(procPath) && File.Exists(procPath))
+            {
+                int count = NativeMethods.ExtractIconEx(procPath, 0, out nint hLarge, out nint hSmall, 1);
+                if (count > 0)
+                {
+                    if (hLarge != 0) NativeMethods.DestroyIcon(hLarge);
+                    if (hSmall != 0) return hSmall;
+                }
+            }
+        }
+        catch
+        {
+            // Fallback to standard icon
+        }
+
+        // 3. Fallback to standard system application icon
+        return NativeMethods.LoadIcon(0, (nint)32512);
     }
 
     public void ShowNotification(string title, string message)
@@ -157,6 +204,13 @@ public sealed class Win32TrayService : IDisposable
                 _hwndSource.RemoveHook(HwndHook);
                 _hwndSource = null;
             }
+
+            if (_hLoadedIcon != 0)
+            {
+                NativeMethods.DestroyIcon(_hLoadedIcon);
+                _hLoadedIcon = 0;
+            }
+
             _isInitialized = false;
         }
     }

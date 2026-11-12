@@ -1,104 +1,108 @@
-# Once Human: Event Timer 🌌⏱️
+# Once Human: Event Timer
 
 [![CI](https://github.com/vtstv/StarfallTimer/actions/workflows/ci.yml/badge.svg)](https://github.com/vtstv/StarfallTimer/actions)
 ![.NET 8](https://img.shields.io/badge/.NET-8.0_LTS-512BD4?logo=dotnet&logoColor=white)
 ![Platform](https://img.shields.io/badge/Platform-Windows_10%20%2F%2011-0078D6?logo=windows&logoColor=white)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-![Once Human](https://img.shields.io/badge/Once%20Human-Universal%20Event%20Timer-00F0FF?logo=gamepad)
+![Version](https://img.shields.io/badge/Release-v1.2.0-00F0FF)
 
-A sleek, ultra-lightweight (< 1 MB), cyberpunk desktop HUD overlay for **Once Human**, tracking recurring in-game world events in real-time. Supports **Gravity Abyss (Starfall Inversion)**, **Cargo Scramble**, and fully customizable multi-wheel event cycles with zero-drift game server synchronization, Win32 click-through technology, procedural audio alerts, and trilingual localization (English, German, Russian).
-
----
-
-## 📖 Table of Contents
-
-- [Overview & Supported Events](#-overview--supported-events)
-- [Key Features](#-key-features)
-- [HUD Preview](#-hud-preview)
-- [Event Phase Lifecycle](#-event-phase-lifecycle)
-- [Game Time Synchronization](#-game-time-synchronization)
-- [Default Hotkeys & Controls](#-default-hotkeys--controls)
-- [Architecture Overview](#-architecture-overview)
-- [Prerequisites & Building from Source](#-prerequisites--building-from-source)
-- [Packaging & Releases](#-packaging--releases)
-- [Configuration Reference](#-configuration-reference)
-- [Authors & Credits](#-authors--credits)
-- [License](#-license)
+A lightweight Windows desktop HUD overlay for **Once Human** that tracks recurring in-game world events in real time. Features zero-drift game time synchronization, multi-timer tracking, full and compact mini HUD modes, Win32 click-through integration, procedural audio alerts, and trilingual localization.
 
 ---
 
-## 🌠 Overview & Supported Events
+## Table of Contents
 
-In **Once Human**, timed world events dictate high-yield gathering windows, PvP opportunities, and dynamic world mechanics:
-
-- **Gravity Abyss (Starfall Inversion)**:
-  - **Default Cycle**: Hourly (60 minutes).
-  - **Schedule**: Starts at `XX:22:00`, concludes at `XX:52:00` (30-minute duration).
-  - **Mechanics**: Low-gravity tide allows players to float and scale cliffs; floating Stardust Crystals spawn for rare endgame crafting materials.
-- **Cargo Scramble**:
-  - **Schedule**: Recurring competitive convoy event (`XX:00:00` to `XX:20:00`).
-- **Custom Wheel Events**:
-  - Define arbitrary cycle lengths (e.g. 15, 30, 45, 90, 120 minutes), custom start offsets, custom durations, and unique neon accent colors.
-
-**Once Human Event Timer** ensures you never miss a world event window, providing pinpoint countdowns, procedural audio alerts, and zero-latency game awareness.
+- [Features](#features)
+- [Supported Event Presets](#supported-event-presets)
+- [HUD Preview](#hud-preview)
+- [Event Phase Lifecycle](#event-phase-lifecycle)
+- [Game Time Synchronization](#game-time-synchronization)
+- [Default Hotkeys & Controls](#default-hotkeys--controls)
+- [Architecture](#architecture)
+- [Building from Source](#building-from-source)
+- [Packaging & Releases](#packaging--releases)
+- [Configuration Reference](#configuration-reference)
+- [Authors & License](#authors--license)
 
 ---
 
-## ✨ Key Features
+## Features
 
-- **Universal Multi-Wheel Event Engine**:
-  - Preloaded with built-in presets: *Gravity Abyss*, *Cargo Scramble*, and *Custom Wheel*.
-  - Full support for arbitrary cycle intervals, start minutes, active durations, and custom neon color styling.
-  - Switch active events on-the-fly with immediate HUD recalculation.
+- **Universal Event Scheduling Engine**:
+  - Built-in presets for major Once Human world events and custom wheel schedules.
+  - Configurable cycle length (e.g., 15m, 45m, 60m, 240m), start minute offset, active duration, and accent color.
+  - Real-time recalculation upon settings modification.
 
-- **Precision Game Time Synchronization (Zero Drift)**:
-  - Eliminate clock disparity between your local PC clock and Once Human game servers.
-  - Enter the remaining time displayed on your in-game map or HUD (e.g. `08:23`) and click **Sync** to match game servers down to the exact second.
-  - Quick nudge buttons (`-5s`, `-1s`, `+1s`, `+5s`, `0s`) for instantaneous fine-tuning during gameplay.
+- **Multi-Timer Support**:
+  - Track multiple active events concurrently.
+  - Toggle individual timers on or off in the HUD via Settings.
+  - Displays as stacked cards in Full HUD mode or clean rows in Compact Mini mode.
 
-- **Ultra-Lightweight Distribution (< 1 MB)**:
-  - Optimized framework-dependent single-file packaging reduced the binary footprint from 70 MB down to **~0.7 MB** (< 1 MB)!
-  - Rapid launch time, ultra-low CPU utilization (< 0.1%), and zero heap allocation in the 1-second tick loop.
+- **Zero-Drift Game Time Synchronization**:
+  - Compensates for clock drift between the local system clock and Once Human game servers.
+  - Calibrated default `-31s` offset for Gravity Abyss (Starfall Inversion) to match server timing out of the box.
+  - One-click synchronization: enter remaining in-game countdown (e.g. `12:45`) to calculate exact server offset.
+  - Quick nudge buttons (`-5s`, `-1s`, `+1s`, `+5s`, `0s`) for real-time fine adjustment.
 
-- **Frameless Cyberpunk HUD Overlay**:
-  - Deep obsidian transparent card (`#0B0F17`) with dynamic neon accent glow.
-  - Active event title badge, circular countdown ring, and synchronized linear progression bar.
-  - Resizable scale (0.7x to 2.0x) and background opacity (20% to 100%).
-  - Position lock toggle (`🔓` / `🔒`) prevents accidental mouse drag during combat.
-  - Dedicated About dialog (`ℹ`) with release details, GitHub links, and author credits.
+- **Dual Display Modes (Full & Mini HUD)**:
+  - **Full HUD**: Circular countdown ring, linear progress bar, phase badge, and next start/end timestamps.
+  - **Mini HUD**: Minimal floating pill showing only essential phase status and MM:SS countdown.
+  - Quick-toggle button (`🗗` / `🗖`) on overlay header and in Settings.
 
-- **Non-Intrusive Click-Through Mode**:
-  - Native Windows API integration (`WS_EX_TRANSPARENT` & `WS_EX_LAYERED`).
-  - When enabled, mouse clicks and cursor aiming pass directly through the HUD into *Once Human* without window focus stutter.
+- **HUD Customization & Non-Intrusive Overlay**:
+  - Frameless, semi-transparent window with dark cyberpunk theme.
+  - Real-time opacity slider (20% to 100%) and scalable UI sizing (0.7x to 2.0x).
+  - Position lock toggle (`🔓` / `🔒`) prevents accidental dragging during gameplay.
+  - Win32 Click-Through mode (`WS_EX_TRANSPARENT`): mouse clicks pass directly into the game without losing window focus.
 
-- **Procedural In-Memory Audio Synthesis**:
-  - Built-in audio engine generating pure PCM WAV chimes dynamically in memory without external audio dependencies.
+- **Procedural Audio Alerts**:
+  - In-memory PCM WAV synthesis for zero external audio dependencies.
   - Distinct harmonic chords for each phase:
-    - **Starting Soon**: 2-tone alert chime (660 Hz → 880 Hz).
-    - **Event Start**: 4-note major arpeggio celebration chime (C5 → E5 → G5 → C6).
-    - **Ending Soon**: Descending caution tones (A5 → F5 → D5).
-  - Optional support for user-specified custom `.wav` sound files.
+    - *Starting Soon*: Two-tone ascending chime (660 Hz -> 880 Hz).
+    - *Event Start*: Four-note major arpeggio celebration chime (C5 -> E5 -> G5 -> C6).
+    - *Ending Soon*: Three-tone descending caution chime (A5 -> F5 -> D5).
+  - Optional support for custom WAV sound files.
 
-- **Desktop Notifications & System Tray**:
-  - Windows taskbar notification tray icon with comprehensive context menu.
-  - Configurable Windows desktop toast notifications when an event window approaches.
+- **Seamless GitHub Self-Updater**:
+  - In-app update check against GitHub Releases API with changelog display.
+  - Download progress indicator and detached Windows in-place replacement with automatic restart.
+
+- **System Tray & Toast Notifications**:
+  - Taskbar notification tray icon with application icon rendering and context menu.
+  - Windows desktop toast notifications when event windows approach.
 
 - **Multilingual Support**:
-  - Instant on-the-fly language switching without application restart:
-    - 🇺🇸 **English** (`en-US`, default)
-    - 🇩🇪 **German** (`de-DE`, complete native translation)
-    - 🇷🇺 **Russian** (`ru-RU`, complete native translation)
+  - English (`en-US`) - Default
+  - German (`de-DE`)
+  - Russian (`ru-RU`)
 
-- **Configurable Global Hotkeys**:
-  - Register system-wide key combinations via Win32 `RegisterHotKey` for instant overlay toggling and click-through switching even while full-screen in-game.
+- **Lightweight Distribution**:
+  - Framework-dependent single-file executable at ~0.7 MB footprint (< 1 MB).
+  - Low CPU usage (< 0.1%) with zero heap allocations in the 1-second timer loop.
 
 ---
 
-## 🖥️ HUD Preview
+## Supported Event Presets
 
+| Event Preset | Cycle | Start | Duration | Default Offset | Accent Color | Description |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Gravity Abyss (Starfall Inversion)** | 60 min | XX:22 | 30 min | -31s | `#00F0FF` | Hourly low-gravity tide with floating Stardust Crystals. |
+| **Cargo Scramble (Sproutlet Truck)** | 60 min | XX:00 | 20 min | 0s | `#F59E0B` | Competitive convoy escort and Sproutlet gathering. |
+| **Lunar Oracle (Blood Moon)** | 60 min | XX:45 | 15 min | 0s | `#EF4444` | Blood moon aberration anomaly event. |
+| **Lunar Revelry (Lord of Moonlight)** | 60 min | XX:40 | 20 min | 0s | `#A855F7` | Moonlight festival world gathering event. |
+| **Aberrant Progeny (Spore Tide)** | 60 min | XX:10 | 25 min | 0s | `#10B981` | Spore tide aberration defense wave. |
+| **Dissonant Resonance** | 60 min | XX:15 | 30 min | 0s | `#EC4899` | Dynamic world frequency disruption zone. |
+| **Crate Loot Reset (4-Hour)** | 240 min | XX:00 | 5 min | 0s | `#3B82F6` | Global crate and stronghold resource respawn window. |
+| **Custom Wheel Event** | User | User | User | 0s | `#EAB308` | Fully customizable interval, start minute, and duration. |
+
+---
+
+## HUD Preview
+
+### Full HUD Mode
 ```text
 ┌────────────────────────────────────────────────────────┐
-│  ● GRAVITY ABYSS                   [ ℹ ] [ 🔓 ] [ ⚙ ] [ ✕ ] │
+│  ● GRAVITY ABYSS                   [ 🗗 ] [ 🔓 ] [ ⚙ ] [ ✕ ] │
 ├────────────────────────────────────────────────────────┤
 │                                                        │
 │     ╭─────╮     EVENT ACTIVE                           │
@@ -109,153 +113,158 @@ In **Once Human**, timed world events dictate high-yield gathering windows, PvP 
 │                                                        │
 │  [==========================------------------------]  │
 │                                        Next End: 17:52 │
-│  Offset: +31s (Game Sync)                              │
+│  Offset: -31s (Game Sync)                              │
 └────────────────────────────────────────────────────────┘
 ```
 
-### Visual State Palette
+### Compact Mini HUD Mode
+```text
+┌──────────────────────────────────────────────┐
+│  ● GRAVITY ABYSS   ACTIVE   24:18   [ 🗖 ] [ ✕ ] │
+└──────────────────────────────────────────────┘
+```
 
-| Phase State | Neon Accent | Hex Code | Visual Meaning |
-| :--- | :--- | :--- | :--- |
-| **Inactive / Waiting** | Neon Cyan | `#00F0FF` | Waiting for next scheduled event window. |
-| **Starting Soon** | Amber Warning | `#F59E0B` | Event starts in ≤ 2 minutes (prepare gear and teleport). |
-| **Active** | Event Theme / Gold | `#00E5FF` / `#EAB308` | Event is active; reap bonuses and gather loot! |
-| **Ending Soon** | Red Alert | `#EF4444` | Event concludes in ≤ 3 minutes (evacuate safely). |
+### Phase Visual Indicators
+
+| Phase State | Accent Color | Visual Meaning |
+| :--- | :--- | :--- |
+| **Inactive / Waiting** | Neon Cyan (`#00F0FF`) | Event idle, waiting for the next scheduled window. |
+| **Starting Soon** | Amber Warning (`#F59E0B`) | Event starts within alert threshold (default: 2 minutes). |
+| **Active** | Active Gold / Cyan (`#EAB308`) | Event is in progress. |
+| **Ending Soon** | Red Alert (`#EF4444`) | Event concludes within warning threshold (default: 3 minutes). |
 
 ---
 
-## 🔄 Event Phase Lifecycle
+## Event Phase Lifecycle
 
 ```mermaid
 flowchart TD
-    Inactive["🌑 INACTIVE / WAITING<br/>Waiting for next cycle<br/><i>e.g. XX:52:00 – XX:20:00</i>"]
-    StartingSoon["⚠️ STARTING SOON<br/>Audio Alert + Desktop Toast<br/><i>e.g. XX:20:00 – XX:22:00</i>"]
-    Active["🌌 EVENT ACTIVE<br/>Main Event Duration<br/><i>e.g. XX:22:00 – XX:49:00</i>"]
-    EndingSoon["🚨 ENDING SOON<br/>Evacuation Warning Chime<br/><i>e.g. XX:49:00 – XX:52:00</i>"]
+    Inactive["INACTIVE / WAITING\nWaiting for next cycle\ne.g. XX:52:00 - XX:20:00"]
+    StartingSoon["STARTING SOON\nAudio Chime + Toast\ne.g. XX:20:00 - XX:22:00"]
+    Active["EVENT ACTIVE\nEvent in progress\ne.g. XX:22:00 - XX:49:00"]
+    EndingSoon["ENDING SOON\nConclusion Warning Chime\ne.g. XX:49:00 - XX:52:00"]
 
-    Inactive -->|"T - Alert Minutes"| StartingSoon
-    StartingSoon -->|"Event Start Chime"| Active
-    Active -->|"T - Warning Minutes"| EndingSoon
-    EndingSoon -->|"Cycle Complete"| Inactive
+    Inactive -->|"Alert Threshold Reached"| StartingSoon
+    StartingSoon -->|"Event Start"| Active
+    Active -->|"Warning Threshold Reached"| EndingSoon
+    EndingSoon -->|"Duration Expired"| Inactive
 ```
 
 ---
 
-## ⏱️ Game Time Synchronization
+## Game Time Synchronization
 
-PC clocks often diverge slightly from game servers (e.g. 15 to 45 seconds drift). **Once Human Event Timer** provides seamless sync:
+Server clocks can differ from local system time by several seconds. To calibrate:
 
-1. Open **Settings** (`⚙`) → navigate to the **Events & Presets** tab.
-2. Note the remaining countdown on your in-game map or event HUD (e.g. `08:23`).
+1. Open **Settings** (`⚙`) and select the **Events & Presets** tab.
+2. Check the countdown timer displayed on your in-game map or HUD (e.g., `08:23`).
 3. Enter `08:23` into the **Game Timer** field and click **Sync**.
-4. The timer calculates the exact delta (`TimeOffsetSeconds`) and synchronizes the HUD instantly.
-5. Use quick nudge buttons (`-5s`, `-1s`, `+1s`, `+5s`, `0s`) anytime for fine-tuning.
+4. The application computes the difference (`TimeOffsetSeconds`) and applies it immediately.
+5. Use the quick nudge buttons (`-5s`, `-1s`, `+1s`, `+5s`, `0s`) to make finer adjustments during gameplay.
 
 ---
 
-## ⌨️ Default Hotkeys & Controls
+## Default Hotkeys & Controls
 
 | Shortcut | Action | Description |
 | :--- | :--- | :--- |
-| <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>S</kbd> | **Toggle Overlay** | Shows or hides the HUD overlay window instantly. |
-| <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>L</kbd> | **Toggle Click-Through / Lock** | Toggles between interactive dragging and transparent click-through mode. |
-| <kbd>Left Click + Drag</kbd> | **Move HUD** | Repositions the HUD when position lock is disabled (`🔓`). |
-| <kbd>Right Click</kbd> (Tray Icon) | **Context Menu** | Access settings, toggle lock, show HUD, or exit application. |
+| <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>S</kbd> | Toggle Overlay | Toggles HUD overlay visibility on or off. |
+| <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>L</kbd> | Toggle Click-Through | Switches between interactive dragging and transparent click-through mode. |
+| <kbd>Left Click + Drag</kbd> | Move HUD | Drags the HUD when position lock is disabled (`🔓`). |
+| <kbd>Right Click</kbd> (Tray Icon) | Tray Menu | Opens context menu to access Settings, toggle lock, or exit. |
 
 ---
 
-## 🏗️ Architecture Overview
+## Architecture
 
-The solution adheres strictly to clean architectural separation across 4 distinct projects:
+The project is structured into 4 decoupled assemblies following clean architecture principles:
 
-```
+```text
 StarfallTimer.sln
 ├── src/
-│   ├── StarfallTimer.Core             # Pure domain models, scheduling & localization (.NET 8)
-│   │   ├── Localization/              # Catalogs (EnglishCatalog, GermanCatalog, RussianCatalog)
-│   │   ├── Models/                    # EventDefinition, EventSnapshot, UserSettings
-│   │   ├── Scheduling/                # EventTimeCalculator, StarfallEventScheduler
-│   │   └── Services/                  # Interfaces (IEventScheduler, IAudioService, ILocalizationService)
+│   ├── StarfallTimer.Core            # Pure domain models, scheduling engine, localization (.NET 8)
+│   │   ├── Localization/             # Catalogs (English, German, Russian)
+│   │   ├── Models/                   # EventDefinition, EventSnapshot, UserSettings, UpdateInfo
+│   │   ├── Scheduling/               # EventScheduler, EventTimeCalculator, NotificationEvaluator
+│   │   └── Services/                 # Interfaces (IEventScheduler, IAudioService, IUpdateService, etc.)
 │   │
-│   ├── StarfallTimer.Infrastructure   # Win32 P/Invoke & Windows services (.NET 8 Windows)
-│   │   ├── Audio/                     # SynthesizerAudioService (pure in-memory WAV synthesis)
-│   │   ├── Notifications/             # WindowsNotificationService (balloon/toast notifications)
-│   │   ├── Storage/                   # FileSettingsService (atomic JSON persistence)
-│   │   └── Win32/                     # NativeMethods, Win32HotkeyService, Win32TrayService
+│   ├── StarfallTimer.Infrastructure  # OS integration & Windows services (.NET 8 Windows)
+│   │   ├── Audio/                    # SynthesizerAudioService (in-memory WAV synthesis)
+│   │   ├── Notifications/            # WindowsNotificationService (toast notifications)
+│   │   ├── Storage/                  # FileSettingsService (atomic JSON persistence)
+│   │   ├── Updates/                  # GitHubUpdateService (releases API, self-update script)
+│   │   └── Win32/                    # NativeMethods, Win32HotkeyService, Win32TrayService
 │   │
-│   └── StarfallTimer.UI               # Presentation layer (WPF, MVVM, CommunityToolkit)
-│       ├── Assets/                    # app.ico (multi-resolution Windows application icon)
-│       ├── Controls/                  # CircularTimerProgress vector ring control
-│       ├── Styles/                    # Dark cyberpunk ControlTemplates (TabControl, Buttons, Sliders)
-│       ├── ViewModels/                # OverlayViewModel, SettingsViewModel, SettingsViewModel.Events
-│       └── Views/                     # AboutWindow, OverlayWindow, SettingsWindow
+│   └── StarfallTimer.UI              # Presentation layer (WPF, MVVM, CommunityToolkit)
+│       ├── Assets/                   # app.ico (multi-resolution application icon)
+│       ├── Controls/                 # CircularTimerProgress ring control
+│       ├── Converters/               # BoolToVisibilityConverter, StringNullOrEmptyToVisibilityConverter
+│       ├── Styles/                   # Cyberpunk dark ControlTemplates (ComboBox, TabControl, etc.)
+│       ├── ViewModels/               # OverlayViewModel, SettingsViewModel, TimerItemViewModel
+│       └── Views/                    # OverlayWindow, SettingsWindow
 │
 └── tests/
-    └── StarfallTimer.Tests            # Unit test suite (xUnit)
-        ├── LocalizationTests.cs       # Translation coverage, placeholders, & fallback verification
-        ├── SchedulerTests.cs          # Hourly boundary conditions & rollover calculations
-        └── UniversalSchedulerTests.cs # Arbitrary cycles, drift offsets, & Game Time Sync
+    └── StarfallTimer.Tests           # Automated xUnit test suite
+        ├── LocalizationTests.cs      # Translation completeness and key parity
+        ├── MultiTimerTests.cs        # Multi-timer evaluation and snapshot handling
+        ├── SchedulerTests.cs         # Boundary calculations and cycle rollovers
+        ├── UniversalSchedulerTests.cs# Custom cycles, drift offsets, and game time sync
+        └── UpdateServiceTests.cs     # Update detection and version parsing tests
 ```
 
 ---
 
-## 🚀 Prerequisites & Building from Source
+## Building from Source
 
 ### Prerequisites
 
-- **Operating System**: Windows 10 (Build 19041+) or Windows 11 (x64 / ARM64).
-- **SDK**: [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) or higher.
-- **Runtime**: [.NET Desktop Runtime 8.0](https://dotnet.microsoft.com/download/dotnet/8.0/runtime) (for framework-dependent releases).
+- Windows 10 (version 19041+) or Windows 11
+- [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) or higher
+- [.NET Desktop Runtime 8.0](https://dotnet.microsoft.com/download/dotnet/8.0/runtime) (for running framework-dependent builds)
 
-### Build Instructions
-
-1. **Clone the repository**:
-   ```powershell
-   git clone https://github.com/vtstv/StarfallTimer.git
-   cd StarfallTimer
-   ```
-
-2. **Restore dependencies**:
-   ```powershell
-   dotnet restore
-   ```
-
-3. **Build the solution (Release configuration)**:
-   ```powershell
-   dotnet build --configuration Release --no-restore
-   ```
-
-4. **Execute automated unit tests**:
-   ```powershell
-   dotnet test --configuration Release --no-build --verbosity normal
-   ```
-
-5. **Run the overlay**:
-   ```powershell
-   dotnet run --project src/StarfallTimer.UI --configuration Release
-   ```
-
----
-
-## 📦 Packaging & Releases
-
-Build an ultra-lightweight (< 1 MB) release package automatically using PowerShell:
+### Build Steps
 
 ```powershell
-# Build standard lightweight release (~0.7 MB, framework-dependent)
-.\scripts\build-release.ps1 -Version "1.1.0"
+# 1. Clone repository
+git clone https://github.com/vtstv/StarfallTimer.git
+cd StarfallTimer
 
-# Or produce self-contained standalone executable
-.\scripts\build-release.ps1 -Version "1.1.0" -Standalone:$true
+# 2. Restore dependencies
+dotnet restore
+
+# 3. Build solution (Release)
+dotnet build --configuration Release --no-restore
+
+# 4. Run automated test suite
+dotnet test --configuration Release --no-build --verbosity normal
+
+# 5. Launch application
+dotnet run --project src/StarfallTimer.UI --configuration Release
 ```
-
-Output is bundled into `release/OnceHumanTimer-v<version>/` and zipped to `release/OnceHumanTimer-v<version>.zip`.
 
 ---
 
-## ⚙️ Configuration Reference
+## Packaging & Releases
 
-Settings are stored in human-readable JSON format at `%APPDATA%\OnceHumanStarfallTimer\settings.json`:
+An automated PowerShell script builds, tests, publishes, and packages releases into the `release/` directory:
+
+```powershell
+# Build lightweight framework-dependent package (~0.7 MB, requires .NET 8 runtime)
+.\scripts\build-release.ps1 -Version "1.2.0"
+
+# Build self-contained standalone executable (includes .NET runtime)
+.\scripts\build-release.ps1 -Version "1.2.0" -Standalone:$true
+```
+
+Output is bundled into `release/OnceHumanTimer-v<version>/` and compressed to `release/OnceHumanTimer-v<version>.zip`.
+
+See [CHANGELOG.md](CHANGELOG.md) for version release notes.
+
+---
+
+## Configuration Reference
+
+Configuration is stored in `%APPDATA%\OnceHumanStarfallTimer\settings.json`:
 
 ```json
 {
@@ -278,18 +287,20 @@ Settings are stored in human-readable JSON format at `%APPDATA%\OnceHumanStarfal
       "CycleMinutes": 60,
       "StartMinute": 22,
       "DurationMinutes": 30,
-      "TimeOffsetSeconds": 0,
-      "ColorHex": "#00E5FF",
+      "TimeOffsetSeconds": -31,
+      "ColorHex": "#00F0FF",
+      "IsEnabled": true,
       "Description": "Once Human Starfall Inversion hourly event with low-gravity tide."
     },
     {
       "Id": "cargo-scramble",
-      "Name": "Cargo Scramble",
+      "Name": "Cargo Scramble (Sproutlet Truck)",
       "CycleMinutes": 60,
       "StartMinute": 0,
       "DurationMinutes": 20,
       "TimeOffsetSeconds": 0,
       "ColorHex": "#F59E0B",
+      "IsEnabled": false,
       "Description": "Once Human Cargo Scramble event."
     }
   ],
@@ -305,13 +316,8 @@ Settings are stored in human-readable JSON format at `%APPDATA%\OnceHumanStarfal
 
 ---
 
-## 👨‍💻 Authors & Credits
+## Authors & License
 
 - **Author & Maintainer**: **Murr** ([@vtstv](https://github.com/vtstv))
-- **Game Rights**: *Once Human* is a registered trademark and copyright of Starry Studio / NetEase Games. This utility is an unofficial open-source companion tool created under fair-use gaming accessibility guidelines.
-
----
-
-## 📄 License
-
-This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for complete details.
+- **License**: Licensed under the [MIT License](LICENSE).
+- **Disclaimer**: *Once Human* is a registered trademark of Starry Studio / NetEase Games. This utility is an unofficial companion tool developed under gaming accessibility guidelines.

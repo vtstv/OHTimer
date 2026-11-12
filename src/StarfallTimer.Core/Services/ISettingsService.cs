@@ -29,4 +29,9 @@ public interface ISettingsService
     /// Persists settings to disk.
     /// </summary>
     Task SaveAsync();
+
+    /// <summary>
+    /// Notifies listeners that in-memory settings have changed without writing to disk.
+    /// </summary>
+    void NotifyChanged();
 }

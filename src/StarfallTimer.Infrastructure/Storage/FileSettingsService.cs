@@ -23,12 +23,34 @@ public sealed class FileSettingsService : ISettingsService
 
     public FileSettingsService(string? customFolder = null)
     {
-        string baseFolder = customFolder ?? Path.Combine(
+        string modernFolder = customFolder ?? Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "OnceHumanEventTimer");
+
+        string legacyFolder = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             "OnceHumanStarfallTimer");
 
-        Directory.CreateDirectory(baseFolder);
-        _settingsFilePath = Path.Combine(baseFolder, "settings.json");
+        // Automatically migrate legacy settings folder if present
+        if (!Directory.Exists(modernFolder) && Directory.Exists(legacyFolder))
+        {
+            try
+            {
+                string legacyFile = Path.Combine(legacyFolder, "settings.json");
+                if (File.Exists(legacyFile))
+                {
+                    Directory.CreateDirectory(modernFolder);
+                    File.Copy(legacyFile, Path.Combine(modernFolder, "settings.json"), overwrite: false);
+                }
+            }
+            catch
+            {
+                // Non-critical fallback
+            }
+        }
+
+        Directory.CreateDirectory(modernFolder);
+        _settingsFilePath = Path.Combine(modernFolder, "settings.json");
 
         _jsonOptions = new JsonSerializerOptions
         {
@@ -85,5 +107,10 @@ public sealed class FileSettingsService : ISettingsService
         {
             // Ignore non-fatal disk write errors
         }
+    }
+
+    public void NotifyChanged()
+    {
+        SettingsChanged?.Invoke(this, Settings);
     }
 }

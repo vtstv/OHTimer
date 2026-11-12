@@ -16,9 +16,19 @@ public interface IEventScheduler : IDisposable
     EventSnapshot CurrentSnapshot { get; }
 
     /// <summary>
+    /// Current calculated snapshots for all enabled events in multi-timer mode.
+    /// </summary>
+    IReadOnlyList<EventSnapshot> ActiveSnapshots { get; }
+
+    /// <summary>
     /// Active event schedule definition being evaluated.
     /// </summary>
     EventDefinition ActiveEvent { get; }
+
+    /// <summary>
+    /// All configured events currently tracked by the scheduler.
+    /// </summary>
+    IReadOnlyList<EventDefinition> TrackedEvents { get; }
 
     /// <summary>
     /// Total combined time offset in seconds applied to reference timestamps.
@@ -29,6 +39,11 @@ public interface IEventScheduler : IDisposable
     /// Raised every second when the snapshot is updated.
     /// </summary>
     event EventHandler<EventSnapshot>? SnapshotUpdated;
+
+    /// <summary>
+    /// Raised every second when all active snapshots are updated.
+    /// </summary>
+    event EventHandler<IReadOnlyList<EventSnapshot>>? SnapshotsUpdated;
 
     /// <summary>
     /// Raised when an alert condition is met (e.g. 2 minutes before event).
@@ -54,6 +69,11 @@ public interface IEventScheduler : IDisposable
     /// Sets the active event definition and optional global offset.
     /// </summary>
     void SetActiveEvent(EventDefinition eventDefinition, int globalTimeOffsetSeconds = 0);
+
+    /// <summary>
+    /// Sets the collection of tracked events, the active event, and optional global offset.
+    /// </summary>
+    void SetTrackedEvents(IEnumerable<EventDefinition> events, string? activeEventId = null, int globalTimeOffsetSeconds = 0);
 
     /// <summary>
     /// Updates event cycle parameters for legacy/quick configuration.
@@ -86,4 +106,9 @@ public interface IEventScheduler : IDisposable
     /// Pure function to calculate snapshot for an arbitrary reference timestamp with a specific event definition and offset.
     /// </summary>
     EventSnapshot CalculateSnapshot(DateTimeOffset referenceTime, EventDefinition eventDefinition, int offsetSeconds = 0);
+
+    /// <summary>
+    /// Pure function to calculate snapshots for all currently enabled events at an arbitrary reference timestamp.
+    /// </summary>
+    IReadOnlyList<EventSnapshot> CalculateActiveSnapshots(DateTimeOffset referenceTime);
 }

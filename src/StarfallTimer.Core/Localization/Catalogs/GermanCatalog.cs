@@ -51,6 +51,24 @@ internal static class GermanCatalog
         ["Settings_EventName"] = "Event-Name:",
         ["Settings_EventColor"] = "Akzentfarbe:",
         ["Settings_EventDesc"] = "Beschreibung:",
+        ["Settings_EventEnabled"] = "Im HUD anzeigen (Multi-Timer)",
+
+        ["Event_GravityAbyss_Name"] = "Gravitationsabgrund (Sternenfall-Inversion)",
+        ["Event_GravityAbyss_Desc"] = "Once Human Sternenfall-Inversion / Gravitationsabgrund Stündliches Event mit Niedriggravitations-Gezeiten und Sternenstaub-Kristallen.",
+        ["Event_CargoScramble_Name"] = "Frachtgerangel (Spross-LKW)",
+        ["Event_CargoScramble_Desc"] = "Frachtgerangel PvP-Event um den dynamischen Spross-LKW.",
+        ["Event_LunarOracle_Name"] = "Mondorakel (Blutmond)",
+        ["Event_LunarOracle_Desc"] = "Nächtliches Mondorakel Blutmond-Event mit hochstufigen abartigen Mutationen.",
+        ["Event_LunarRevelry_Name"] = "Mondgelage (Herr des Mondlichts)",
+        ["Event_LunarRevelry_Desc"] = "Sammelfest des Herrn des Mondlichts mit exklusiver kosmischer Beute.",
+        ["Event_AberrantProgeny_Name"] = "Abartige Nachbrut (Sporenflut)",
+        ["Event_AberrantProgeny_Desc"] = "Sporenflut-Invasionswelle zur Verteidigung gegen abartige Schwarmmonster.",
+        ["Event_DissonantResonance_Name"] = "Dissonante Resonanz",
+        ["Event_DissonantResonance_Desc"] = "Dissonante Schallwellen-Anomalie, die akustische Abstimmungsgeräte erfordert.",
+        ["Event_CrateLootReset_Name"] = "Kisten-Loot-Reset (4 Stunden)",
+        ["Event_CrateLootReset_Desc"] = "Globaler 4-Stunden-Aktualisierungszyklus für hochstufige mystische Kisten und Festungsbeute.",
+        ["Event_CustomWheel_Name"] = "Benutzerdefiniertes Rad-Event",
+        ["Event_CustomWheel_Desc"] = "Benutzerdefinierter zyklischer Event-Zeitplan.",
 
         ["Settings_AlertBeforeStart"] = "Warnung vor Beginn (Minuten):",
         ["Settings_AlertBeforeEnd"] = "Warnung vor Ende (Minuten):",
@@ -88,6 +106,16 @@ internal static class GermanCatalog
         ["About_Desc"] = "Ein eleganter, latenzarmer HUD-Overlay-Timer für Once Human In-Game-Events wie Gravitationsabgrund (Sternenfall-Inversion), Frachtgerangel und benutzerdefinierte Zyklen.",
         ["About_Author"] = "Erstellt von Murr (https://github.com/vtstv) für die Once Human Community.",
         ["About_GitHub"] = "GitHub-Repository",
-        ["About_License"] = "MIT-Lizenz"
+        ["About_License"] = "MIT-Lizenz",
+
+        ["Update_SectionTitle"] = "Software-Updates",
+        ["Update_CheckButton"] = "Nach Updates suchen",
+        ["Update_Checking"] = "Suche nach Updates...",
+        ["Update_Available"] = "Update verfügbar: v{0}",
+        ["Update_UpToDate"] = "Sie verwenden die neueste Version.",
+        ["Update_Error"] = "Updates konnten nicht geprüft werden.",
+        ["Update_DownloadAndApply"] = "Aktualisieren & Neustarten",
+        ["Update_Downloading"] = "Update wird heruntergeladen... ({0}%)",
+        ["Update_ReleaseNotes"] = "Versionshinweise:"
     };
 }

@@ -75,6 +75,12 @@ public partial class SettingsViewModel
         set { if (SelectedEvent != null && SelectedEvent.Description != value) { SelectedEvent.Description = value; OnPropertyChanged(); } }
     }
 
+    public bool SelectedEventIsEnabled
+    {
+        get => SelectedEvent?.IsEnabled ?? false;
+        set { if (SelectedEvent != null && SelectedEvent.IsEnabled != value) { SelectedEvent.IsEnabled = value; OnPropertyChanged(); } }
+    }
+
     private void InitializeEvents(UserSettings current)
     {
         GlobalTimeOffsetSeconds = current.GlobalTimeOffsetSeconds;
@@ -92,6 +98,7 @@ public partial class SettingsViewModel
         OnPropertyChanged(nameof(SelectedEventTimeOffsetSeconds));
         OnPropertyChanged(nameof(SelectedEventColorHex));
         OnPropertyChanged(nameof(SelectedEventDescription));
+        OnPropertyChanged(nameof(SelectedEventIsEnabled));
         OnPropertyChanged(nameof(IsSelectedEventActive));
     }
 

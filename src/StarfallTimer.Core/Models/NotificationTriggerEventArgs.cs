@@ -14,4 +14,9 @@ public class NotificationTriggerEventArgs : EventArgs
     public required TimeSpan TimeRemaining { get; init; }
     public required bool PlaySound { get; init; }
     public required bool ShowToast { get; init; }
+
+    /// <summary>
+    /// Event definition that triggered the notification.
+    /// </summary>
+    public EventDefinition? Event { get; init; }
 }
