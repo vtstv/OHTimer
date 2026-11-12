@@ -1,10 +1,10 @@
 ## .gitignore for .NET / Visual Studio / WPF solutions
 
 # Build results
-[Dd]ebug/
-[Dd]ebugPublic/
-[Rr]elease/
-[Rr]eleases/
+**/bin/Debug/
+**/bin/Release/
+**/obj/Debug/
+**/obj/Release/
 x64/
 x86/
 [Aa][Rr][Mm]/
@@ -43,3 +43,8 @@ Desktop.ini
 # App data generated files
 settings.json
 *.log
+
+# Release artifacts (distribute via GitHub Releases)
+release/*.zip
+release/**/*.exe
+release/**/*.dll
