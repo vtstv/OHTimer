@@ -57,7 +57,14 @@ public partial class OverlayViewModel : ObservableObject
     [ObservableProperty]
     private string _nextEventTimeText = string.Empty;
 
+    [ObservableProperty]
+    private string _activeEventName = "GRAVITY ABYSS";
+
+    [ObservableProperty]
+    private string _driftSyncText = string.Empty;
+
     public Action? RequestOpenSettings { get; set; }
+    public Action? RequestOpenAbout { get; set; }
     public Action? RequestHideOverlay { get; set; }
     public Action<bool>? RequestClickThroughChanged { get; set; }
 
@@ -120,6 +127,26 @@ public partial class OverlayViewModel : ObservableObject
         CurrentPhase = snapshot.Phase;
         IsActive = snapshot.IsActive;
 
+        if (!string.IsNullOrWhiteSpace(snapshot.EventName))
+        {
+            ActiveEventName = snapshot.EventName.ToUpperInvariant();
+        }
+        else if (snapshot.Event != null && !string.IsNullOrWhiteSpace(snapshot.Event.Name))
+        {
+            ActiveEventName = snapshot.Event.Name.ToUpperInvariant();
+        }
+
+        if (snapshot.EffectiveOffsetSeconds != 0)
+        {
+            DriftSyncText = snapshot.EffectiveOffsetSeconds > 0
+                ? $"Sync: +{snapshot.EffectiveOffsetSeconds}s"
+                : $"Sync: {snapshot.EffectiveOffsetSeconds}s";
+        }
+        else
+        {
+            DriftSyncText = string.Empty;
+        }
+
         UpdatePhaseLabels(snapshot.Phase);
 
         NextEventTimeText = snapshot.IsActive
@@ -173,6 +200,12 @@ public partial class OverlayViewModel : ObservableObject
         _settingsService.Settings.IsClickThrough = IsClickThrough;
         RequestClickThroughChanged?.Invoke(IsClickThrough);
         await _settingsService.SaveAsync();
+    }
+
+    [RelayCommand]
+    private void OpenAbout()
+    {
+        RequestOpenAbout?.Invoke();
     }
 
     [RelayCommand]

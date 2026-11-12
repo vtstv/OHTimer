@@ -54,19 +54,34 @@ public class UserSettings
     public double Volume { get; set; } = 0.8;
 
     /// <summary>
-    /// Selected UI language code (e.g., "en-US", "ru-RU", "zh-CN").
+    /// Selected UI language code (e.g., "en-US", "ru-RU", "de-DE").
     /// </summary>
     public string Language { get; set; } = "en-US";
 
     /// <summary>
-    /// The minute past the hour when Starfall Inversion starts (default: 22).
+    /// The minute past the hour when the legacy/active event starts (default: 22).
     /// </summary>
     public int StartMinute { get; set; } = 22;
 
     /// <summary>
-    /// The duration of the Starfall Inversion event in minutes (default: 30).
+    /// The duration of the legacy/active event in minutes (default: 30).
     /// </summary>
     public int DurationMinutes { get; set; } = 30;
+
+    /// <summary>
+    /// Global time offset in seconds applied across all timers.
+    /// </summary>
+    public int GlobalTimeOffsetSeconds { get; set; } = 0;
+
+    /// <summary>
+    /// Identifier of the currently active event definition.
+    /// </summary>
+    public string ActiveEventId { get; set; } = "gravity-abyss";
+
+    /// <summary>
+    /// List of configured event schedules and presets.
+    /// </summary>
+    public List<EventDefinition> Events { get; set; } = GetDefaultEvents();
 
     /// <summary>
     /// Minutes before event start to trigger early notification (default: 2).
@@ -107,4 +122,64 @@ public class UserSettings
     /// Global hotkey string to toggle click-through lock.
     /// </summary>
     public string ToggleClickThroughHotkey { get; set; } = "Ctrl+Alt+L";
+
+    /// <summary>
+    /// Retrieves the currently active event definition, falling back to default if not found.
+    /// </summary>
+    public EventDefinition GetActiveEvent()
+    {
+        if (Events == null || Events.Count == 0)
+        {
+            Events = GetDefaultEvents();
+        }
+
+        var active = Events.FirstOrDefault(e => string.Equals(e.Id, ActiveEventId, StringComparison.OrdinalIgnoreCase));
+        if (active == null)
+        {
+            active = Events[0];
+            ActiveEventId = active.Id;
+        }
+
+        return active;
+    }
+
+    /// <summary>
+    /// Generates the default event presets for Once Human.
+    /// </summary>
+    public static List<EventDefinition> GetDefaultEvents() => new()
+    {
+        new EventDefinition
+        {
+            Id = "gravity-abyss",
+            Name = "Gravity Abyss (Starfall Inversion)",
+            CycleMinutes = 60,
+            StartMinute = 22,
+            DurationMinutes = 30,
+            TimeOffsetSeconds = 0,
+            ColorHex = "#00E5FF",
+            Description = "Once Human Starfall Inversion / Gravity Abyss hourly event with low-gravity tide and Stardust Crystals."
+        },
+        new EventDefinition
+        {
+            Id = "cargo-scramble",
+            Name = "Cargo Scramble",
+            CycleMinutes = 60,
+            StartMinute = 0,
+            DurationMinutes = 20,
+            TimeOffsetSeconds = 0,
+            ColorHex = "#F59E0B",
+            Description = "Once Human Cargo Scramble PvP truck dynamic event."
+        },
+        new EventDefinition
+        {
+            Id = "custom-wheel",
+            Name = "Custom Wheel Event",
+            CycleMinutes = 60,
+            StartMinute = 0,
+            DurationMinutes = 15,
+            TimeOffsetSeconds = 0,
+            ColorHex = "#10B981",
+            Description = "User-defined custom cyclic event schedule."
+        }
+    };
 }

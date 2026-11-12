@@ -48,3 +48,5 @@ settings.json
 release/*.zip
 release/**/*.exe
 release/**/*.dll
+release/OnceHuman*/
+!release/README.md

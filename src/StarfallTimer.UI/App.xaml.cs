@@ -27,6 +27,7 @@ public partial class App : Application
     private ServiceProvider? _serviceProvider;
     private Win32TrayService? _trayService;
     private SettingsWindow? _settingsWindow;
+    private AboutWindow? _aboutWindow;
 
     protected override async void OnStartup(StartupEventArgs e)
     {
@@ -65,6 +66,7 @@ public partial class App : Application
         var audio = _serviceProvider.GetRequiredService<IAudioService>();
         var notifications = _serviceProvider.GetRequiredService<INotificationService>();
 
+        scheduler.SetActiveEvent(settingsService.Settings.GetActiveEvent(), settingsService.Settings.GlobalTimeOffsetSeconds);
         scheduler.ConfigureSchedule(
             settingsService.Settings.StartMinute,
             settingsService.Settings.DurationMinutes,
@@ -106,6 +108,7 @@ public partial class App : Application
 
         // 5. Wire Overlay Actions
         overlayVm.RequestOpenSettings = OpenSettingsWindow;
+        overlayVm.RequestOpenAbout = OpenAboutWindow;
         overlayVm.RequestHideOverlay = () => overlayWindow.Hide();
 
         // 6. Setup Hotkeys
@@ -211,6 +214,19 @@ public partial class App : Application
         _settingsWindow = new SettingsWindow(vm);
         _settingsWindow.Closed += (s, e) => _settingsWindow = null;
         _settingsWindow.Show();
+    }
+
+    private void OpenAboutWindow()
+    {
+        if (_aboutWindow != null && _aboutWindow.IsLoaded)
+        {
+            _aboutWindow.Activate();
+            return;
+        }
+
+        _aboutWindow = new AboutWindow();
+        _aboutWindow.Closed += (s, e) => _aboutWindow = null;
+        _aboutWindow.Show();
     }
 
     private void ShutdownApp()

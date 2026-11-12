@@ -8,7 +8,8 @@
         xmlns:vm="clr-namespace:StarfallTimer.UI.ViewModels"
         d:DataContext="{d:DesignInstance Type=vm:OverlayViewModel}"
         mc:Ignorable="d"
-        Title="Once Human - Starfall Timer Overlay"
+        Title="Once Human - Event Timer Overlay"
+        Icon="/Assets/app.ico"
         WindowStyle="None"
         AllowsTransparency="True"
         Background="Transparent"
@@ -76,12 +77,19 @@
 
                     <!-- Quick Action Buttons -->
                     <StackPanel Grid.Column="1" Orientation="Horizontal">
+                        <!-- About Button -->
+                        <Button Style="{StaticResource HudIconButtonStyle}"
+                                Command="{Binding OpenAboutCommand}"
+                                ToolTip="{loc:Loc HUD_About}"
+                                Margin="0,0,2,0">
+                            <TextBlock Text="ℹ" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" />
+                        </Button>
+
                         <!-- Lock Button -->
                         <Button Style="{StaticResource HudIconButtonStyle}"
                                 Command="{Binding ToggleLockCommand}"
                                 ToolTip="{loc:Loc HUD_Locked}">
-                            <TextBlock Text="{Binding IsLocked, Converter={x:Null}}" 
-                                       FontSize="11" 
+                            <TextBlock FontSize="11" 
                                        Foreground="{StaticResource TextSecondaryBrush}">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
@@ -116,7 +124,7 @@
                 </Grid>
 
                 <!-- Center Section: Countdown Display & Circular Progress -->
-                <Grid Grid.Row="1" Margin="0,10,0,6">
+                <Grid Grid.Row="1" Margin="0,8,0,6">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
@@ -128,8 +136,15 @@
                                                    Progress="{Binding ProgressRatio}"
                                                    Margin="0,0,10,0" />
 
-                    <!-- Countdown Text -->
+                    <!-- Countdown Text & Active Event -->
                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding ActiveEventName}"
+                                   Foreground="{Binding StatusColorHex}"
+                                   FontSize="11"
+                                   FontWeight="Bold"
+                                   TextTrimming="CharacterEllipsis"
+                                   Margin="0,0,0,2" />
+
                         <TextBlock Text="{Binding PhaseDescriptionText}"
                                    Foreground="{StaticResource TextSecondaryBrush}"
                                    FontSize="9"
@@ -138,7 +153,7 @@
                         <TextBlock Text="{Binding FormattedRemaining}"
                                    Foreground="{StaticResource TextPrimaryBrush}"
                                    FontFamily="Consolas, Segoe UI Mono, monospace"
-                                   FontSize="26"
+                                   FontSize="25"
                                    FontWeight="Bold"
                                    Margin="0,1,0,0">
                             <TextBlock.Effect>
@@ -158,12 +173,26 @@
                              BorderThickness="0"
                              Margin="0,2,0,6" />
 
-                <!-- Footer: Next Event Local Time -->
-                <TextBlock Grid.Row="3"
-                           Text="{Binding NextEventTimeText}"
-                           Foreground="{StaticResource TextMutedBrush}"
-                           FontSize="10"
-                           HorizontalAlignment="Right" />
+                <!-- Footer: Drift Sync & Next Event Local Time -->
+                <Grid Grid.Row="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0"
+                               Text="{Binding DriftSyncText}"
+                               Foreground="{StaticResource AccentWaitingBrush}"
+                               FontSize="9"
+                               FontWeight="SemiBold"
+                               HorizontalAlignment="Left" />
+
+                    <TextBlock Grid.Column="1"
+                               Text="{Binding NextEventTimeText}"
+                               Foreground="{StaticResource TextMutedBrush}"
+                               FontSize="10"
+                               HorizontalAlignment="Right" />
+                </Grid>
             </Grid>
         </Border>
 </Window>

@@ -3,30 +3,30 @@
 
 <#
 .SYNOPSIS
-    Builds, publishes, and packages a release of Once Human: Starfall Inversion Timer.
+    Builds, publishes, and packages a release of Once Human: Event Timer.
 
 .DESCRIPTION
-    Runs automated unit tests, publishes optimized binaries (single-file or framework-dependent),
+    Runs automated unit tests, publishes optimized binaries (lightweight framework-dependent or standalone),
     bundles documentation and licenses, and generates a distributable ZIP package inside the 'release' directory
     with version suffix.
 
 .PARAMETER Version
-    The semantic version string for the release (e.g., "1.0.0").
+    The semantic version string for the release (e.g., "1.1.0").
     If omitted, extracts the version from StarfallTimer.UI.csproj.
 
 .PARAMETER Runtime
     The target runtime identifier (default: "win-x64").
 
 .PARAMETER Standalone
-    When specified, produces a self-contained single-file executable that requires no .NET runtime installation.
-    Default: True (recommended for desktop gamers).
+    When specified as $true, produces a self-contained single-file executable.
+    Default: $false (framework-dependent for ultra-lightweight ~2-4MB distribution; requires .NET 8 Desktop Runtime).
 
 .PARAMETER SkipTests
     Skips running xUnit tests prior to packaging.
 
 .EXAMPLE
-    .\scripts\build-release.ps1 -Version "1.0.0"
-    .\scripts\build-release.ps1 -Version "1.0.1" -Standalone:$false
+    .\scripts\build-release.ps1 -Version "1.1.0"
+    .\scripts\build-release.ps1 -Version "1.1.0" -Standalone:$true
 #>
 
 [CmdletBinding()]
@@ -36,7 +36,7 @@ param(
 
     [string]$Runtime = "win-x64",
 
-    [bool]$Standalone = $true,
+    [bool]$Standalone = $false,
 
     [switch]$SkipTests = $false
 )
@@ -47,7 +47,7 @@ $repoRoot = Split-Path -Parent $scriptRoot
 Set-Location $repoRoot
 
 Write-Host "==========================================================" -ForegroundColor Cyan
-Write-Host " Once Human — Starfall Inversion Timer : Release Packager " -ForegroundColor Cyan
+Write-Host " Once Human — Event Timer : Release Packager              " -ForegroundColor Cyan
 Write-Host " Author: Murr (https://github.com/vtstv)                  " -ForegroundColor Cyan
 Write-Host "==========================================================" -ForegroundColor Cyan
 
@@ -57,7 +57,7 @@ if ([string]::IsNullOrWhiteSpace($Version)) {
     [xml]$projXml = Get-Content $projectPath
     $Version = $projXml.Project.PropertyGroup.Version
     if ([string]::IsNullOrWhiteSpace($Version)) {
-        $Version = "1.0.0"
+        $Version = "1.1.0"
     }
 }
 
@@ -87,7 +87,7 @@ if (-not $SkipTests) {
 
 # 4. Prepare Output Directories
 $releaseBaseDir = Join-Path $repoRoot "release"
-$releaseFolder = "OnceHumanStarfallTimer-v$Version"
+$releaseFolder = "OnceHumanTimer-v$Version"
 $releaseTargetDir = Join-Path $releaseBaseDir $releaseFolder
 $zipFilePath = Join-Path $releaseBaseDir "$releaseFolder.zip"
 
@@ -111,7 +111,6 @@ $publishArgs = @(
     $selfContainedArg,
     "-p:PublishSingleFile=true",
     "-p:IncludeNativeLibrariesForSelfExtract=true",
-    "-p:EnableCompressionInSingleFile=true",
     "-p:DebugType=none",
     "-p:DebugSymbols=false",
     "-p:Version=$Version",
@@ -119,6 +118,10 @@ $publishArgs = @(
     "-p:FileVersion=$Version.0",
     "-o", $releaseTargetDir
 )
+
+if ($Standalone) {
+    $publishArgs += "-p:EnableCompressionInSingleFile=true"
+}
 
 Write-Host "      Executing: dotnet $($publishArgs -join ' ')" -ForegroundColor Gray
 & dotnet $publishArgs
@@ -148,5 +151,5 @@ Write-Host " ZIP Archive       : $zipFilePath" -ForegroundColor White
 Write-Host " Archive Size      : $zipSizeMb MB" -ForegroundColor White
 Write-Host " SHA256 Checksum   : $sha256" -ForegroundColor White
 Write-Host " Executable        : OnceHumanStarfallTimer.exe" -ForegroundColor White
-Write-Host " Mode              : $(if ($Standalone) { 'Self-Contained (Plug & Play)' } else { 'Framework-Dependent' })" -ForegroundColor White
+Write-Host " Mode              : $(if ($Standalone) { 'Self-Contained (Plug & Play)' } else { 'Framework-Dependent (Lightweight)' })" -ForegroundColor White
 Write-Host "==========================================================`n" -ForegroundColor Green

@@ -4,7 +4,7 @@
 namespace StarfallTimer.Core.Models;
 
 /// <summary>
-/// An immutable state snapshot of the Starfall Inversion event at a specific timestamp.
+/// An immutable state snapshot of an in-game event at a specific timestamp.
 /// </summary>
 public record EventSnapshot
 {
@@ -37,6 +37,21 @@ public record EventSnapshot
     /// The timestamp when the current or next event will end.
     /// </summary>
     public required DateTimeOffset NextEventEnd { get; init; }
+
+    /// <summary>
+    /// Active event definition being tracked.
+    /// </summary>
+    public EventDefinition? Event { get; init; }
+
+    /// <summary>
+    /// Name of the active event.
+    /// </summary>
+    public string EventName { get; init; } = string.Empty;
+
+    /// <summary>
+    /// Effective time offset applied in seconds.
+    /// </summary>
+    public int EffectiveOffsetSeconds { get; init; } = 0;
 
     /// <summary>
     /// Indicates whether the event is actively taking place right now.

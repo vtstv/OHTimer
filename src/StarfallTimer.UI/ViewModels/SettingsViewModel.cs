@@ -113,6 +113,8 @@ public partial class SettingsViewModel : ObservableObject
 
         _selectedLanguage = SupportedLanguages.FirstOrDefault(l => l.Code == current.Language)
                             ?? SupportedLanguages.First();
+
+        InitializeEvents(current);
     }
 
     [RelayCommand]
@@ -165,8 +167,17 @@ public partial class SettingsViewModel : ObservableObject
         s.ToggleVisibilityHotkey = ToggleVisibilityHotkey;
         s.ToggleClickThroughHotkey = ToggleClickThroughHotkey;
 
+        s.Events = Events.ToList();
+        s.ActiveEventId = ActiveEventId;
+        s.GlobalTimeOffsetSeconds = GlobalTimeOffsetSeconds;
+
+        var activeEvent = s.GetActiveEvent();
+        s.StartMinute = activeEvent.StartMinute;
+        s.DurationMinutes = activeEvent.DurationMinutes;
+
         _loc.SetLanguage(SelectedLanguage.Code);
-        _scheduler.ConfigureSchedule(StartMinute, DurationMinutes, AlertMinutesBefore, AlertMinutesBeforeEnd);
+        _scheduler.SetActiveEvent(activeEvent, GlobalTimeOffsetSeconds);
+        _scheduler.ConfigureSchedule(activeEvent.StartMinute, activeEvent.DurationMinutes, AlertMinutesBefore, AlertMinutesBeforeEnd);
 
         await _settingsService.SaveAsync();
 

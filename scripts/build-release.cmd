@@ -3,7 +3,7 @@ REM Copyright (c) Murr (https://github.com/vtstv). All rights reserved.
 REM Licensed under the MIT License. See LICENSE in the project root for license information.
 
 echo ==========================================================
-echo  Once Human - Starfall Inversion Timer : Quick Release
+echo  Once Human — Event Timer : Quick Release Packager
 echo ==========================================================
 echo.
 
