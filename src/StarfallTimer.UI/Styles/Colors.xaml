@@ -1,0 +1,48 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Once Human Inspired Theme Palette -->
+    <Color x:Key="BgDarkColor">#F00C0F14</Color>
+    <Color x:Key="BgCardColor">#F2121720</Color>
+    <Color x:Key="BgCardHoverColor">#F51A2230</Color>
+    <Color x:Key="BorderDarkColor">#333D4D</Color>
+    <Color x:Key="BorderGlowColor">#00F0FF</Color>
+
+    <!-- Phase Accents -->
+    <Color x:Key="AccentWaitingColor">#00E5FF</Color>      <!-- Cyber Cyan -->
+    <Color x:Key="AccentStartingSoonColor">#F59E0B</Color> <!-- Stardust Amber -->
+    <Color x:Key="AccentActiveColor">#A855F7</Color>       <!-- Cosmic Inversion Purple -->
+    <Color x:Key="AccentEndingSoonColor">#EF4444</Color>   <!-- Warning Red -->
+
+    <!-- Text Colors -->
+    <Color x:Key="TextPrimaryColor">#F8FAFC</Color>
+    <Color x:Key="TextSecondaryColor">#94A3B8</Color>
+    <Color x:Key="TextMutedColor">#64748B</Color>
+
+    <!-- Brushes -->
+    <SolidColorBrush x:Key="BgDarkBrush" Color="{StaticResource BgDarkColor}" />
+    <SolidColorBrush x:Key="BgCardBrush" Color="{StaticResource BgCardColor}" />
+    <SolidColorBrush x:Key="BgCardHoverBrush" Color="{StaticResource BgCardHoverColor}" />
+    <SolidColorBrush x:Key="BorderDarkBrush" Color="{StaticResource BorderDarkColor}" />
+
+    <SolidColorBrush x:Key="AccentWaitingBrush" Color="{StaticResource AccentWaitingColor}" />
+    <SolidColorBrush x:Key="AccentStartingSoonBrush" Color="{StaticResource AccentStartingSoonColor}" />
+    <SolidColorBrush x:Key="AccentActiveBrush" Color="{StaticResource AccentActiveColor}" />
+    <SolidColorBrush x:Key="AccentEndingSoonBrush" Color="{StaticResource AccentEndingSoonColor}" />
+
+    <SolidColorBrush x:Key="TextPrimaryBrush" Color="{StaticResource TextPrimaryColor}" />
+    <SolidColorBrush x:Key="TextSecondaryBrush" Color="{StaticResource TextSecondaryColor}" />
+    <SolidColorBrush x:Key="TextMutedBrush" Color="{StaticResource TextMutedColor}" />
+
+    <!-- Gradient Accents -->
+    <LinearGradientBrush x:Key="ActiveGradientBrush" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#A855F7" Offset="0.0" />
+        <GradientStop Color="#EC4899" Offset="1.0" />
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="WaitingGradientBrush" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#00E5FF" Offset="0.0" />
+        <GradientStop Color="#3B82F6" Offset="1.0" />
+    </LinearGradientBrush>
+
+</ResourceDictionary>

@@ -1,0 +1,208 @@
+<Window x:Class="StarfallTimer.UI.Views.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:loc="clr-namespace:StarfallTimer.UI.Localization"
+        xmlns:vm="clr-namespace:StarfallTimer.UI.ViewModels"
+        d:DataContext="{d:DesignInstance Type=vm:SettingsViewModel}"
+        mc:Ignorable="d"
+        Title="{loc:Loc Settings_Title}"
+        Width="580" Height="490"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource BgDarkBrush}"
+        Foreground="{StaticResource TextPrimaryBrush}"
+        ResizeMode="CanMinimize">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Styles/Colors.xaml" />
+                <ResourceDictionary Source="../Styles/Controls.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <TextBlock Grid.Row="0"
+                   Text="{loc:Loc Settings_Title}"
+                   FontSize="18"
+                   FontWeight="Bold"
+                   Foreground="{StaticResource AccentWaitingBrush}"
+                   Margin="0,0,0,16" />
+
+        <!-- Tab Content -->
+        <TabControl Grid.Row="1" Background="Transparent" BorderBrush="{StaticResource BorderDarkBrush}">
+            <!-- Tab 1: Schedule -->
+            <TabItem Header="{loc:Loc Settings_TabSchedule}" Foreground="{StaticResource TextPrimaryBrush}">
+                <StackPanel Margin="16">
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="100" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{loc:Loc Settings_StartMinute}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" />
+                        <TextBox Grid.Column="1" Text="{Binding StartMinute, UpdateSourceTrigger=PropertyChanged}" Background="#1E293B" Foreground="#FFF" BorderBrush="#334155" Padding="4" HorizontalContentAlignment="Center" />
+                    </Grid>
+
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="100" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{loc:Loc Settings_DurationMinutes}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" />
+                        <TextBox Grid.Column="1" Text="{Binding DurationMinutes, UpdateSourceTrigger=PropertyChanged}" Background="#1E293B" Foreground="#FFF" BorderBrush="#334155" Padding="4" HorizontalContentAlignment="Center" />
+                    </Grid>
+
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="100" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{loc:Loc Settings_AlertBeforeStart}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" />
+                        <TextBox Grid.Column="1" Text="{Binding AlertMinutesBefore, UpdateSourceTrigger=PropertyChanged}" Background="#1E293B" Foreground="#FFF" BorderBrush="#334155" Padding="4" HorizontalContentAlignment="Center" />
+                    </Grid>
+
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="100" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{loc:Loc Settings_AlertBeforeEnd}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" />
+                        <TextBox Grid.Column="1" Text="{Binding AlertMinutesBeforeEnd, UpdateSourceTrigger=PropertyChanged}" Background="#1E293B" Foreground="#FFF" BorderBrush="#334155" Padding="4" HorizontalContentAlignment="Center" />
+                    </Grid>
+                </StackPanel>
+            </TabItem>
+
+            <!-- Tab 2: Alerts & Audio -->
+            <TabItem Header="{loc:Loc Settings_TabNotifications}" Foreground="{StaticResource TextPrimaryBrush}">
+                <StackPanel Margin="16">
+                    <CheckBox Content="{loc:Loc Settings_PlaySound}" IsChecked="{Binding PlayAlertSound}" Style="{StaticResource ModernCheckBoxStyle}" Margin="0,0,0,10" />
+                    <CheckBox Content="{loc:Loc Settings_PlayOnStart}" IsChecked="{Binding PlayOnEventStart}" Style="{StaticResource ModernCheckBoxStyle}" Margin="0,0,0,10" />
+                    <CheckBox Content="{loc:Loc Settings_ShowToast}" IsChecked="{Binding ShowToastAlert}" Style="{StaticResource ModernCheckBoxStyle}" Margin="0,0,0,12" />
+
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="140" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{loc:Loc Settings_Volume}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" />
+                        <Slider Grid.Column="1" Minimum="0" Maximum="1" Value="{Binding Volume}" SmallChange="0.05" LargeChange="0.1" VerticalAlignment="Center" />
+                    </Grid>
+
+                    <!-- Custom Audio -->
+                    <TextBlock Text="{loc:Loc Settings_CustomSound}" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,6,0,4" />
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox Text="{Binding CustomSoundPath}" Background="#1E293B" Foreground="#FFF" BorderBrush="#334155" Padding="6" VerticalAlignment="Center" />
+                        <Button Grid.Column="1" Style="{StaticResource ModernDarkButtonStyle}" Command="{Binding BrowseSoundCommand}" Content="{loc:Loc Settings_Browse}" Margin="8,0,0,0" />
+                    </Grid>
+
+                    <Button Style="{StaticResource ModernDarkButtonStyle}" Command="{Binding TestAudioCommand}" Content="{loc:Loc Settings_TestAudio}" HorizontalAlignment="Left" Margin="0,4,0,0" />
+                </StackPanel>
+            </TabItem>
+
+            <!-- Tab 3: Appearance -->
+            <TabItem Header="{loc:Loc Settings_TabAppearance}" Foreground="{StaticResource TextPrimaryBrush}">
+                <StackPanel Margin="16">
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="140" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{loc:Loc Settings_Opacity}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" />
+                        <Slider Grid.Column="1" Minimum="0.3" Maximum="1.0" Value="{Binding Opacity}" SmallChange="0.05" LargeChange="0.1" VerticalAlignment="Center" />
+                    </Grid>
+
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="140" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{loc:Loc Settings_Scale}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" />
+                        <Slider Grid.Column="1" Minimum="0.8" Maximum="1.6" Value="{Binding Scale}" SmallChange="0.05" LargeChange="0.1" VerticalAlignment="Center" />
+                    </Grid>
+
+                    <CheckBox Content="{loc:Loc Settings_AlwaysOnTop}" IsChecked="{Binding AlwaysOnTop}" Style="{StaticResource ModernCheckBoxStyle}" Margin="0,0,0,10" />
+                    <CheckBox Content="{loc:Loc Settings_LockPosition}" IsChecked="{Binding IsLocked}" Style="{StaticResource ModernCheckBoxStyle}" Margin="0,0,0,10" />
+                    <CheckBox Content="{loc:Loc Settings_ClickThrough}" IsChecked="{Binding IsClickThrough}" Style="{StaticResource ModernCheckBoxStyle}" Margin="0,0,0,12" />
+
+                    <!-- Language Selection -->
+                    <Grid Margin="0,8,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="160" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{loc:Loc Settings_Language}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" />
+                        <ComboBox Grid.Column="1"
+                                  ItemsSource="{Binding SupportedLanguages}"
+                                  SelectedItem="{Binding SelectedLanguage}"
+                                  DisplayMemberPath="NativeName"
+                                  Background="#1E293B" Foreground="#000" Padding="4" />
+                    </Grid>
+
+                    <Button Style="{StaticResource ModernDarkButtonStyle}" Command="{Binding ResetPositionCommand}" Content="{loc:Loc Settings_ResetPosition}" HorizontalAlignment="Left" Margin="0,6,0,0" />
+                </StackPanel>
+            </TabItem>
+
+            <!-- Tab 4: Hotkeys -->
+            <TabItem Header="{loc:Loc Settings_TabHotkeys}" Foreground="{StaticResource TextPrimaryBrush}">
+                <StackPanel Margin="16">
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="140" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{loc:Loc Settings_HotkeyToggle}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" />
+                        <TextBox Grid.Column="1" Text="{Binding ToggleVisibilityHotkey, UpdateSourceTrigger=PropertyChanged}" Background="#1E293B" Foreground="#FFF" BorderBrush="#334155" Padding="4" HorizontalContentAlignment="Center" />
+                    </Grid>
+
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="140" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{loc:Loc Settings_HotkeyLock}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" />
+                        <TextBox Grid.Column="1" Text="{Binding ToggleClickThroughHotkey, UpdateSourceTrigger=PropertyChanged}" Background="#1E293B" Foreground="#FFF" BorderBrush="#334155" Padding="4" HorizontalContentAlignment="Center" />
+                    </Grid>
+                </StackPanel>
+            </TabItem>
+
+            <!-- Tab 5: About -->
+            <TabItem Header="{loc:Loc Settings_TabAbout}" Foreground="{StaticResource TextPrimaryBrush}">
+                <StackPanel Margin="16">
+                    <TextBlock Text="{loc:Loc App_Title}" FontSize="15" FontWeight="Bold" Foreground="{StaticResource AccentWaitingBrush}" Margin="0,0,0,6" />
+                    <TextBlock Text="Version 1.0.0" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,10" />
+                    <TextBlock Text="{loc:Loc About_Desc}" TextWrapping="Wrap" Foreground="{StaticResource TextSecondaryBrush}" FontSize="13" Margin="0,0,0,12" />
+                    <TextBlock Text="{loc:Loc About_Author}" Foreground="{StaticResource TextMutedBrush}" FontSize="12" />
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+
+        <!-- Bottom Action Bar -->
+        <Grid Grid.Row="2" Margin="0,16,0,0">
+            <TextBlock Text="{loc:Loc Settings_SavedSuccess}"
+                       Foreground="#22C55E"
+                       FontWeight="SemiBold"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Left"
+                       Visibility="{Binding ShowSavedNotification, Converter={StaticResource BoolToVis}}" />
+
+            <Button Style="{StaticResource PrimaryAccentButtonStyle}"
+                    Command="{Binding SaveCommand}"
+                    Content="{loc:Loc Settings_Save}"
+                    HorizontalAlignment="Right" />
+        </Grid>
+    </Grid>
+</Window>
