@@ -203,6 +203,15 @@
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="80" />
                                         </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{loc:Loc Settings_StartSecond}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11" />
+                                        <TextBox Grid.Column="1" Text="{Binding SelectedEventStartSecond, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center" />
+                                    </Grid>
+
+                                    <Grid Margin="0,0,0,6">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="80" />
+                                        </Grid.ColumnDefinitions>
                                         <TextBlock Text="{loc:Loc Settings_DurationMinutes}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11" />
                                         <TextBox Grid.Column="1" Text="{Binding SelectedEventDurationMinutes, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center" />
                                     </Grid>
@@ -216,7 +225,7 @@
                                         <TextBox Grid.Column="1" Text="{Binding SelectedEventTimeOffsetSeconds, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center" />
                                     </Grid>
 
-                                    <!-- Visual Accent Color Swatches & Hex Input -->
+                                    <!-- Visual Accent Color Picker & Hex Input -->
                                     <Grid Margin="0,0,0,8">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*" />
@@ -224,21 +233,21 @@
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="{loc:Loc Settings_EventColor}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11" />
                                         <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                                            <Button Style="{StaticResource ColorSwatchButtonStyle}" Background="#00F0FF" ToolTip="Cyan (#00F0FF)" Command="{Binding SelectEventColorCommand}" CommandParameter="#00F0FF" />
-                                            <Button Style="{StaticResource ColorSwatchButtonStyle}" Background="#A855F7" ToolTip="Purple (#A855F7)" Command="{Binding SelectEventColorCommand}" CommandParameter="#A855F7" />
-                                            <Button Style="{StaticResource ColorSwatchButtonStyle}" Background="#F59E0B" ToolTip="Amber (#F59E0B)" Command="{Binding SelectEventColorCommand}" CommandParameter="#F59E0B" />
-                                            <Button Style="{StaticResource ColorSwatchButtonStyle}" Background="#10B981" ToolTip="Emerald (#10B981)" Command="{Binding SelectEventColorCommand}" CommandParameter="#10B981" />
-                                            <Button Style="{StaticResource ColorSwatchButtonStyle}" Background="#EC4899" ToolTip="Rose (#EC4899)" Command="{Binding SelectEventColorCommand}" CommandParameter="#EC4899" />
-                                            <Button Style="{StaticResource ColorSwatchButtonStyle}" Background="#3B82F6" ToolTip="Blue (#3B82F6)" Command="{Binding SelectEventColorCommand}" CommandParameter="#3B82F6" />
-                                            <Button Style="{StaticResource ColorSwatchButtonStyle}" Background="#EAB308" ToolTip="Gold (#EAB308)" Command="{Binding SelectEventColorCommand}" CommandParameter="#EAB308" />
-                                            <Button Style="{StaticResource ColorSwatchButtonStyle}" Background="#EF4444" ToolTip="Coral (#EF4444)" Command="{Binding SelectEventColorCommand}" CommandParameter="#EF4444" />
-
-                                            <Border Width="18" Height="18" Background="{Binding SelectedEventColorHex}" CornerRadius="3" BorderBrush="#334155" BorderThickness="1" Margin="6,0,4,0" VerticalAlignment="Center" />
+                                            <Button Command="{Binding PickEventColorCommand}" 
+                                                    Style="{StaticResource ModernDarkButtonStyle}"
+                                                    Padding="8,4" Margin="0,0,6,0" Cursor="Hand"
+                                                    ToolTip="Choose custom color from palette">
+                                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                    <Border Width="16" Height="16" Background="{Binding SelectedEventColorHex, FallbackValue='#00F0FF', TargetNullValue='#00F0FF'}" CornerRadius="3" BorderBrush="#334155" BorderThickness="1" Margin="0,0,6,0" />
+                                                    <TextBlock Text="🎨 " FontSize="11" VerticalAlignment="Center" />
+                                                    <TextBlock Text="{Binding SelectedEventColorHex}" FontWeight="Bold" FontSize="11" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center" />
+                                                </StackPanel>
+                                            </Button>
                                             <TextBox Width="75" Text="{Binding SelectedEventColorHex, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center" VerticalAlignment="Center" />
                                         </StackPanel>
                                     </Grid>
 
-                                    <!-- Per-Event Custom Audio Alert -->
+                                    <!-- Per-Event Audio Preset & Custom File -->
                                     <Grid Margin="0,0,0,8">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*" />
@@ -246,10 +255,28 @@
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="{loc:Loc Settings_EventSound}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11" />
                                         <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                            <ComboBox Width="145"
+                                                      ItemsSource="{Binding AvailableSoundPresets}"
+                                                      SelectedValuePath="Preset"
+                                                      DisplayMemberPath="DisplayName"
+                                                      SelectedValue="{Binding SelectedEventSoundPreset}"
+                                                      Validation.ErrorTemplate="{x:Null}"
+                                                      Margin="0,0,4,0" />
+                                            <Button Command="{Binding PreviewEventSoundCommand}" Style="{StaticResource ModernDarkButtonStyle}" Content="{loc:Loc Settings_PreviewSound}" Padding="6,2" FontSize="10" />
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <!-- Event Custom Sound File (when Custom preset is selected) -->
+                                    <Grid Margin="0,0,0,8" Visibility="{Binding IsSelectedEventCustomSound, Converter={StaticResource BoolToVis}}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{loc:Loc Settings_CustomSound}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11" />
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                                             <TextBox Width="140" Text="{Binding SelectedEventCustomSoundPath}" IsReadOnly="True" VerticalAlignment="Center" Margin="0,0,4,0" ToolTip="{Binding SelectedEventCustomSoundPath}" />
                                             <Button Command="{Binding BrowseEventSoundCommand}" Style="{StaticResource ModernDarkButtonStyle}" Content="{loc:Loc Settings_Browse}" Padding="6,2" FontSize="10" Margin="0,0,3,0" />
-                                            <Button Command="{Binding TestEventAudioCommand}" Style="{StaticResource ModernDarkButtonStyle}" Content="{loc:Loc Settings_TestAudio}" Padding="6,2" FontSize="10" Margin="0,0,3,0" />
-                                            <Button Command="{Binding ClearEventSoundCommand}" Style="{StaticResource ModernDarkButtonStyle}" Content="{loc:Loc Settings_Clear}" Padding="6,2" FontSize="10" />
+                                            <Button Command="{Binding ClearEventSoundCommand}" Style="{StaticResource DangerDarkButtonStyle}" Content="{loc:Loc Settings_Clear}" Padding="6,2" FontSize="10" />
                                         </StackPanel>
                                     </Grid>
 
@@ -351,18 +378,37 @@
                                 <TextBox Grid.Column="1" Text="{Binding AlertMinutesBeforeEnd, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center" />
                             </Grid>
 
-                            <!-- Global Custom Audio -->
-                            <TextBlock Text="{loc:Loc Settings_CustomSound}" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,6,0,4" />
+                            <!-- Default Alert Sound Preset -->
                             <Grid Margin="0,0,0,12">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <TextBox Text="{Binding CustomSoundPath}" VerticalAlignment="Center" />
-                                <Button Grid.Column="1" Style="{StaticResource ModernDarkButtonStyle}" Command="{Binding BrowseSoundCommand}" Content="{loc:Loc Settings_Browse}" Margin="8,0,0,0" />
+                                <TextBlock Text="{loc:Loc Settings_DefaultSound}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" />
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <ComboBox Width="160"
+                                              ItemsSource="{Binding AvailableSoundPresets}"
+                                              SelectedValuePath="Preset"
+                                              DisplayMemberPath="DisplayName"
+                                              SelectedValue="{Binding AlertSoundPreset}"
+                                              Validation.ErrorTemplate="{x:Null}"
+                                              Margin="0,0,6,0" />
+                                    <Button Style="{StaticResource ModernDarkButtonStyle}" Command="{Binding PreviewAlertSoundCommand}" Content="{loc:Loc Settings_PreviewSound}" Padding="8,4" FontSize="11" />
+                                </StackPanel>
                             </Grid>
 
-                            <Button Style="{StaticResource ModernDarkButtonStyle}" Command="{Binding TestAudioCommand}" Content="{loc:Loc Settings_TestAudio}" HorizontalAlignment="Left" Margin="0,4,0,0" />
+                            <!-- Global Custom Audio (when Custom preset is selected) -->
+                            <StackPanel Margin="0,0,0,12" Visibility="{Binding IsCustomAlertSound, Converter={StaticResource BoolToVis}}">
+                                <TextBlock Text="{loc:Loc Settings_CustomSound}" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,4" />
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox Text="{Binding CustomSoundPath}" VerticalAlignment="Center" />
+                                    <Button Grid.Column="1" Style="{StaticResource ModernDarkButtonStyle}" Command="{Binding BrowseSoundCommand}" Content="{loc:Loc Settings_Browse}" Margin="8,0,0,0" />
+                                </Grid>
+                            </StackPanel>
                         </StackPanel>
                     </TabItem>
 
@@ -390,6 +436,7 @@
 
                                 <!-- Appearance Minimization & HUD Elements Toggles -->
                                 <CheckBox Content="{loc:Loc Settings_CompactMode}" IsChecked="{Binding CompactMode}" Style="{StaticResource ModernCheckBoxStyle}" Margin="0,0,0,10" />
+                                <CheckBox Content="{loc:Loc Settings_ShowMiniControls}" IsChecked="{Binding ShowMiniControls}" Style="{StaticResource ModernCheckBoxStyle}" Margin="0,0,0,10" />
                                 <CheckBox Content="{loc:Loc Settings_ShowBorder}" IsChecked="{Binding ShowBorder}" Style="{StaticResource ModernCheckBoxStyle}" Margin="0,0,0,10" />
                                 <CheckBox Content="{loc:Loc Settings_ShowBackground}" IsChecked="{Binding ShowBackground}" Style="{StaticResource ModernCheckBoxStyle}" Margin="0,0,0,10" />
                                 <CheckBox Content="{loc:Loc Settings_ShowProgressRing}" IsChecked="{Binding ShowProgressRing}" Style="{StaticResource ModernCheckBoxStyle}" Margin="0,0,0,10" />
@@ -419,7 +466,48 @@
                         </ScrollViewer>
                     </TabItem>
 
-                    <!-- Tab 4: Hotkeys -->
+                    <!-- Tab 4: System -->
+                    <TabItem Header="{loc:Loc Settings_TabSystem}">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <StackPanel Margin="16">
+                                <!-- Windows Autostart Card -->
+                                <Border Background="#141D2B" BorderBrush="{StaticResource BorderDarkBrush}" BorderThickness="1" CornerRadius="8" Padding="14" Margin="0,0,0,12">
+                                    <StackPanel>
+                                        <CheckBox Content="{loc:Loc Settings_StartWithWindows}"
+                                                  IsChecked="{Binding StartWithWindows}"
+                                                  Style="{StaticResource ModernCheckBoxStyle}"
+                                                  FontWeight="SemiBold"
+                                                  FontSize="12.5"
+                                                  Margin="0,0,0,6" />
+                                        <TextBlock Text="{loc:Loc Settings_StartWithWindows_Desc}"
+                                                   TextWrapping="Wrap"
+                                                   Foreground="{StaticResource TextMutedBrush}"
+                                                   FontSize="11"
+                                                   Margin="24,0,0,0" />
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Auto-hide when game not in focus Card -->
+                                <Border Background="#141D2B" BorderBrush="{StaticResource BorderDarkBrush}" BorderThickness="1" CornerRadius="8" Padding="14" Margin="0,0,0,12">
+                                    <StackPanel>
+                                        <CheckBox Content="{loc:Loc Settings_AutoHideGameFocus}"
+                                                  IsChecked="{Binding AutoHideWhenGameOutOfFocus}"
+                                                  Style="{StaticResource ModernCheckBoxStyle}"
+                                                  FontWeight="SemiBold"
+                                                  FontSize="12.5"
+                                                  Margin="0,0,0,6" />
+                                        <TextBlock Text="{loc:Loc Settings_AutoHideGameFocus_Desc}"
+                                                   TextWrapping="Wrap"
+                                                   Foreground="{StaticResource TextMutedBrush}"
+                                                   FontSize="11"
+                                                   Margin="24,0,0,0" />
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+
+                    <!-- Tab 5: Hotkeys -->
                     <TabItem Header="{loc:Loc Settings_TabHotkeys}">
                         <StackPanel Margin="16">
                             <Grid Margin="0,0,0,12">
@@ -442,12 +530,12 @@
                         </StackPanel>
                     </TabItem>
 
-                    <!-- Tab 5: About & Updates -->
+                    <!-- Tab 6: About & Updates -->
                     <TabItem Header="{loc:Loc Settings_TabAbout}">
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
                             <StackPanel Margin="16">
                                 <TextBlock Text="{loc:Loc App_Title}" FontSize="15" FontWeight="Bold" Foreground="{StaticResource AccentWaitingBrush}" Margin="0,0,0,4" />
-                                <TextBlock Text="Version 1.3.0" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,10" />
+                                <TextBlock Text="Version 1.5.0" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,10" />
                                 <TextBlock Text="{loc:Loc About_Desc}" TextWrapping="Wrap" Foreground="{StaticResource TextSecondaryBrush}" FontSize="13" Margin="0,0,0,12" />
 
                                 <!-- Clickable Author & Repository Link -->

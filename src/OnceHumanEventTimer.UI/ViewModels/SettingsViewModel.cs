@@ -78,6 +78,9 @@ public partial class SettingsViewModel : ObservableObject
     private bool _showNextEventTime;
 
     [ObservableProperty]
+    private bool _showMiniControls;
+
+    [ObservableProperty]
     private LanguageInfo _selectedLanguage;
 
     [ObservableProperty]
@@ -93,6 +96,7 @@ public partial class SettingsViewModel : ObservableObject
     partial void OnShowBackgroundChanged(bool value) { _settingsService.Settings.ShowBackground = value; _settingsService.NotifyChanged(); }
     partial void OnShowProgressRingChanged(bool value) { _settingsService.Settings.ShowProgressRing = value; _settingsService.NotifyChanged(); }
     partial void OnShowNextEventTimeChanged(bool value) { _settingsService.Settings.ShowNextEventTime = value; _settingsService.NotifyChanged(); }
+    partial void OnShowMiniControlsChanged(bool value) { _settingsService.Settings.ShowMiniControls = value; _settingsService.NotifyChanged(); }
 
     [ObservableProperty]
     private bool _showSavedNotification;
@@ -107,13 +111,15 @@ public partial class SettingsViewModel : ObservableObject
         IEventScheduler scheduler,
         IAudioService audio,
         ILocalizationService loc,
-        IUpdateService? updateService = null)
+        IUpdateService? updateService = null,
+        IAutostartService? autostartService = null)
     {
         _settingsService = settingsService;
         _scheduler = scheduler;
         _audio = audio;
         _loc = loc;
         _updateService = updateService;
+        _autostartService = autostartService;
 
         var current = _settingsService.Settings;
         _startMinute = current.StartMinute;
@@ -135,6 +141,7 @@ public partial class SettingsViewModel : ObservableObject
         _showBackground = current.ShowBackground;
         _showProgressRing = current.ShowProgressRing;
         _showNextEventTime = current.ShowNextEventTime;
+        _showMiniControls = current.ShowMiniControls;
         _toggleVisibilityHotkey = current.ToggleVisibilityHotkey;
         _toggleClickThroughHotkey = current.ToggleClickThroughHotkey;
 
@@ -142,6 +149,8 @@ public partial class SettingsViewModel : ObservableObject
                             ?? SupportedLanguages.First();
 
         InitializeEvents(current);
+        InitializeAudio(current);
+        InitializeSystem(current, autostartService);
     }
 
     [RelayCommand]
@@ -194,9 +203,15 @@ public partial class SettingsViewModel : ObservableObject
         s.ShowBackground = ShowBackground;
         s.ShowProgressRing = ShowProgressRing;
         s.ShowNextEventTime = ShowNextEventTime;
+        s.ShowMiniControls = ShowMiniControls;
+        s.AlertSoundPreset = AlertSoundPreset;
         s.Language = SelectedLanguage.Code;
         s.ToggleVisibilityHotkey = ToggleVisibilityHotkey;
         s.ToggleClickThroughHotkey = ToggleClickThroughHotkey;
+        s.StartWithWindows = StartWithWindows;
+        s.AutoHideWhenGameOutOfFocus = AutoHideWhenGameOutOfFocus;
+
+        _autostartService?.SetAutostart(StartWithWindows);
 
         s.Events = Events.ToList();
         s.ActiveEventId = ActiveEventId;
@@ -209,7 +224,7 @@ public partial class SettingsViewModel : ObservableObject
         _loc.SetLanguage(SelectedLanguage.Code);
         _scheduler.SetTrackedEvents(s.Events, s.ActiveEventId, s.GlobalTimeOffsetSeconds);
         _scheduler.SetActiveEvent(activeEvent, GlobalTimeOffsetSeconds);
-        _scheduler.ConfigureSchedule(activeEvent.StartMinute, activeEvent.DurationMinutes, AlertMinutesBefore, AlertMinutesBeforeEnd);
+        _scheduler.ConfigureSchedule(activeEvent.StartMinute, activeEvent.DurationMinutes, AlertMinutesBefore, AlertMinutesBeforeEnd, activeEvent.StartSecond);
 
         await _settingsService.SaveAsync();
 

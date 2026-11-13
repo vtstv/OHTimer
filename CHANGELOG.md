@@ -7,6 +7,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.5.0] - 2026-11-13
+
+### Added
+- **Second-Precision Event Scheduling Engine (`StartSecond`)**: Extended `EventDefinition` and `EventTimeCalculator` with sub-minute resolution. Configured `Gravity Abyss (Starfall Inversion)` to start at exact in-game server cycle **XX:22:29** with **0s default offset**, providing drift-free zero-calibration countdown accuracy immediately out-of-the-box matching Once Human server ticks.
+- **Dedicated System Settings Tab**: Added a clean cyberpunk-styled **System** tab to the Settings window organizing OS-level and application lifecycle preferences.
+- **Windows Autostart Integration**: Added user-configurable toggle "Start with Windows" in System settings using `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`, allowing the timer to seamlessly launch on computer boot.
+- **Auto-Hide Overlay when Game is Out of Focus (Default: ON)**: Added real-time foreground window detection via Win32 `GetForegroundWindow` and process checking. When the player Alt-Tabs away from *Once Human* to a browser or desktop app, the overlay automatically hides itself to keep the screen clear, and instantly reappears when switching back to Once Human.
+- **Multilingual Support**: Fully localized all new System settings, descriptions, and second-precision inputs across English (`en-US`), German (`de-DE`), and Russian (`ru-RU`).
+
+### Fixed
+- **Persistent Red Border on Sound Selection ComboBox**: Fixed WPF data binding validation error where clicking "Save & Apply" caused the sound preset ComboBoxes to turn red. Converted `SoundPresetOption` into an observable model and updated display titles in-place without clearing the item collection, preventing null coercion and type conversion validation faults.
+
+---
+
+## [1.4.0] - 2026-11-13
+
+### Added
+- **Full-Spectrum Native Color Picker**: Replaced predefined color swatch buttons with a sleek interactive Color Picker button displaying the live color swatch and HEX code. Clicking opens the modal Windows color palette dialog (`ChooseColor`), enabling selection of any color across the entire RGB/HSV color space with persistent custom color slots.
+- **Mini-HUD Maximum Minimization**: Added "Show Mini-HUD Header & Controls" appearance option (`ShowMiniControls`). When unchecked, completely collapses the header bar (`MINI HUD` label and control buttons `[🗖] [⚙] [✕]`), yielding an ultra-clean floating widget showing strictly the event status badge and countdown timer.
+- **HUD Context Menu & Double-Click Gesture**: Added high-tech dark styled right-click ContextMenu on the HUD overlay (Settings, Toggle Mini/Full HUD, Lock Position, Exit) and double-click to toggle between Mini and Full HUD, ensuring effortless widget control even when header buttons are hidden.
+- **Procedural Synthesized Sound Library**: Expanded alert audio options with 7 procedural in-memory sound presets (`Celestial Bell`, `Cosmic Pulse`, `Stardust Ping`, `Quantum Chord`, `Deep Resonance`, `Cyber Warning`, `Emergency Siren`) plus custom WAV file support.
+- **Audio Sound Selectors & Instant Preview**: Added dropdown selectors and instant "Preview" test buttons for both default audio alerts and individual event presets.
+- **Multilingual Support**: Fully localized new options, presets, and menus across English (`en-US`), German (`de-DE`), and Russian (`ru-RU`).
+
+### Fixed
+- **Transparent Dragging Issue**: Resolved bug where unchecking "Show Overlay Background" and "Show Outer Border" caused drag-and-drop to fail. Replaced fully transparent hit-test drop (`Transparent` / alpha=0) with `#01000000` (invisible alpha=1) on container borders, guaranteeing 100% solid hit-testing to the WPF engine while remaining completely invisible to the human eye.
+- **Draggable Cursor Feedback**: Added `SizeAll` cursor when overlay is unlocked to provide immediate visual feedback that the widget is draggable.
+
+---
+
 ## [1.3.0] - 2026-11-13
 
 ### Added

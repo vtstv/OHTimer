@@ -78,7 +78,7 @@ public interface IEventScheduler : IDisposable
     /// <summary>
     /// Updates event cycle parameters for legacy/quick configuration.
     /// </summary>
-    void ConfigureSchedule(int startMinute, int durationMinutes, int alertBeforeStart, int alertBeforeEnd);
+    void ConfigureSchedule(int startMinute, int durationMinutes, int alertBeforeStart, int alertBeforeEnd, int startSecond = 0);
 
     /// <summary>
     /// Sets the drift time offset in seconds.

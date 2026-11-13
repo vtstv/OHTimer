@@ -29,6 +29,11 @@ public class EventDefinition
     public int StartMinute { get; set; } = 22;
 
     /// <summary>
+    /// Second past the start minute when the event begins (0 to 59).
+    /// </summary>
+    public int StartSecond { get; set; } = 0;
+
+    /// <summary>
     /// Active duration of the event window in minutes.
     /// </summary>
     public int DurationMinutes { get; set; } = 30;
@@ -54,6 +59,11 @@ public class EventDefinition
     public bool IsEnabled { get; set; } = true;
 
     /// <summary>
+    /// Specific sound preset assigned to this event.
+    /// </summary>
+    public SoundPreset SoundPreset { get; set; } = SoundPreset.CosmicPulse;
+
+    /// <summary>
     /// Optional file path to a custom WAV audio alert specifically for this event.
     /// </summary>
     public string? CustomSoundPath { get; set; }
@@ -69,11 +79,13 @@ public class EventDefinition
             Name = Name,
             CycleMinutes = CycleMinutes,
             StartMinute = StartMinute,
+            StartSecond = StartSecond,
             DurationMinutes = DurationMinutes,
             TimeOffsetSeconds = TimeOffsetSeconds,
             ColorHex = ColorHex,
             Description = Description,
             IsEnabled = IsEnabled,
+            SoundPreset = SoundPreset,
             CustomSoundPath = CustomSoundPath
         };
     }

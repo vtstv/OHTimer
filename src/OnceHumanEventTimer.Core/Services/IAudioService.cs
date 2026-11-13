@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Murr (https://github.com/vtstv). All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using OnceHumanEventTimer.Core.Models;
+
 namespace OnceHumanEventTimer.Core.Services;
 
 /// <summary>
@@ -8,6 +10,11 @@ namespace OnceHumanEventTimer.Core.Services;
 /// </summary>
 public interface IAudioService : IDisposable
 {
+    /// <summary>
+    /// Plays an audio alert for the specified sound preset.
+    /// </summary>
+    void PlayPreset(SoundPreset preset, double volume, string? customFilePath = null);
+
     /// <summary>
     /// Plays an urgent warning chime (approaching event start).
     /// </summary>

@@ -24,6 +24,7 @@ public static class EventTimeCalculator
 
         int cycleMinutes = Math.Max(1, eventDefinition.CycleMinutes);
         int startMinute = Math.Clamp(eventDefinition.StartMinute, 0, cycleMinutes - 1);
+        int startSecond = Math.Clamp(eventDefinition.StartSecond, 0, 59);
         int durationMinutes = Math.Clamp(eventDefinition.DurationMinutes, 1, cycleMinutes);
 
         var baseDay = new DateTimeOffset(
@@ -39,7 +40,7 @@ public static class EventTimeCalculator
         long cycleIndex = (long)Math.Floor(totalMinutesSinceDay / cycleMinutes);
         var cycleAnchor = baseDay.AddMinutes(cycleIndex * cycleMinutes);
 
-        var cycleStart = cycleAnchor.AddMinutes(startMinute);
+        var cycleStart = cycleAnchor.AddMinutes(startMinute).AddSeconds(startSecond);
         var cycleEnd = cycleStart.AddMinutes(durationMinutes);
         var cycleDuration = TimeSpan.FromMinutes(cycleMinutes);
 
@@ -51,7 +52,7 @@ public static class EventTimeCalculator
 
         if (effectiveTime < cycleStart)
         {
-            var prevCycleStart = (cycleAnchor - cycleDuration).AddMinutes(startMinute);
+            var prevCycleStart = (cycleAnchor - cycleDuration).AddMinutes(startMinute).AddSeconds(startSecond);
             var prevCycleEnd = prevCycleStart.AddMinutes(durationMinutes);
             totalPhaseDuration = cycleStart - prevCycleEnd;
             timeRemaining = cycleStart - effectiveTime;
@@ -74,7 +75,7 @@ public static class EventTimeCalculator
         else
         {
             var nextCycleAnchor = cycleAnchor + cycleDuration;
-            nextStart = nextCycleAnchor.AddMinutes(startMinute);
+            nextStart = nextCycleAnchor.AddMinutes(startMinute).AddSeconds(startSecond);
             nextEnd = nextStart.AddMinutes(durationMinutes);
 
             totalPhaseDuration = nextStart - cycleEnd;

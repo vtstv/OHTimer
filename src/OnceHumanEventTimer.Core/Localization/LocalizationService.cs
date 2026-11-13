@@ -36,19 +36,24 @@ public sealed class LocalizationService : ILocalizationService
 
     public void SetLanguage(string cultureCode)
     {
+        bool changed = false;
         lock (_lock)
         {
-            if (_supportedLanguages.Any(l => string.Equals(l.Code, cultureCode, StringComparison.OrdinalIgnoreCase)))
+            string target = _supportedLanguages.Any(l => string.Equals(l.Code, cultureCode, StringComparison.OrdinalIgnoreCase))
+                ? cultureCode
+                : "en-US";
+
+            if (!string.Equals(_currentLanguage, target, StringComparison.OrdinalIgnoreCase))
             {
-                _currentLanguage = cultureCode;
-            }
-            else
-            {
-                _currentLanguage = "en-US";
+                _currentLanguage = target;
+                changed = true;
             }
         }
 
-        LanguageChanged?.Invoke(this, EventArgs.Empty);
+        if (changed)
+        {
+            LanguageChanged?.Invoke(this, EventArgs.Empty);
+        }
     }
 
     public string GetString(string key)

@@ -12,6 +12,7 @@ using OnceHumanEventTimer.Infrastructure.Audio;
 using OnceHumanEventTimer.Infrastructure.Notifications;
 using OnceHumanEventTimer.Infrastructure.Storage;
 using OnceHumanEventTimer.Infrastructure.Updates;
+using OnceHumanEventTimer.Infrastructure.Windows;
 using OnceHumanEventTimer.Infrastructure.Win32;
 using OnceHumanEventTimer.UI.Localization;
 using OnceHumanEventTimer.UI.ViewModels;
@@ -72,7 +73,8 @@ public partial class App : Application
             settingsService.Settings.StartMinute,
             settingsService.Settings.DurationMinutes,
             settingsService.Settings.AlertMinutesBefore,
-            settingsService.Settings.AlertMinutesBeforeEnd);
+            settingsService.Settings.AlertMinutesBeforeEnd,
+            settingsService.Settings.StartSecond);
 
         scheduler.NotificationTriggered += (s, args) =>
         {
@@ -84,26 +86,28 @@ public partial class App : Application
                     soundPath = settingsService.Settings.CustomSoundPath;
                 }
 
+                SoundPreset preset = args.Event?.SoundPreset ?? settingsService.Settings.AlertSoundPreset;
+
                 if (args.Phase == EventPhase.Active)
                 {
                     if (settingsService.Settings.PlayOnEventStart)
                     {
-                        if (!string.IsNullOrWhiteSpace(soundPath))
-                            audio.PlayWarning(settingsService.Settings.Volume, soundPath);
+                        if (preset == SoundPreset.Custom && !string.IsNullOrWhiteSpace(soundPath))
+                            audio.PlayPreset(SoundPreset.Custom, settingsService.Settings.Volume, soundPath);
                         else
                             audio.PlayEventStart(settingsService.Settings.Volume);
                     }
                 }
                 else if (args.Phase == EventPhase.EndingSoon)
                 {
-                    if (!string.IsNullOrWhiteSpace(soundPath))
-                        audio.PlayWarning(settingsService.Settings.Volume, soundPath);
+                    if (preset == SoundPreset.Custom && !string.IsNullOrWhiteSpace(soundPath))
+                        audio.PlayPreset(SoundPreset.Custom, settingsService.Settings.Volume, soundPath);
                     else
                         audio.PlayEventEnding(settingsService.Settings.Volume);
                 }
                 else
                 {
-                    audio.PlayWarning(settingsService.Settings.Volume, soundPath);
+                    audio.PlayPreset(preset, settingsService.Settings.Volume, soundPath);
                 }
             }
 
@@ -122,6 +126,7 @@ public partial class App : Application
         // 5. Wire Overlay Actions
         overlayVm.RequestOpenSettings = OpenSettingsWindow;
         overlayVm.RequestHideOverlay = () => overlayWindow.Hide();
+        overlayVm.RequestExitApp = ShutdownApp;
 
         // 6. Setup Hotkeys
         var hotkeyService = _serviceProvider.GetRequiredService<IHotkeyService>();
@@ -138,8 +143,16 @@ public partial class App : Application
             {
                 Dispatcher.Invoke(() =>
                 {
-                    if (overlayWindow.IsVisible) overlayWindow.Hide();
-                    else overlayWindow.Show();
+                    if (overlayWindow.IsVisible)
+                    {
+                        _userManuallyHidden = true;
+                        overlayWindow.Hide();
+                    }
+                    else
+                    {
+                        _userManuallyHidden = false;
+                        overlayWindow.Show();
+                    }
                 });
             },
             toggleLockAction: () =>
@@ -156,54 +169,45 @@ public partial class App : Application
             winNotif.OnShowNotification = (title, msg) => _trayService.ShowNotification(title, msg);
         }
 
-        // 8. Start Timing Engine
+        // 8. Setup Game Focus Monitor (Auto-hide when Once Human not in focus)
+        var focusMonitor = _serviceProvider.GetRequiredService<IGameFocusMonitor>();
+        focusMonitor.GameFocusChanged += (s, isFocused) =>
+        {
+            Dispatcher.Invoke(() =>
+            {
+                if (!settingsService.Settings.AutoHideWhenGameOutOfFocus) return;
+
+                if (isFocused)
+                {
+                    if (!_userManuallyHidden && !overlayWindow.IsVisible)
+                    {
+                        overlayWindow.Show();
+                    }
+                }
+                else
+                {
+                    if (overlayWindow.IsVisible)
+                    {
+                        overlayWindow.Hide();
+                    }
+                }
+            });
+        };
+        focusMonitor.Start();
+
+        settingsService.SettingsChanged += (s, updatedSettings) =>
+        {
+            Dispatcher.Invoke(() =>
+            {
+                if (!updatedSettings.AutoHideWhenGameOutOfFocus && !_userManuallyHidden && !overlayWindow.IsVisible)
+                {
+                    overlayWindow.Show();
+                }
+            });
+        };
+
+        // 9. Start Timing Engine
         scheduler.Start();
-    }
-
-    private static void ConfigureServices(IServiceCollection services)
-    {
-        services.AddSingleton<ILocalizationService, LocalizationService>();
-        services.AddSingleton<ISettingsService, FileSettingsService>();
-        services.AddSingleton<IAudioService, SynthesizerAudioService>();
-        services.AddSingleton<INotificationService, WindowsNotificationService>();
-        services.AddSingleton<IEventScheduler, EventScheduler>();
-        services.AddSingleton<IHotkeyService, Win32HotkeyService>();
-        services.AddSingleton<IUpdateService, GitHubUpdateService>();
-
-        services.AddSingleton<OverlayViewModel>();
-        services.AddTransient<SettingsViewModel>();
-    }
-
-    private void RegisterHotkeys(
-        IHotkeyService hotkeyService,
-        UserSettings settings,
-        OverlayWindow overlayWindow,
-        OverlayViewModel overlayVm)
-    {
-        hotkeyService.UnregisterAll();
-
-        if (!string.IsNullOrWhiteSpace(settings.ToggleVisibilityHotkey))
-        {
-            hotkeyService.RegisterHotkey(settings.ToggleVisibilityHotkey, () =>
-            {
-                Dispatcher.Invoke(() =>
-                {
-                    if (overlayWindow.IsVisible) overlayWindow.Hide();
-                    else overlayWindow.Show();
-                });
-            });
-        }
-
-        if (!string.IsNullOrWhiteSpace(settings.ToggleClickThroughHotkey))
-        {
-            hotkeyService.RegisterHotkey(settings.ToggleClickThroughHotkey, () =>
-            {
-                Dispatcher.Invoke(() =>
-                {
-                    overlayVm.ToggleClickThroughCommand.Execute(null);
-                });
-            });
-        }
     }
 
     private void OpenSettingsWindow()

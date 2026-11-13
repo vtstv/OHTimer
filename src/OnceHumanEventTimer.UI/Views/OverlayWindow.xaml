@@ -32,11 +32,58 @@
     </Window.Resources>
 
     <Border Margin="12" CornerRadius="10">
+        <Border.ContextMenu>
+            <ContextMenu>
+                <MenuItem Header="{loc:Loc Tray_Settings}" Command="{Binding OpenSettingsCommand}">
+                    <MenuItem.Icon>
+                        <TextBlock Text="⚙" Foreground="{StaticResource AccentWaitingBrush}" FontSize="12" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="{loc:Loc HUD_ToggleMini}" Command="{Binding ToggleCompactModeCommand}">
+                    <MenuItem.Icon>
+                        <TextBlock Text="🗖" Foreground="{StaticResource AccentWaitingBrush}" FontSize="12" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Command="{Binding ToggleLockCommand}">
+                    <MenuItem.Style>
+                        <Style TargetType="MenuItem" BasedOn="{StaticResource {x:Type MenuItem}}">
+                            <Setter Property="Header" Value="{loc:Loc HUD_Lock}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsLocked}" Value="True">
+                                    <Setter Property="Header" Value="{loc:Loc HUD_Unlock}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </MenuItem.Style>
+                    <MenuItem.Icon>
+                        <TextBlock FontSize="12" Foreground="{StaticResource AccentWaitingBrush}">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Text" Value="🔓" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsLocked}" Value="True">
+                                            <Setter Property="Text" Value="🔒" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator />
+                <MenuItem Header="{loc:Loc Tray_Exit}" Command="{Binding ExitAppCommand}">
+                    <MenuItem.Icon>
+                        <TextBlock Text="✕" Foreground="#EF4444" FontSize="12" />
+                    </MenuItem.Icon>
+                </MenuItem>
+            </ContextMenu>
+        </Border.ContextMenu>
         <Border.Style>
             <Style TargetType="Border">
                 <Setter Property="Background" Value="#E80D1117" />
                 <Setter Property="BorderBrush" Value="{Binding StatusColorHex, FallbackValue='#00F0FF'}" />
                 <Setter Property="BorderThickness" Value="1.5" />
+                <Setter Property="Cursor" Value="SizeAll" />
                 <Setter Property="Effect">
                     <Setter.Value>
                         <DropShadowEffect Color="#000000" BlurRadius="16" ShadowDepth="4" Opacity="0.75" />
@@ -44,11 +91,14 @@
                 </Setter>
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding ShowBackground}" Value="False">
-                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="Background" Value="#01000000" />
                         <Setter Property="Effect" Value="{x:Null}" />
                     </DataTrigger>
                     <DataTrigger Binding="{Binding ShowBorder}" Value="False">
                         <Setter Property="BorderThickness" Value="0" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding IsLocked}" Value="True">
+                        <Setter Property="Cursor" Value="Arrow" />
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
@@ -96,7 +146,7 @@
                         <!-- Compact Mode Toggle -->
                         <Button Style="{StaticResource HudIconButtonStyle}"
                                 Command="{Binding ToggleCompactModeCommand}"
-                                ToolTip="Compact Mode (🗗)"
+                                ToolTip="{loc:Loc HUD_ToggleMini}"
                                 Margin="0,0,2,0">
                             <TextBlock Text="🗗" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" />
                         </Button>
@@ -227,7 +277,7 @@
                                             <Setter Property="BorderThickness" Value="1" />
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding DataContext.ShowBackground, RelativeSource={RelativeSource AncestorType=Window}}" Value="False">
-                                                    <Setter Property="Background" Value="Transparent" />
+                                                    <Setter Property="Background" Value="#01000000" />
                                                 </DataTrigger>
                                                 <DataTrigger Binding="{Binding DataContext.ShowBorder, RelativeSource={RelativeSource AncestorType=Window}}" Value="False">
                                                     <Setter Property="BorderThickness" Value="0" />
@@ -298,7 +348,7 @@
                 </Grid.RowDefinitions>
 
                 <!-- Compact Header / Controls Bar -->
-                <Grid Grid.Row="0" Margin="0,0,0,4">
+                <Grid Grid.Row="0" Margin="0,0,0,4" Visibility="{Binding ShowMiniControls, Converter={StaticResource BoolToVis}}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
@@ -310,7 +360,7 @@
                         <!-- Restore Full HUD -->
                         <Button Style="{StaticResource HudIconButtonStyle}"
                                 Command="{Binding ToggleCompactModeCommand}"
-                                ToolTip="Full HUD (🗖)"
+                                ToolTip="{loc:Loc HUD_ToggleMini}"
                                 Margin="0,0,2,0">
                             <TextBlock Text="🗖" FontSize="10" Foreground="{StaticResource TextSecondaryBrush}" />
                         </Button>

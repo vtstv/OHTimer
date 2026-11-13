@@ -19,10 +19,12 @@ public static class DefaultEventPresets
             Name = "Gravity Abyss (Starfall Inversion)",
             CycleMinutes = 60,
             StartMinute = 22,
+            StartSecond = 29,
             DurationMinutes = 30,
-            TimeOffsetSeconds = -31,
+            TimeOffsetSeconds = 0,
             ColorHex = "#00F0FF",
             IsEnabled = true,
+            SoundPreset = SoundPreset.CelestialBell,
             Description = "Once Human Starfall Inversion / Gravity Abyss hourly event with low-gravity tide and Stardust Crystals."
         },
         new EventDefinition
@@ -35,6 +37,7 @@ public static class DefaultEventPresets
             TimeOffsetSeconds = 0,
             ColorHex = "#F59E0B",
             IsEnabled = false,
+            SoundPreset = SoundPreset.CyberWarning,
             Description = "Cargo Scramble PvP sproutlet truck dynamic encounter."
         },
         new EventDefinition
@@ -47,6 +50,7 @@ public static class DefaultEventPresets
             TimeOffsetSeconds = 0,
             ColorHex = "#EF4444",
             IsEnabled = false,
+            SoundPreset = SoundPreset.EmergencySiren,
             Description = "Lunar Oracle Blood Moon nocturnal event with high-tier aberrant mutations."
         },
         new EventDefinition
@@ -59,6 +63,7 @@ public static class DefaultEventPresets
             TimeOffsetSeconds = 0,
             ColorHex = "#A855F7",
             IsEnabled = false,
+            SoundPreset = SoundPreset.QuantumChord,
             Description = "Lord of Moonlight gathering festival with exclusive cosmic loot drops."
         },
         new EventDefinition
@@ -71,6 +76,7 @@ public static class DefaultEventPresets
             TimeOffsetSeconds = 0,
             ColorHex = "#10B981",
             IsEnabled = false,
+            SoundPreset = SoundPreset.DeepResonance,
             Description = "Spore Tide invasion wave defending against aberrant hive monsters."
         },
         new EventDefinition
@@ -83,6 +89,7 @@ public static class DefaultEventPresets
             TimeOffsetSeconds = 0,
             ColorHex = "#EC4899",
             IsEnabled = false,
+            SoundPreset = SoundPreset.StardustPing,
             Description = "Dissonant soundwave anomaly requiring acoustic tuning devices."
         },
         new EventDefinition
@@ -95,6 +102,7 @@ public static class DefaultEventPresets
             TimeOffsetSeconds = 0,
             ColorHex = "#3B82F6",
             IsEnabled = false,
+            SoundPreset = SoundPreset.CosmicPulse,
             Description = "4-hour global refresh cycle for high-tier mystical crates and stronghold loot."
         },
         new EventDefinition
@@ -107,6 +115,7 @@ public static class DefaultEventPresets
             TimeOffsetSeconds = 0,
             ColorHex = "#EAB308",
             IsEnabled = false,
+            SoundPreset = SoundPreset.CosmicPulse,
             Description = "User-defined custom cyclic event schedule."
         }
     };

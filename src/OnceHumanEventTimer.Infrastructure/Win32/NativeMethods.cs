@@ -136,4 +136,35 @@ internal static class NativeMethods
     [DllImport("user32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     public static extern bool DestroyIcon(nint hIcon);
+
+    public const int CC_RGBINIT = 0x00000001;
+    public const int CC_FULLOPEN = 0x00000002;
+    public const int CC_ANYCOLOR = 0x00000100;
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+    public struct CHOOSECOLOR
+    {
+        public int lStructSize;
+        public nint hwndOwner;
+        public nint hInstance;
+        public int rgbResult;
+        public nint lpCustColors;
+        public int Flags;
+        public nint lCustData;
+        public nint lpfnHook;
+        public nint lpTemplateName;
+    }
+
+    [DllImport("user32.dll")]
+    public static extern nint GetForegroundWindow();
+
+    [DllImport("user32.dll", SetLastError = true)]
+    public static extern uint GetWindowThreadProcessId(nint hWnd, out uint lpdwProcessId);
+
+    [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+    public static extern int GetWindowText(nint hWnd, System.Text.StringBuilder lpString, int nMaxCount);
+
+    [DllImport("comdlg32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool ChooseColor(ref CHOOSECOLOR lpcc);
 }

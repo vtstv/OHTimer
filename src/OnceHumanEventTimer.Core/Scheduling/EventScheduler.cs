@@ -100,11 +100,12 @@ public class EventScheduler : IEventScheduler
         SnapshotsUpdated?.Invoke(this, ActiveSnapshots);
     }
 
-    public void ConfigureSchedule(int startMinute, int durationMinutes, int alertBeforeStart, int alertBeforeEnd)
+    public void ConfigureSchedule(int startMinute, int durationMinutes, int alertBeforeStart, int alertBeforeEnd, int startSecond = 0)
     {
         lock (_lock)
         {
             _activeEvent.StartMinute = Math.Clamp(startMinute, 0, Math.Max(1, _activeEvent.CycleMinutes - 1));
+            _activeEvent.StartSecond = Math.Clamp(startSecond, 0, 59);
             _activeEvent.DurationMinutes = Math.Clamp(durationMinutes, 1, Math.Max(1, _activeEvent.CycleMinutes));
             _alertBeforeStart = Math.Max(0, alertBeforeStart);
             _alertBeforeEnd = Math.Max(0, alertBeforeEnd);

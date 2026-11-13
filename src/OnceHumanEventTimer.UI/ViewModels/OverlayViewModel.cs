@@ -61,6 +61,9 @@ public partial class OverlayViewModel : ObservableObject
     private bool _showNextEventTime = true;
 
     [ObservableProperty]
+    private bool _showMiniControls = true;
+
+    [ObservableProperty]
     private double _opacity = 0.92;
 
     [ObservableProperty]
@@ -80,6 +83,7 @@ public partial class OverlayViewModel : ObservableObject
 
     public Action? RequestOpenSettings { get; set; }
     public Action? RequestHideOverlay { get; set; }
+    public Action? RequestExitApp { get; set; }
     public Action<bool>? RequestClickThroughChanged { get; set; }
 
     public OverlayViewModel(
@@ -113,6 +117,7 @@ public partial class OverlayViewModel : ObservableObject
         ShowBackground = settings.ShowBackground;
         ShowProgressRing = settings.ShowProgressRing;
         ShowNextEventTime = settings.ShowNextEventTime;
+        ShowMiniControls = settings.ShowMiniControls;
     }
 
     private void OnSettingsChanged(object? sender, UserSettings settings)
@@ -176,33 +181,13 @@ public partial class OverlayViewModel : ObservableObject
 
     private void UpdatePhaseLabels(EventPhase phase)
     {
-        switch (phase)
+        (PhaseBadgeText, PhaseDescriptionText, StatusColorHex) = phase switch
         {
-            case EventPhase.StartingSoon:
-                PhaseBadgeText = _loc.GetString("Status_StartingSoon");
-                PhaseDescriptionText = _loc.GetString("HUD_UntilStart");
-                StatusColorHex = "#F59E0B"; // Amber
-                break;
-
-            case EventPhase.Active:
-                PhaseBadgeText = _loc.GetString("Status_Active");
-                PhaseDescriptionText = _loc.GetString("HUD_UntilEnd");
-                StatusColorHex = "#A855F7"; // Cosmic Purple
-                break;
-
-            case EventPhase.EndingSoon:
-                PhaseBadgeText = _loc.GetString("Status_EndingSoon");
-                PhaseDescriptionText = _loc.GetString("HUD_UntilEnd");
-                StatusColorHex = "#EF4444"; // Red alert
-                break;
-
-            case EventPhase.Inactive:
-            default:
-                PhaseBadgeText = _loc.GetString("Status_Waiting");
-                PhaseDescriptionText = _loc.GetString("HUD_UntilStart");
-                StatusColorHex = "#00E5FF"; // Cyan
-                break;
-        }
+            EventPhase.StartingSoon => (_loc.GetString("Status_StartingSoon"), _loc.GetString("HUD_UntilStart"), "#F59E0B"),
+            EventPhase.Active       => (_loc.GetString("Status_Active"), _loc.GetString("HUD_UntilEnd"), "#A855F7"),
+            EventPhase.EndingSoon   => (_loc.GetString("Status_EndingSoon"), _loc.GetString("HUD_UntilEnd"), "#EF4444"),
+            _                       => (_loc.GetString("Status_Waiting"), _loc.GetString("HUD_UntilStart"), "#00E5FF")
+        };
     }
 
     [RelayCommand]
@@ -240,5 +225,11 @@ public partial class OverlayViewModel : ObservableObject
     private void HideOverlay()
     {
         RequestHideOverlay?.Invoke();
+    }
+
+    [RelayCommand]
+    private void ExitApp()
+    {
+        RequestExitApp?.Invoke();
     }
 }

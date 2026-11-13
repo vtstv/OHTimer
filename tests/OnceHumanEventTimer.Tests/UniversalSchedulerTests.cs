@@ -31,8 +31,9 @@ public class UniversalSchedulerTests
         Assert.Equal("gravity-abyss", active.Id);
         Assert.Equal(60, active.CycleMinutes);
         Assert.Equal(22, active.StartMinute);
+        Assert.Equal(29, active.StartSecond);
         Assert.Equal(30, active.DurationMinutes);
-        Assert.Equal(-31, active.TimeOffsetSeconds);
+        Assert.Equal(0, active.TimeOffsetSeconds);
         Assert.Equal("#00F0FF", active.ColorHex);
         Assert.True(active.IsEnabled);
 

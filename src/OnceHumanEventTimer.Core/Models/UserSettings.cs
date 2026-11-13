@@ -69,6 +69,11 @@ public class UserSettings
     public bool ShowNextEventTime { get; set; } = true;
 
     /// <summary>
+    /// When true, renders top header bar and quick control buttons on the Mini-HUD. When false, provides ultra-minimalist view.
+    /// </summary>
+    public bool ShowMiniControls { get; set; } = true;
+
+    /// <summary>
     /// Master volume for sound notifications (0.0 to 1.0).
     /// </summary>
     public double Volume { get; set; } = 0.8;
@@ -82,6 +87,21 @@ public class UserSettings
     /// The minute past the hour when the legacy/active event starts (default: 22).
     /// </summary>
     public int StartMinute { get; set; } = 22;
+
+    /// <summary>
+    /// The second past the start minute when the legacy/active event starts (default: 29).
+    /// </summary>
+    public int StartSecond { get; set; } = 29;
+
+    /// <summary>
+    /// When true, Once Human Event Timer automatically starts with Windows.
+    /// </summary>
+    public bool StartWithWindows { get; set; } = false;
+
+    /// <summary>
+    /// When true, automatically conceals the overlay when Once Human is not the focused foreground window.
+    /// </summary>
+    public bool AutoHideWhenGameOutOfFocus { get; set; } = true;
 
     /// <summary>
     /// The duration of the legacy/active event in minutes (default: 30).
@@ -127,6 +147,11 @@ public class UserSettings
     /// Play chime sound when event actually starts.
     /// </summary>
     public bool PlayOnEventStart { get; set; } = true;
+
+    /// <summary>
+    /// Default procedural sound preset for alerts.
+    /// </summary>
+    public SoundPreset AlertSoundPreset { get; set; } = SoundPreset.CosmicPulse;
 
     /// <summary>
     /// Optional path to custom sound file (.wav).

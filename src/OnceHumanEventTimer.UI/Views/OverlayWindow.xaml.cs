@@ -56,6 +56,15 @@ public partial class OverlayWindow : Window
 
     private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
+        // Double-click gesture: toggle between Compact Mini-HUD and Full-HUD
+        if (e.ClickCount >= 2)
+        {
+            _viewModel.ToggleCompactModeCommand.Execute(null);
+            e.Handled = true;
+            return;
+        }
+
+        // Single-click drag gesture: move the overlay when not locked and not click-through
         if (!_viewModel.IsLocked && !_viewModel.IsClickThrough && e.ButtonState == MouseButtonState.Pressed)
         {
             try

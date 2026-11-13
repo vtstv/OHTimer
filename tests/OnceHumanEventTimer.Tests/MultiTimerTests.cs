@@ -16,13 +16,15 @@ public class MultiTimerTests
     private readonly LocalizationService _loc = new();
 
     [Fact]
-    public void GravityAbyss_DefaultTimeOffset_IsMinus31Seconds()
+    public void GravityAbyss_DefaultSchedule_HasStartSecond29AndZeroOffset()
     {
         var scheduler = new EventScheduler(_loc);
 
         Assert.Equal("gravity-abyss", scheduler.ActiveEvent.Id);
-        Assert.Equal(-31, scheduler.ActiveEvent.TimeOffsetSeconds);
-        Assert.Equal(-31, scheduler.TimeOffsetSeconds);
+        Assert.Equal(22, scheduler.ActiveEvent.StartMinute);
+        Assert.Equal(29, scheduler.ActiveEvent.StartSecond);
+        Assert.Equal(0, scheduler.ActiveEvent.TimeOffsetSeconds);
+        Assert.Equal(0, scheduler.TimeOffsetSeconds);
         Assert.Equal("#00F0FF", scheduler.ActiveEvent.ColorHex);
         Assert.True(scheduler.ActiveEvent.IsEnabled);
     }
@@ -37,8 +39,9 @@ public class MultiTimerTests
         Assert.Equal("Gravity Abyss (Starfall Inversion)", abyss.Name);
         Assert.Equal(60, abyss.CycleMinutes);
         Assert.Equal(22, abyss.StartMinute);
+        Assert.Equal(29, abyss.StartSecond);
         Assert.Equal(30, abyss.DurationMinutes);
-        Assert.Equal(-31, abyss.TimeOffsetSeconds);
+        Assert.Equal(0, abyss.TimeOffsetSeconds);
         Assert.Equal("#00F0FF", abyss.ColorHex);
         Assert.True(abyss.IsEnabled);
 

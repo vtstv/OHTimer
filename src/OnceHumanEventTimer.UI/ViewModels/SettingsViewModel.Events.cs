@@ -2,10 +2,13 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System.Collections.ObjectModel;
+using System.Windows;
+using System.Windows.Interop;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Win32;
 using OnceHumanEventTimer.Core.Models;
+using OnceHumanEventTimer.Infrastructure.Win32;
 
 namespace OnceHumanEventTimer.UI.ViewModels;
 
@@ -22,15 +25,6 @@ public partial class SettingsViewModel
 
     [ObservableProperty]
     private int _globalTimeOffsetSeconds;
-
-    [ObservableProperty]
-    private string _gameRemainingInput = "08:23";
-
-    [ObservableProperty]
-    private string? _syncFeedbackMessage;
-
-    [ObservableProperty]
-    private bool _showSyncFeedback;
 
     public bool IsSelectedEventActive => SelectedEvent != null && SelectedEvent.Id == ActiveEventId;
 
@@ -50,6 +44,12 @@ public partial class SettingsViewModel
     {
         get => SelectedEvent?.StartMinute ?? 0;
         set { if (SelectedEvent != null && SelectedEvent.StartMinute != value) { SelectedEvent.StartMinute = Math.Max(0, value); OnPropertyChanged(); } }
+    }
+
+    public int SelectedEventStartSecond
+    {
+        get => SelectedEvent?.StartSecond ?? 0;
+        set { if (SelectedEvent != null && SelectedEvent.StartSecond != value) { SelectedEvent.StartSecond = Math.Clamp(value, 0, 59); OnPropertyChanged(); } }
     }
 
     public int SelectedEventDurationMinutes
@@ -82,6 +82,22 @@ public partial class SettingsViewModel
         set { if (SelectedEvent != null && SelectedEvent.IsEnabled != value) { SelectedEvent.IsEnabled = value; OnPropertyChanged(); } }
     }
 
+    public SoundPreset SelectedEventSoundPreset
+    {
+        get => SelectedEvent?.SoundPreset ?? SoundPreset.CosmicPulse;
+        set
+        {
+            if (SelectedEvent != null && SelectedEvent.SoundPreset != value)
+            {
+                SelectedEvent.SoundPreset = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsSelectedEventCustomSound));
+            }
+        }
+    }
+
+    public bool IsSelectedEventCustomSound => SelectedEventSoundPreset == SoundPreset.Custom;
+
     public string? SelectedEventCustomSoundPath
     {
         get => SelectedEvent?.CustomSoundPath;
@@ -101,13 +117,29 @@ public partial class SettingsViewModel
         OnPropertyChanged(nameof(SelectedEventName));
         OnPropertyChanged(nameof(SelectedEventCycleMinutes));
         OnPropertyChanged(nameof(SelectedEventStartMinute));
+        OnPropertyChanged(nameof(SelectedEventStartSecond));
         OnPropertyChanged(nameof(SelectedEventDurationMinutes));
         OnPropertyChanged(nameof(SelectedEventTimeOffsetSeconds));
         OnPropertyChanged(nameof(SelectedEventColorHex));
         OnPropertyChanged(nameof(SelectedEventDescription));
         OnPropertyChanged(nameof(SelectedEventIsEnabled));
+        OnPropertyChanged(nameof(SelectedEventSoundPreset));
+        OnPropertyChanged(nameof(IsSelectedEventCustomSound));
         OnPropertyChanged(nameof(SelectedEventCustomSoundPath));
         OnPropertyChanged(nameof(IsSelectedEventActive));
+    }
+
+    [RelayCommand]
+    private void PickEventColor()
+    {
+        var activeWindow = Application.Current?.Windows.OfType<Window>().FirstOrDefault(w => w.IsActive)
+                           ?? Application.Current?.MainWindow;
+        nint hwnd = activeWindow != null ? new WindowInteropHelper(activeWindow).Handle : 0;
+        string? newColor = NativeColorDialog.ShowDialog(hwnd, SelectedEventColorHex);
+        if (!string.IsNullOrWhiteSpace(newColor))
+        {
+            SelectedEventColorHex = newColor;
+        }
     }
 
     [RelayCommand]
@@ -184,65 +216,5 @@ public partial class SettingsViewModel
             ActiveEventId = Events[0].Id;
         }
         SelectedEvent = Events[Math.Min(index, Events.Count - 1)];
-    }
-
-    [RelayCommand]
-    private void SyncToGame()
-    {
-        if (string.IsNullOrWhiteSpace(GameRemainingInput))
-        {
-            SyncFeedbackMessage = "Please enter remaining countdown (e.g. 08:23)";
-            ShowSyncFeedback = true;
-            return;
-        }
-
-        string raw = GameRemainingInput.Trim();
-        TimeSpan remaining;
-        var parts = raw.Split(':');
-        if (parts.Length == 2 && int.TryParse(parts[0], out int mins) && int.TryParse(parts[1], out int secs))
-        {
-            remaining = new TimeSpan(0, mins, secs);
-        }
-        else if (parts.Length == 3 && int.TryParse(parts[0], out int hrs) && int.TryParse(parts[1], out int m) && int.TryParse(parts[2], out int s))
-        {
-            remaining = new TimeSpan(hrs, m, s);
-        }
-        else if (TimeSpan.TryParse(raw, out var parsed))
-        {
-            remaining = parsed;
-        }
-        else
-        {
-            SyncFeedbackMessage = "Invalid format. Use mm:ss (e.g. 08:23)";
-            ShowSyncFeedback = true;
-            return;
-        }
-
-        var targetEvent = SelectedEvent ?? _scheduler.ActiveEvent;
-        _scheduler.SetActiveEvent(targetEvent, GlobalTimeOffsetSeconds);
-
-        int calculatedOffset = _scheduler.SyncToGameTime(remaining);
-        if (SelectedEvent != null)
-        {
-            SelectedEvent.TimeOffsetSeconds = _scheduler.ActiveEvent.TimeOffsetSeconds;
-            OnPropertyChanged(nameof(SelectedEventTimeOffsetSeconds));
-        }
-
-        string template = _loc.GetString("Settings_SyncSuccess");
-        SyncFeedbackMessage = string.Format(template, calculatedOffset);
-        ShowSyncFeedback = true;
-    }
-
-    [RelayCommand]
-    private void NudgeOffset(string deltaString)
-    {
-        if (int.TryParse(deltaString, out int delta) && SelectedEvent != null)
-        {
-            SelectedEvent.TimeOffsetSeconds = delta == 0 ? 0 : SelectedEvent.TimeOffsetSeconds + delta;
-            OnPropertyChanged(nameof(SelectedEventTimeOffsetSeconds));
-            _scheduler.SetTimeOffset(SelectedEvent.TimeOffsetSeconds + GlobalTimeOffsetSeconds);
-            SyncFeedbackMessage = $"Offset adjusted to {SelectedEvent.TimeOffsetSeconds}s";
-            ShowSyncFeedback = true;
-        }
     }
 }
