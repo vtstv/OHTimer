@@ -173,6 +173,7 @@ if (Test-Path $changelogSrc) {
     if ($fullChangelog -match "(?ms)(## \[$escapedVer\].*?)(?=---|\z)") {
         $versionNotes = $matches[1].Trim()
         Set-Content -Path (Join-Path $releaseBaseDir "RELEASE_NOTES_v$Version.md") -Value $versionNotes -Encoding UTF8
+        Set-Content -Path (Join-Path $releaseBaseDir "RELEASE_NOTES.md") -Value $versionNotes -Encoding UTF8
         Write-Host "      Extracted release notes for v$Version." -ForegroundColor Gray
     }
 }

@@ -34,7 +34,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           name: "Once Human: Event Timer ${{ github.ref_name }}"
-          body_path: release/CHANGELOG.txt
+          body_path: release/RELEASE_NOTES.md
           draft: false
           prerelease: false
           files: |
