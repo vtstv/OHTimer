@@ -173,4 +173,50 @@ public class SystemSettingsAndSecondPrecisionTests
         Assert.False(skyripper.IsEnabled);
         Assert.Equal("Skyripper Anomaly", skyripper.Name);
     }
+
+    [Theory]
+    [InlineData("en-US")]
+    [InlineData("de-DE")]
+    [InlineData("ru-RU")]
+    public void PauseAlertsLocalizationKeys_AreProperlyTranslated(string langCode)
+    {
+        _loc.SetLanguage(langCode);
+
+        string[] requiredKeys =
+        [
+            "HUD_PauseAlerts",
+            "HUD_ResumeAlerts",
+            "HUD_AlertsPausedToast",
+            "HUD_AlertsResumedToast",
+            "Settings_PauseAlerts",
+            "Settings_HotkeyPauseAlerts",
+            "Tray_PauseAlerts",
+            "Tray_ResumeAlerts"
+        ];
+
+        foreach (var key in requiredKeys)
+        {
+            string value = _loc.GetString(key);
+            Assert.False(string.IsNullOrWhiteSpace(value), $"Missing key {key} in {langCode}");
+            Assert.DoesNotContain("[", value);
+        }
+    }
+
+    [Fact]
+    public void UserSettings_PauseAlertsAndHotkey_DefaultAndSerialization()
+    {
+        var settings = new UserSettings();
+        Assert.False(settings.AreAlertsPaused);
+        Assert.Equal("Ctrl+Alt+M", settings.TogglePauseAlertsHotkey);
+
+        settings.AreAlertsPaused = true;
+        settings.TogglePauseAlertsHotkey = "Ctrl+Shift+P";
+
+        string json = System.Text.Json.JsonSerializer.Serialize(settings);
+        var deserialized = System.Text.Json.JsonSerializer.Deserialize<UserSettings>(json);
+
+        Assert.NotNull(deserialized);
+        Assert.True(deserialized.AreAlertsPaused);
+        Assert.Equal("Ctrl+Shift+P", deserialized.TogglePauseAlertsHotkey);
+    }
 }

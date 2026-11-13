@@ -81,6 +81,9 @@ public partial class OverlayViewModel : ObservableObject
     [ObservableProperty]
     private string _driftSyncText = string.Empty;
 
+    [ObservableProperty]
+    private bool _areAlertsPaused = false;
+
     public Action? RequestOpenSettings { get; set; }
     public Action? RequestHideOverlay { get; set; }
     public Action? RequestExitApp { get; set; }
@@ -118,6 +121,7 @@ public partial class OverlayViewModel : ObservableObject
         ShowProgressRing = settings.ShowProgressRing;
         ShowNextEventTime = settings.ShowNextEventTime;
         ShowMiniControls = settings.ShowMiniControls;
+        AreAlertsPaused = settings.AreAlertsPaused;
     }
 
     private void OnSettingsChanged(object? sender, UserSettings settings)
@@ -212,6 +216,14 @@ public partial class OverlayViewModel : ObservableObject
     {
         CompactMode = !CompactMode;
         _settingsService.Settings.CompactMode = CompactMode;
+        await _settingsService.SaveAsync();
+    }
+
+    [RelayCommand]
+    private async Task TogglePauseAlertsAsync()
+    {
+        AreAlertsPaused = !AreAlertsPaused;
+        _settingsService.Settings.AreAlertsPaused = AreAlertsPaused;
         await _settingsService.SaveAsync();
     }
 

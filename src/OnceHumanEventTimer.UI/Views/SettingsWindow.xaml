@@ -370,6 +370,7 @@
                     <TabItem Header="{loc:Loc Settings_TabNotifications}">
                         <StackPanel Margin="16">
                             <CheckBox Content="{loc:Loc Settings_PlaySound}" IsChecked="{Binding PlayAlertSound}" Style="{StaticResource ModernCheckBoxStyle}" Margin="0,0,0,10" />
+                            <CheckBox Content="{loc:Loc Settings_PauseAlerts}" IsChecked="{Binding AreAlertsPaused}" Style="{StaticResource ModernCheckBoxStyle}" Margin="0,0,0,10" />
                             <CheckBox Content="{loc:Loc Settings_PlayOnStart}" IsChecked="{Binding PlayOnEventStart}" Style="{StaticResource ModernCheckBoxStyle}" Margin="0,0,0,10" />
                             <CheckBox Content="{loc:Loc Settings_ShowToast}" IsChecked="{Binding ShowToastAlert}" Style="{StaticResource ModernCheckBoxStyle}" Margin="0,0,0,12" />
 
@@ -548,6 +549,15 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="{loc:Loc Settings_HotkeyLock}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" />
                                 <TextBox Grid.Column="1" Text="{Binding ToggleClickThroughHotkey, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center" />
+                            </Grid>
+
+                            <Grid Margin="0,0,0,12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="140" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{loc:Loc Settings_HotkeyPauseAlerts}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" />
+                                <TextBox Grid.Column="1" Text="{Binding TogglePauseAlertsHotkey, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center" />
                             </Grid>
                         </StackPanel>
                     </TabItem>

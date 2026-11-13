@@ -79,6 +79,7 @@ A modern, high-performance desktop HUD overlay for **Once Human** that tracks re
   - Built-in audio library featuring 7 procedural synthesized alert presets (`Celestial Bell`, `Cosmic Pulse`, `Stardust Ping`, `Quantum Chord`, `Deep Resonance`, `Cyber Warning`, `Emergency Siren`).
   - Support for custom user `.wav` audio files per individual event or as global defaults.
   - Built-in instant preview audio test buttons.
+  - Dedicated hotkey and quick toggle to pause/mute alerts and notifications on demand.
 
 - **System Integration & Automatic Updates**:
   - Optional Windows Autostart (`HKCU\Software\Microsoft\Windows\CurrentVersion\Run`) configured via the dedicated System settings tab.
@@ -107,6 +108,7 @@ Releases are available in three distinct packages on the [GitHub Releases](https
 | :--- | :--- |
 | <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>S</kbd> | Toggle HUD overlay visibility |
 | <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>L</kbd> | Toggle click-through mode and position lock |
+| <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>M</kbd> | Toggle pause / resume for audio alerts and notifications |
 
 ---
 

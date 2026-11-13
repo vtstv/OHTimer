@@ -19,12 +19,15 @@ public sealed class Win32TrayService : IDisposable
     private const int CMD_LOCK = 102;
     private const int CMD_SETTINGS = 103;
     private const int CMD_EXIT = 104;
+    private const int CMD_PAUSE_ALERTS = 105;
 
     private readonly ILocalizationService _loc;
     private readonly Action _toggleVisibilityAction;
     private readonly Action _toggleLockAction;
     private readonly Action _openSettingsAction;
     private readonly Action _exitAction;
+    private readonly Action? _togglePauseAlertsAction;
+    private readonly Func<bool>? _areAlertsPausedFunc;
 
     private nint _hwnd;
     private HwndSource? _hwndSource;
@@ -37,13 +40,17 @@ public sealed class Win32TrayService : IDisposable
         Action toggleVisibilityAction,
         Action toggleLockAction,
         Action openSettingsAction,
-        Action exitAction)
+        Action exitAction,
+        Action? togglePauseAlertsAction = null,
+        Func<bool>? areAlertsPausedFunc = null)
     {
         _loc = loc;
         _toggleVisibilityAction = toggleVisibilityAction;
         _toggleLockAction = toggleLockAction;
         _openSettingsAction = openSettingsAction;
         _exitAction = exitAction;
+        _togglePauseAlertsAction = togglePauseAlertsAction;
+        _areAlertsPausedFunc = areAlertsPausedFunc;
     }
 
     public void Initialize(nint hwnd)
@@ -159,6 +166,13 @@ public sealed class Win32TrayService : IDisposable
 
         NativeMethods.AppendMenu(hMenu, NativeMethods.MF_STRING, (nuint)CMD_TOGGLE, _loc.GetString("Tray_OpenHUD"));
         NativeMethods.AppendMenu(hMenu, NativeMethods.MF_STRING, (nuint)CMD_LOCK, _loc.GetString("Tray_ToggleLock"));
+        if (_togglePauseAlertsAction != null && _areAlertsPausedFunc != null)
+        {
+            string pauseText = _areAlertsPausedFunc()
+                ? _loc.GetString("Tray_ResumeAlerts")
+                : _loc.GetString("Tray_PauseAlerts");
+            NativeMethods.AppendMenu(hMenu, NativeMethods.MF_STRING, (nuint)CMD_PAUSE_ALERTS, pauseText);
+        }
         NativeMethods.AppendMenu(hMenu, NativeMethods.MF_STRING, (nuint)CMD_SETTINGS, _loc.GetString("Tray_Settings"));
         NativeMethods.AppendMenu(hMenu, NativeMethods.MF_SEPARATOR, 0, string.Empty);
         NativeMethods.AppendMenu(hMenu, NativeMethods.MF_STRING, (nuint)CMD_EXIT, _loc.GetString("Tray_Exit"));
@@ -184,6 +198,9 @@ public sealed class Win32TrayService : IDisposable
                 break;
             case CMD_LOCK:
                 _toggleLockAction.Invoke();
+                break;
+            case CMD_PAUSE_ALERTS:
+                _togglePauseAlertsAction?.Invoke();
                 break;
             case CMD_SETTINGS:
                 _openSettingsAction.Invoke();

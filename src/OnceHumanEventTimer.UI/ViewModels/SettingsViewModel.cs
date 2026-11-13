@@ -45,6 +45,9 @@ public partial class SettingsViewModel : ObservableObject
     private bool _showToastAlert;
 
     [ObservableProperty]
+    private bool _areAlertsPaused;
+
+    [ObservableProperty]
     private string? _customSoundPath;
 
     [ObservableProperty]
@@ -82,12 +85,6 @@ public partial class SettingsViewModel : ObservableObject
 
     [ObservableProperty]
     private LanguageInfo _selectedLanguage;
-
-    [ObservableProperty]
-    private string _toggleVisibilityHotkey;
-
-    [ObservableProperty]
-    private string _toggleClickThroughHotkey;
 
     partial void OnOpacityChanged(double value) { _settingsService.Settings.Opacity = value; _settingsService.NotifyChanged(); }
     partial void OnScaleChanged(double value) { _settingsService.Settings.Scale = value; _settingsService.NotifyChanged(); }
@@ -130,6 +127,7 @@ public partial class SettingsViewModel : ObservableObject
         _playAlertSound = current.PlayAlertSound;
         _playOnEventStart = current.PlayOnEventStart;
         _showToastAlert = current.ShowToastAlert;
+        _areAlertsPaused = current.AreAlertsPaused;
         _customSoundPath = current.CustomSoundPath;
         _opacity = current.Opacity;
         _scale = current.Scale;
@@ -142,8 +140,6 @@ public partial class SettingsViewModel : ObservableObject
         _showProgressRing = current.ShowProgressRing;
         _showNextEventTime = current.ShowNextEventTime;
         _showMiniControls = current.ShowMiniControls;
-        _toggleVisibilityHotkey = current.ToggleVisibilityHotkey;
-        _toggleClickThroughHotkey = current.ToggleClickThroughHotkey;
 
         _selectedLanguage = SupportedLanguages.FirstOrDefault(l => l.Code == current.Language)
                             ?? SupportedLanguages.First();
@@ -151,6 +147,7 @@ public partial class SettingsViewModel : ObservableObject
         InitializeEvents(current);
         InitializeAudio(current);
         InitializeSystem(current, autostartService);
+        InitializeHotkeys(current);
     }
 
     [RelayCommand]
@@ -192,6 +189,7 @@ public partial class SettingsViewModel : ObservableObject
         s.PlayAlertSound = PlayAlertSound;
         s.PlayOnEventStart = PlayOnEventStart;
         s.ShowToastAlert = ShowToastAlert;
+        s.AreAlertsPaused = AreAlertsPaused;
         s.CustomSoundPath = CustomSoundPath;
         s.Opacity = Opacity;
         s.Scale = Scale;
@@ -208,6 +206,7 @@ public partial class SettingsViewModel : ObservableObject
         s.Language = SelectedLanguage.Code;
         s.ToggleVisibilityHotkey = ToggleVisibilityHotkey;
         s.ToggleClickThroughHotkey = ToggleClickThroughHotkey;
+        s.TogglePauseAlertsHotkey = TogglePauseAlertsHotkey;
         s.StartWithWindows = StartWithWindows;
         s.AutoHideWhenGameOutOfFocus = AutoHideWhenGameOutOfFocus;
 

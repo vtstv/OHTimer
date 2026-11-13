@@ -20,6 +20,10 @@ internal static class GermanCatalog
         ["HUD_Settings"] = "Einstellungen",
         ["HUD_Close"] = "HUD ausblenden",
         ["HUD_ToggleMini"] = "Mini / Voll-HUD umschalten",
+        ["HUD_PauseAlerts"] = "Benachrichtigungen pausieren",
+        ["HUD_ResumeAlerts"] = "Benachrichtigungen fortsetzen",
+        ["HUD_AlertsPausedToast"] = "Event-Benachrichtigungen und Alarmtöne pausiert.",
+        ["HUD_AlertsResumedToast"] = "Event-Benachrichtigungen und Alarmtöne fortgesetzt.",
         ["HUD_About"] = "Über",
 
         ["Notification_StartingSoon_Title"] = "Event-Benachrichtigung",
@@ -92,6 +96,7 @@ internal static class GermanCatalog
         ["Settings_AlertBeforeEnd"] = "Warnung vor Ende (Minuten):",
         ["Settings_Volume"] = "Benachrichtigungslautstärke:",
         ["Settings_PlaySound"] = "Audiowarnungen aktivieren",
+        ["Settings_PauseAlerts"] = "Alle Benachrichtigungen und Alarmtöne pausieren",
         ["Settings_PlayOnStart"] = "Sound abspielen, wenn Event beginnt",
         ["Settings_ShowToast"] = "Windows-Desktopbenachrichtigungen anzeigen",
         ["Settings_DefaultSound"] = "Standard-Alarmton:",
@@ -136,12 +141,15 @@ internal static class GermanCatalog
 
         ["Settings_HotkeyToggle"] = "Hotkey für Overlay-Sichtbarkeit:",
         ["Settings_HotkeyLock"] = "Hotkey für Durchklicken / Sperren:",
+        ["Settings_HotkeyPauseAlerts"] = "Hotkey für Benachrichtigungen pausieren:",
 
         ["Tray_OpenHUD"] = "Overlay anzeigen",
         ["Tray_HideHUD"] = "Overlay ausblenden",
         ["Tray_Settings"] = "Einstellungen...",
         ["Tray_ToggleLock"] = "Sperren / Entsperren",
         ["Tray_ToggleClickThrough"] = "Durchklicken umschalten",
+        ["Tray_PauseAlerts"] = "Benachrichtigungen pausieren",
+        ["Tray_ResumeAlerts"] = "Benachrichtigungen fortsetzen",
         ["Tray_Exit"] = "Beenden",
 
         ["About_Title"] = "Über Once Human Event-Timer",

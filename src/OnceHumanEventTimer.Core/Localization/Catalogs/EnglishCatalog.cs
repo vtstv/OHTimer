@@ -20,6 +20,10 @@ internal static class EnglishCatalog
         ["HUD_Settings"] = "Settings",
         ["HUD_Close"] = "Hide HUD",
         ["HUD_ToggleMini"] = "Toggle Mini / Full HUD",
+        ["HUD_PauseAlerts"] = "Pause Alerts",
+        ["HUD_ResumeAlerts"] = "Resume Alerts",
+        ["HUD_AlertsPausedToast"] = "Event alerts and sounds paused.",
+        ["HUD_AlertsResumedToast"] = "Event alerts and sounds resumed.",
         ["HUD_About"] = "About",
 
         ["Notification_StartingSoon_Title"] = "Event Alert",
@@ -92,6 +96,7 @@ internal static class EnglishCatalog
         ["Settings_AlertBeforeEnd"] = "Warning Before End (minutes):",
         ["Settings_Volume"] = "Notification Volume:",
         ["Settings_PlaySound"] = "Enable Audio Alerts",
+        ["Settings_PauseAlerts"] = "Pause all alerts and sound notifications",
         ["Settings_PlayOnStart"] = "Play Sound When Event Begins",
         ["Settings_ShowToast"] = "Show Windows Desktop Notifications",
         ["Settings_DefaultSound"] = "Default Alert Sound:",
@@ -136,12 +141,15 @@ internal static class EnglishCatalog
 
         ["Settings_HotkeyToggle"] = "Toggle Overlay Visibility Hotkey:",
         ["Settings_HotkeyLock"] = "Toggle Click-Through / Lock Hotkey:",
+        ["Settings_HotkeyPauseAlerts"] = "Toggle Pause Alerts Hotkey:",
 
         ["Tray_OpenHUD"] = "Show Overlay",
         ["Tray_HideHUD"] = "Hide Overlay",
         ["Tray_Settings"] = "Settings...",
         ["Tray_ToggleLock"] = "Lock / Unlock Position",
         ["Tray_ToggleClickThrough"] = "Toggle Click-Through",
+        ["Tray_PauseAlerts"] = "Pause Alerts",
+        ["Tray_ResumeAlerts"] = "Resume Alerts",
         ["Tray_Exit"] = "Exit",
 
         ["About_Title"] = "About Once Human Event Timer",

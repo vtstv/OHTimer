@@ -74,6 +74,8 @@ public partial class App : Application
 
         scheduler.NotificationTriggered += (s, args) =>
         {
+            if (settingsService.Settings.AreAlertsPaused) return;
+
             if (args.PlaySound && settingsService.Settings.PlayAlertSound)
             {
                 string? soundPath = args.Event?.CustomSoundPath;
@@ -129,31 +131,18 @@ public partial class App : Application
         if (hotkeyService is Win32HotkeyService winHotkey)
         {
             winHotkey.Initialize(overlayWindow.Handle);
-            RegisterHotkeys(winHotkey, settingsService.Settings, overlayWindow, overlayVm);
+            RegisterHotkeys(winHotkey, settingsService.Settings, overlayWindow, overlayVm, loc, notifications);
         }
 
         // 7. Setup System Tray
         _trayService = new Win32TrayService(
             loc,
-            toggleVisibilityAction: () =>
-            {
-                Dispatcher.Invoke(() =>
-                {
-                    if (overlayWindow.IsVisible)
-                    {
-                        _userManuallyHidden = true;
-                        overlayWindow.Hide();
-                    }
-                    else
-                    {
-                        _userManuallyHidden = false;
-                        overlayWindow.Show();
-                    }
-                });
-            },
+            toggleVisibilityAction: () => ToggleOverlayVisibility(overlayWindow),
             toggleLockAction: () => Dispatcher.Invoke(() => overlayVm.ToggleLockCommand.Execute(null)),
             openSettingsAction: OpenSettingsWindow,
-            exitAction: ShutdownApp);
+            exitAction: ShutdownApp,
+            togglePauseAlertsAction: () => Dispatcher.Invoke(() => overlayVm.TogglePauseAlertsCommand.Execute(null)),
+            areAlertsPausedFunc: () => settingsService.Settings.AreAlertsPaused);
 
         _trayService.Initialize(overlayWindow.Handle);
         if (notifications is WindowsNotificationService winNotif)
@@ -189,6 +178,11 @@ public partial class App : Application
         {
             Dispatcher.Invoke(() =>
             {
+                if (hotkeyService is Win32HotkeyService winHotkey)
+                {
+                    RegisterHotkeys(winHotkey, updatedSettings, overlayWindow, overlayVm, loc, notifications);
+                }
+
                 if (!updatedSettings.AutoHideWhenGameOutOfFocus && !_userManuallyHidden && !overlayWindow.IsVisible)
                 {
                     overlayWindow.Show();

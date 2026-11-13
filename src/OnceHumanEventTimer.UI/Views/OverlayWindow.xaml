@@ -70,6 +70,34 @@
                         </TextBlock>
                     </MenuItem.Icon>
                 </MenuItem>
+                <MenuItem Command="{Binding TogglePauseAlertsCommand}">
+                    <MenuItem.Style>
+                        <Style TargetType="MenuItem" BasedOn="{StaticResource {x:Type MenuItem}}">
+                            <Setter Property="Header" Value="{loc:Loc HUD_PauseAlerts}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding AreAlertsPaused}" Value="True">
+                                    <Setter Property="Header" Value="{loc:Loc HUD_ResumeAlerts}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </MenuItem.Style>
+                    <MenuItem.Icon>
+                        <TextBlock FontSize="12">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Text" Value="🔔" />
+                                    <Setter Property="Foreground" Value="{StaticResource AccentWaitingBrush}" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding AreAlertsPaused}" Value="True">
+                                            <Setter Property="Text" Value="🔕" />
+                                            <Setter Property="Foreground" Value="#EF4444" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </MenuItem.Icon>
+                </MenuItem>
                 <Separator />
                 <MenuItem Header="{loc:Loc Tray_Exit}" Command="{Binding ExitAppCommand}">
                     <MenuItem.Icon>
@@ -163,6 +191,42 @@
                                             <DataTrigger Binding="{Binding IsLocked}" Value="True">
                                                 <Setter Property="Text" Value="🔒" />
                                                 <Setter Property="Foreground" Value="{StaticResource AccentWaitingBrush}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Button>
+
+                        <!-- Pause Alerts Button -->
+                        <Button Style="{StaticResource HudIconButtonStyle}"
+                                Command="{Binding TogglePauseAlertsCommand}"
+                                Margin="0,0,2,0">
+                            <Button.ToolTip>
+                                <ToolTip>
+                                    <TextBlock>
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Text" Value="{loc:Loc HUD_PauseAlerts}" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding AreAlertsPaused}" Value="True">
+                                                        <Setter Property="Text" Value="{loc:Loc HUD_ResumeAlerts}" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </ToolTip>
+                            </Button.ToolTip>
+                            <TextBlock FontSize="11">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Text" Value="🔔" />
+                                        <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding AreAlertsPaused}" Value="True">
+                                                <Setter Property="Text" Value="🔕" />
+                                                <Setter Property="Foreground" Value="#EF4444" />
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
@@ -363,6 +427,42 @@
                                 ToolTip="{loc:Loc HUD_ToggleMini}"
                                 Margin="0,0,2,0">
                             <TextBlock Text="🗖" FontSize="10" Foreground="{StaticResource TextSecondaryBrush}" />
+                        </Button>
+
+                        <!-- Pause Alerts Button -->
+                        <Button Style="{StaticResource HudIconButtonStyle}"
+                                Command="{Binding TogglePauseAlertsCommand}"
+                                Margin="0,0,2,0">
+                            <Button.ToolTip>
+                                <ToolTip>
+                                    <TextBlock>
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Text" Value="{loc:Loc HUD_PauseAlerts}" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding AreAlertsPaused}" Value="True">
+                                                        <Setter Property="Text" Value="{loc:Loc HUD_ResumeAlerts}" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </ToolTip>
+                            </Button.ToolTip>
+                            <TextBlock FontSize="10">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Text" Value="🔔" />
+                                        <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding AreAlertsPaused}" Value="True">
+                                                <Setter Property="Text" Value="🔕" />
+                                                <Setter Property="Foreground" Value="#EF4444" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
                         </Button>
 
                         <!-- Settings Button -->

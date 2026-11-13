@@ -13,32 +13,36 @@ public partial class App
 {
     private bool _userManuallyHidden;
 
+    private void ToggleOverlayVisibility(OverlayWindow overlayWindow)
+    {
+        Dispatcher.Invoke(() =>
+        {
+            if (overlayWindow.IsVisible)
+            {
+                _userManuallyHidden = true;
+                overlayWindow.Hide();
+            }
+            else
+            {
+                _userManuallyHidden = false;
+                overlayWindow.Show();
+            }
+        });
+    }
+
     private void RegisterHotkeys(
         IHotkeyService hotkeyService,
         UserSettings settings,
         OverlayWindow overlayWindow,
-        OverlayViewModel overlayVm)
+        OverlayViewModel overlayVm,
+        ILocalizationService? loc = null,
+        INotificationService? notifications = null)
     {
         hotkeyService.UnregisterAll();
 
         if (!string.IsNullOrWhiteSpace(settings.ToggleVisibilityHotkey))
         {
-            hotkeyService.RegisterHotkey(settings.ToggleVisibilityHotkey, () =>
-            {
-                Dispatcher.Invoke(() =>
-                {
-                    if (overlayWindow.IsVisible)
-                    {
-                        _userManuallyHidden = true;
-                        overlayWindow.Hide();
-                    }
-                    else
-                    {
-                        _userManuallyHidden = false;
-                        overlayWindow.Show();
-                    }
-                });
-            });
+            hotkeyService.RegisterHotkey(settings.ToggleVisibilityHotkey, () => ToggleOverlayVisibility(overlayWindow));
         }
 
         if (!string.IsNullOrWhiteSpace(settings.ToggleClickThroughHotkey))
@@ -48,6 +52,25 @@ public partial class App
                 Dispatcher.Invoke(() =>
                 {
                     overlayVm.ToggleClickThroughCommand.Execute(null);
+                });
+            });
+        }
+
+        if (!string.IsNullOrWhiteSpace(settings.TogglePauseAlertsHotkey))
+        {
+            hotkeyService.RegisterHotkey(settings.TogglePauseAlertsHotkey, () =>
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    overlayVm.TogglePauseAlertsCommand.Execute(null);
+                    if (settings.ShowToastAlert && notifications != null && loc != null)
+                    {
+                        string title = loc.GetString("App_Title");
+                        string msg = overlayVm.AreAlertsPaused
+                            ? loc.GetString("HUD_AlertsPausedToast")
+                            : loc.GetString("HUD_AlertsResumedToast");
+                        notifications.ShowNotification(title, msg);
+                    }
                 });
             });
         }

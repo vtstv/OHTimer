@@ -20,6 +20,10 @@ internal static class RussianCatalog
         ["HUD_Settings"] = "Настройки",
         ["HUD_Close"] = "Скрыть HUD",
         ["HUD_ToggleMini"] = "Переключить Мини / Полный HUD",
+        ["HUD_PauseAlerts"] = "Приостановить оповещения",
+        ["HUD_ResumeAlerts"] = "Возобновить оповещения",
+        ["HUD_AlertsPausedToast"] = "Звуковые оповещения и уведомления приостановлены.",
+        ["HUD_AlertsResumedToast"] = "Звуковые оповещения и уведомления возобновлены.",
         ["HUD_About"] = "О программе",
 
         ["Notification_StartingSoon_Title"] = "Оповещение о событии",
@@ -92,6 +96,7 @@ internal static class RussianCatalog
         ["Settings_AlertBeforeEnd"] = "Предупреждать до конца за (мин):",
         ["Settings_Volume"] = "Громкость оповещений:",
         ["Settings_PlaySound"] = "Звуковые сигналы",
+        ["Settings_PauseAlerts"] = "Приостановить все звуковые оповещения и уведомления",
         ["Settings_PlayOnStart"] = "Звук в момент начала события",
         ["Settings_ShowToast"] = "Всплывающие уведомления Windows",
         ["Settings_DefaultSound"] = "Звук оповещения по умолчанию:",
@@ -136,12 +141,15 @@ internal static class RussianCatalog
 
         ["Settings_HotkeyToggle"] = "Хоткей скрытия/показа оверлея:",
         ["Settings_HotkeyLock"] = "Хоткей сквозного клика/блокировки:",
+        ["Settings_HotkeyPauseAlerts"] = "Хоткей паузы оповещений:",
 
         ["Tray_OpenHUD"] = "Показать оверлей",
         ["Tray_HideHUD"] = "Скрыть оверлей",
         ["Tray_Settings"] = "Настройки...",
         ["Tray_ToggleLock"] = "Заблокировать/Разблокировать",
         ["Tray_ToggleClickThrough"] = "Сквозной клик",
+        ["Tray_PauseAlerts"] = "Приостановить оповещения",
+        ["Tray_ResumeAlerts"] = "Возобновить оповещения",
         ["Tray_Exit"] = "Выход",
 
         ["About_Title"] = "О программе Once Human Event Timer",

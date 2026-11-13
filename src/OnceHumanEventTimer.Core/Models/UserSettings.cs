@@ -158,15 +158,17 @@ public class UserSettings
     /// </summary>
     public string? CustomSoundPath { get; set; }
 
-    /// <summary>
-    /// Global hotkey string to toggle overlay visibility.
-    /// </summary>
+    /// <summary>Global hotkey string to toggle overlay visibility.</summary>
     public string ToggleVisibilityHotkey { get; set; } = "Ctrl+Alt+S";
 
-    /// <summary>
-    /// Global hotkey string to toggle click-through lock.
-    /// </summary>
+    /// <summary>Global hotkey string to toggle click-through lock.</summary>
     public string ToggleClickThroughHotkey { get; set; } = "Ctrl+Alt+L";
+
+    /// <summary>Global hotkey string to toggle pause/mute for alerts (default: Ctrl+Alt+M).</summary>
+    public string TogglePauseAlertsHotkey { get; set; } = "Ctrl+Alt+M";
+
+    /// <summary>Whether all audio alerts and toast notifications are temporarily paused/muted.</summary>
+    public bool AreAlertsPaused { get; set; } = false;
 
     /// <summary>
     /// Retrieves the currently active event definition, falling back to default if not found.
