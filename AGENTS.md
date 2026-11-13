@@ -32,18 +32,18 @@ It tracks recurring in-game events in real-time with zero-drift game time synchr
 The solution follows clean architectural separation across 4 distinct projects:
 
 ```
-StarfallTimer.sln
+OnceHumanEventTimer.sln
 ├── src/
-│   ├── StarfallTimer.Core            # Pure domain models, scheduling logic & localization (zero UI dependencies)
-│   ├── StarfallTimer.Infrastructure  # Win32 P/Invoke, Audio synthesis, File persistence, OS Toasts
-│   └── StarfallTimer.UI              # WPF (MVVM), XAML Styles, Controls, Windows, Tray
+│   ├── OnceHumanEventTimer.Core            # Pure domain models, scheduling logic & localization (zero UI dependencies)
+│   ├── OnceHumanEventTimer.Infrastructure  # Win32 P/Invoke, Audio synthesis, File persistence, OS Toasts
+│   └── OnceHumanEventTimer.UI              # WPF (MVVM), XAML Styles, Controls, Windows, Tray
 └── tests/
-    └── StarfallTimer.Tests           # xUnit Unit tests for scheduler, sync & localization
+    └── OnceHumanEventTimer.Tests           # xUnit Unit tests for scheduler, sync & localization
 ```
 
 ### Key Rules:
 1. **Zero Monoliths**: No class file should exceed ~250 lines. Decompose UI controls, models, viewmodels, and catalogs into dedicated single-responsibility files.
-2. **UI Independence of Core**: `StarfallTimer.Core` MUST NOT reference `System.Windows`, WPF, or any Windows-specific API. It must compile and run on pure `.NET 8`.
+2. **UI Independence of Core**: `OnceHumanEventTimer.Core` MUST NOT reference `System.Windows`, WPF, or any Windows-specific API. It must compile and run on pure `.NET 8`.
 3. **Language & Localization Policy**:
    - **All source code, identifiers, comments, commits, and documentation MUST BE in English only.**
    - Default UI language is English (`en-US`).
@@ -51,7 +51,7 @@ StarfallTimer.sln
      - 🇺🇸 English (`en-US`) — Default
      - 🇩🇪 German (`de-DE`)
      - 🇷🇺 Russian (`ru-RU`)
-   - Catalogs are implemented in `StarfallTimer.Core.Localization.Catalogs` with strict key parity and English fallback.
+   - Catalogs are implemented in `OnceHumanEventTimer.Core.Localization.Catalogs` with strict key parity and English fallback.
 4. **Dependency Injection**: Services are registered and resolved via `Microsoft.Extensions.DependencyInjection`. Avoid static singletons.
 
 ---
@@ -60,14 +60,14 @@ StarfallTimer.sln
 
 - **Target Framework**: .NET 8 LTS (`net8.0` for Core/Tests, `net8.0-windows` for Infrastructure/UI).
 - **C# Language Version**: C# 12 with:
-  - File-scoped namespaces (`namespace StarfallTimer.Core.Models;`).
+  - File-scoped namespaces (`namespace OnceHumanEventTimer.Core.Models;`).
   - Strict Nullable Reference Types (`<Nullable>enable</Nullable>`). No unhandled null warnings.
   - Primary constructors where concise and readable.
   - Pattern matching and records for immutable snapshots (`EventSnapshot`).
 - **MVVM Framework**: `CommunityToolkit.Mvvm`. Use source generators (`[ObservableProperty]`, `[RelayCommand]`). Partial classes for ViewModel decomposition.
 - **P/Invoke & Win32 Safety**:
   - Always clean up registered hotkeys (`UnregisterHotKey`) on application exit or window closing.
-  - Win32 calls must reside exclusively in `StarfallTimer.Infrastructure.Win32`.
+  - Win32 calls must reside exclusively in `OnceHumanEventTimer.Infrastructure.Win32`.
   - Use `IntPtr` / `nint` correctly for 64-bit Windows compatibility.
 
 ---
@@ -108,7 +108,7 @@ StarfallTimer.sln
 
 ## 7. Testing Requirements
 
-- Any calculation regarding event time, phase transition, remaining duration, arbitrary cycle minutes, drift offsets, and alert triggers must be covered by xUnit tests in `StarfallTimer.Tests`.
+- Any calculation regarding event time, phase transition, remaining duration, arbitrary cycle minutes, drift offsets, and alert triggers must be covered by xUnit tests in `OnceHumanEventTimer.Tests`.
 - Edge cases to test:
   - Time boundary at event start (`XX:21:59` to `XX:22:00`).
   - Time boundary at event end (`XX:51:59` to `XX:52:00`).

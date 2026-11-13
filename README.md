@@ -1,10 +1,10 @@
 # Once Human: Event Timer
 
-[![CI](https://github.com/vtstv/StarfallTimer/actions/workflows/ci.yml/badge.svg)](https://github.com/vtstv/StarfallTimer/actions)
+[![CI](https://github.com/vtstv/OHTimer/actions/workflows/ci.yml/badge.svg)](https://github.com/vtstv/OHTimer/actions)
 ![.NET 8](https://img.shields.io/badge/.NET-8.0_LTS-512BD4?logo=dotnet&logoColor=white)
 ![Platform](https://img.shields.io/badge/Platform-Windows_10%20%2F%2011-0078D6?logo=windows&logoColor=white)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-![Version](https://img.shields.io/badge/Release-v1.2.0-00F0FF)
+![Version](https://img.shields.io/badge/Release-v1.2.1-00F0FF)
 
 A lightweight Windows desktop HUD overlay for **Once Human** that tracks recurring in-game world events in real time. Features zero-drift game time synchronization, multi-timer tracking, full and compact mini HUD modes, Win32 click-through integration, procedural audio alerts, and trilingual localization.
 
@@ -180,36 +180,36 @@ Server clocks can differ from local system time by several seconds. To calibrate
 The project is structured into 4 decoupled assemblies following clean architecture principles:
 
 ```text
-StarfallTimer.sln
+OnceHumanEventTimer.sln
 ├── src/
-│   ├── StarfallTimer.Core            # Pure domain models, scheduling engine, localization (.NET 8)
-│   │   ├── Localization/             # Catalogs (English, German, Russian)
-│   │   ├── Models/                   # EventDefinition, EventSnapshot, UserSettings, UpdateInfo
-│   │   ├── Scheduling/               # EventScheduler, EventTimeCalculator, NotificationEvaluator
-│   │   └── Services/                 # Interfaces (IEventScheduler, IAudioService, IUpdateService, etc.)
+│   ├── OnceHumanEventTimer.Core            # Pure domain models, scheduling engine, localization (.NET 8)
+│   │   ├── Localization/                   # Catalogs (English, German, Russian)
+│   │   ├── Models/                         # EventDefinition, EventSnapshot, UserSettings, UpdateInfo
+│   │   ├── Scheduling/                     # EventScheduler, EventTimeCalculator, NotificationEvaluator
+│   │   └── Services/                       # Interfaces (IEventScheduler, IAudioService, IUpdateService, etc.)
 │   │
-│   ├── StarfallTimer.Infrastructure  # OS integration & Windows services (.NET 8 Windows)
-│   │   ├── Audio/                    # SynthesizerAudioService (in-memory WAV synthesis)
-│   │   ├── Notifications/            # WindowsNotificationService (toast notifications)
-│   │   ├── Storage/                  # FileSettingsService (atomic JSON persistence)
-│   │   ├── Updates/                  # GitHubUpdateService (releases API, self-update script)
-│   │   └── Win32/                    # NativeMethods, Win32HotkeyService, Win32TrayService
+│   ├── OnceHumanEventTimer.Infrastructure  # OS integration & Windows services (.NET 8 Windows)
+│   │   ├── Audio/                          # SynthesizerAudioService (in-memory WAV synthesis)
+│   │   ├── Notifications/                  # WindowsNotificationService (toast notifications)
+│   │   ├── Storage/                        # FileSettingsService (atomic JSON persistence)
+│   │   ├── Updates/                        # GitHubUpdateService (releases API, self-update script)
+│   │   └── Win32/                          # NativeMethods, Win32HotkeyService, Win32TrayService
 │   │
-│   └── StarfallTimer.UI              # Presentation layer (WPF, MVVM, CommunityToolkit)
-│       ├── Assets/                   # app.ico (multi-resolution application icon)
-│       ├── Controls/                 # CircularTimerProgress ring control
-│       ├── Converters/               # BoolToVisibilityConverter, StringNullOrEmptyToVisibilityConverter
-│       ├── Styles/                   # Cyberpunk dark ControlTemplates (ComboBox, TabControl, etc.)
-│       ├── ViewModels/               # OverlayViewModel, SettingsViewModel, TimerItemViewModel
-│       └── Views/                    # OverlayWindow, SettingsWindow
+│   └── OnceHumanEventTimer.UI              # Presentation layer (WPF, MVVM, CommunityToolkit)
+│       ├── Assets/                         # app.ico (multi-resolution application icon)
+│       ├── Controls/                       # CircularTimerProgress ring control
+│       ├── Converters/                     # BoolToVisibilityConverter, StringNullOrEmptyToVisibilityConverter
+│       ├── Styles/                         # Cyberpunk dark ControlTemplates (ComboBox, TabControl, etc.)
+│       ├── ViewModels/                     # OverlayViewModel, SettingsViewModel, TimerItemViewModel
+│       └── Views/                          # OverlayWindow, SettingsWindow
 │
 └── tests/
-    └── StarfallTimer.Tests           # Automated xUnit test suite
-        ├── LocalizationTests.cs      # Translation completeness and key parity
-        ├── MultiTimerTests.cs        # Multi-timer evaluation and snapshot handling
-        ├── SchedulerTests.cs         # Boundary calculations and cycle rollovers
-        ├── UniversalSchedulerTests.cs# Custom cycles, drift offsets, and game time sync
-        └── UpdateServiceTests.cs     # Update detection and version parsing tests
+    └── OnceHumanEventTimer.Tests           # Automated xUnit test suite
+        ├── LocalizationTests.cs            # Translation completeness and key parity
+        ├── MultiTimerTests.cs              # Multi-timer evaluation and snapshot handling
+        ├── SchedulerTests.cs               # Boundary calculations and cycle rollovers
+        ├── UniversalSchedulerTests.cs      # Custom cycles, drift offsets, and game time sync
+        └── UpdateServiceTests.cs           # Update detection and version parsing tests
 ```
 
 ---
@@ -226,8 +226,8 @@ StarfallTimer.sln
 
 ```powershell
 # 1. Clone repository
-git clone https://github.com/vtstv/StarfallTimer.git
-cd StarfallTimer
+git clone https://github.com/vtstv/OHTimer.git
+cd OHTimer
 
 # 2. Restore dependencies
 dotnet restore
@@ -239,7 +239,7 @@ dotnet build --configuration Release --no-restore
 dotnet test --configuration Release --no-build --verbosity normal
 
 # 5. Launch application
-dotnet run --project src/StarfallTimer.UI --configuration Release
+dotnet run --project src/OnceHumanEventTimer.UI --configuration Release
 ```
 
 ---
@@ -250,10 +250,10 @@ An automated PowerShell script builds, tests, publishes, and packages releases i
 
 ```powershell
 # Build lightweight framework-dependent package (~0.7 MB, requires .NET 8 runtime)
-.\scripts\build-release.ps1 -Version "1.2.0"
+.\scripts\build-release.ps1 -Version "1.2.1"
 
 # Build self-contained standalone executable (includes .NET runtime)
-.\scripts\build-release.ps1 -Version "1.2.0" -Standalone:$true
+.\scripts\build-release.ps1 -Version "1.2.1" -Standalone:$true
 ```
 
 Output is bundled into `release/OnceHumanTimer-v<version>/` and compressed to `release/OnceHumanTimer-v<version>.zip`.
@@ -264,7 +264,7 @@ See [CHANGELOG.md](CHANGELOG.md) for version release notes.
 
 ## Configuration Reference
 
-Configuration is stored in `%APPDATA%\OnceHumanStarfallTimer\settings.json`:
+Configuration is stored in `%APPDATA%\OnceHumanEventTimer\settings.json`:
 
 ```json
 {

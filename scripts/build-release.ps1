@@ -12,7 +12,7 @@
 
 .PARAMETER Version
     The semantic version string for the release (e.g., "1.1.0").
-    If omitted, extracts the version from StarfallTimer.UI.csproj.
+    If omitted, extracts the version from OnceHumanEventTimer.UI.csproj.
 
 .PARAMETER Runtime
     The target runtime identifier (default: "win-x64").
@@ -52,12 +52,12 @@ Write-Host " Author: Murr (https://github.com/vtstv)                  " -Foregro
 Write-Host "==========================================================" -ForegroundColor Cyan
 
 # 1. Resolve Version
-$projectPath = Join-Path $repoRoot "src\StarfallTimer.UI\StarfallTimer.UI.csproj"
+$projectPath = Join-Path $repoRoot "src\OnceHumanEventTimer.UI\OnceHumanEventTimer.UI.csproj"
 if ([string]::IsNullOrWhiteSpace($Version)) {
     [xml]$projXml = Get-Content $projectPath
     $Version = $projXml.Project.PropertyGroup.Version
     if ([string]::IsNullOrWhiteSpace($Version)) {
-        $Version = "1.1.0"
+        $Version = "1.2.1"
     }
 }
 
@@ -75,7 +75,7 @@ Write-Host "      Detected .NET SDK version: $dotnetVer" -ForegroundColor Gray
 # 3. Run Automated Tests
 if (-not $SkipTests) {
     Write-Host "[3/6] Running automated test suite..." -ForegroundColor Yellow
-    & dotnet test (Join-Path $repoRoot "StarfallTimer.sln") -c Release --nologo
+    & dotnet test (Join-Path $repoRoot "OnceHumanEventTimer.sln") -c Release --nologo
     if ($LASTEXITCODE -ne 0) {
         Write-Error "Unit tests failed. Release build aborted."
         exit 1
@@ -159,6 +159,6 @@ Write-Host " Package Directory : $releaseTargetDir" -ForegroundColor White
 Write-Host " ZIP Archive       : $zipFilePath" -ForegroundColor White
 Write-Host " Archive Size      : $zipSizeMb MB" -ForegroundColor White
 Write-Host " SHA256 Checksum   : $sha256" -ForegroundColor White
-Write-Host " Executable        : OnceHumanStarfallTimer.exe" -ForegroundColor White
+Write-Host " Executable        : OnceHumanEventTimer.exe" -ForegroundColor White
 Write-Host " Mode              : $(if ($Standalone) { 'Self-Contained (Plug & Play)' } else { 'Framework-Dependent (Lightweight)' })" -ForegroundColor White
 Write-Host "==========================================================`n" -ForegroundColor Green

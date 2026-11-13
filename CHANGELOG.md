@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.2.1] - 2026-11-13
+
+### Fixed
+- **Startup Crash Fix (`0xE0434352` / `XamlParseException`)**: Removed direct `Icon` pack references in XAML for frameless `OverlayWindow` and added safe runtime icon loader with fallback in `SettingsWindow` to eliminate single-file publish crash.
+
+### Changed
+- **Solution & Namespace Rebranding**: Renamed solution, projects, assemblies, and root namespaces from `StarfallTimer` to `OnceHumanEventTimer`.
+- **Primary Executable**: Published binary is now `OnceHumanEventTimer.exe`.
+- **Application Storage**: Updated default local state storage directory to `%APPDATA%\OnceHumanEventTimer` with seamless backwards-compatible configuration migration.
+- **Repository & Release Integration**: Updated self-updater API and git remote origin to `https://github.com/vtstv/OHTimer.git`.
+
+---
+
 ## [1.2.0] - 2026-11-12
 
 ### Added

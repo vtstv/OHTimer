@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\OnceHumanEventTimer.Core\OnceHumanEventTimer.Core.csproj" />
+    <ProjectReference Include="..\OnceHumanEventTimer.Infrastructure\OnceHumanEventTimer.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\app.ico" />
+    <None Include="Assets\app.ico">
+      <Link>app.ico</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>Assets\app.ico</ApplicationIcon>
+    <AssemblyName>OnceHumanEventTimer</AssemblyName>
+    <Version>1.2.1</Version>
+    <AssemblyVersion>1.2.1.0</AssemblyVersion>
+    <FileVersion>1.2.1.0</FileVersion>
+    <Authors>Murr</Authors>
+    <Company>Murr</Company>
+    <Product>Once Human: Event Timer</Product>
+    <Copyright>Copyright © Murr (https://github.com/vtstv). All rights reserved.</Copyright>
+    <Description>A stylish HUD overlay timer for Once Human recurring world events with zero-drift game time sync.</Description>
+  </PropertyGroup>
+
+</Project>
