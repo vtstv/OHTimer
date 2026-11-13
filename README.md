@@ -13,9 +13,21 @@ A modern, high-performance desktop HUD overlay for **Once Human** that tracks re
 ## Screenshots
 
 <p align="center">
+  <img src="docs/images/hud-multitimer.png" alt="Once Human Multi-Timer HUD Overlay" width="520"/>
+  <br/>
+  <em>In-game desktop HUD overlay tracking multiple concurrent events with neon progress rings, phase badges, and active countdown bars.</em>
+</p>
+
+<p align="center">
+  <img src="docs/images/hud-mini.png" alt="Minimal Floating Mini-HUD" width="380"/>
+  <br/>
+  <em>Ultra-compact floating Mini-HUD mode showing next active event and remaining time.</em>
+</p>
+
+<p align="center">
   <img src="docs/images/settings-events.jpg" alt="Event Management, Preset Library, and Server Time Calibration" width="760"/>
   <br/>
-  <em>Universal event scheduling engine with 14 built-in Once Human presets, native full-spectrum color picker, and zero-drift server sync.</em>
+  <em>Universal event scheduling engine with 14 built-in Once Human presets, custom dark scrollbar, and zero-drift server sync.</em>
 </p>
 
 <p align="center">
@@ -74,29 +86,6 @@ A modern, high-performance desktop HUD overlay for **Once Human** that tracks re
 
 - **Multilingual Support**:
   - Full native localization in English (`en-US`), German (`de-DE`), and Russian (`ru-RU`).
-
----
-
-## Supported Event Presets
-
-All built-in presets automatically populate in the event manager and can be enabled, adjusted, or restored at any time:
-
-| Event | Cycle | Start | Duration | Default Color | Description |
-| :--- | :---: | :---: | :---: | :---: | :--- |
-| **Gravity Abyss** | 60 min | XX:22:29 | 30 min | `#00F0FF` (Cyan) | Hourly low-gravity tide with Stardust Crystals. |
-| **Skyripper Anomaly** | 60 min | XX:37:29 | 20 min | `#8B5CF6` (Violet) | Aerial floating rift anomaly event. |
-| **Cargo Scramble (Sproutlet Truck)** | 60 min | XX:00:00 | 20 min | `#F59E0B` (Amber) | PvP convoy escort and sproutlet gathering. |
-| **Prime War (Nightmare Defense)** | 120 min | XX:00:00 | 30 min | `#DC2626` (Crimson) | Massive cooperative defense against Manibus. |
-| **Public Crisis (Harrowing)** | 30 min | XX:00:00 | 15 min | `#06B6D4` (Teal) | Fast bi-hourly open-world crisis for weapon mods. |
-| **Chiron the Centaur** | 60 min | XX:30:00 | 15 min | `#F97316` (Orange) | Centaur boss dynamic encounter in Red Sands. |
-| **Extraction Workshop Defense** | 15 min | XX:00:00 | 10 min | `#14B8A6` (Jade) | Refinery wave defense for Stardust fuel. |
-| **Blackfell Stronghold Loot Run** | 240 min | XX:00:00 | 15 min | `#6366F1` (Indigo) | 4-hour weapon and gear crate looting route. |
-| **Lunar Oracle (Blood Moon)** | 60 min | XX:45:00 | 15 min | `#EF4444` (Coral) | Blood moon aberration anomaly event. |
-| **Lunar Revelry (Lord of Moonlight)** | 60 min | XX:40:00 | 20 min | `#A855F7` (Purple) | Moonlight festival world gathering. |
-| **Aberrant Progeny (Spore Tide)** | 60 min | XX:10:00 | 25 min | `#10B981` (Emerald) | Spore tide aberration defense wave. |
-| **Dissonant Resonance** | 60 min | XX:15:00 | 30 min | `#EC4899` (Rose) | Dynamic soundwave anomaly zone. |
-| **Crate Loot Reset (4-Hour)** | 240 min | XX:00:00 | 5 min | `#3B82F6` (Blue) | Global mystical crate refresh window. |
-| **Custom Wheel Event** | Custom | Custom | Custom | `#EAB308` (Gold) | User-defined cyclic interval, start time, and duration. |
 
 ---
 

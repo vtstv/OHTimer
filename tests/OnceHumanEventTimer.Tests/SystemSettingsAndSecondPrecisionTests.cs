@@ -123,6 +123,27 @@ public class SystemSettingsAndSecondPrecisionTests
         }
     }
 
+    [Theory]
+    [InlineData("en-US")]
+    [InlineData("de-DE")]
+    [InlineData("ru-RU")]
+    public void ConfirmationDialogLocalizationKeys_AreProperlyTranslated(string langCode)
+    {
+        _loc.SetLanguage(langCode);
+
+        string deleteConfirm = _loc.Format("Settings_DeleteEvent_Confirm", "Test Event");
+        Assert.Contains("Test Event", deleteConfirm);
+
+        string deleteTitle = _loc.GetString("Settings_DeleteEvent_Title");
+        Assert.False(string.IsNullOrWhiteSpace(deleteTitle));
+
+        string restoreConfirm = _loc.GetString("Settings_RestorePresets_Confirm");
+        Assert.False(string.IsNullOrWhiteSpace(restoreConfirm));
+
+        string restoreTitle = _loc.GetString("Settings_RestorePresets_Title");
+        Assert.False(string.IsNullOrWhiteSpace(restoreTitle));
+    }
+
     [Fact]
     public void EnsureDefaultPresets_MergesMissingPresets_IntoLegacyUserSettings()
     {

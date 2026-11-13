@@ -36,9 +36,21 @@ public partial class App
             // Temporarily disable auto-hide so overlay stays visible for capture
             var settingsService = _serviceProvider!.GetRequiredService<ISettingsService>();
             settingsService.Settings.AutoHideWhenGameOutOfFocus = false;
+            settingsService.Settings.ShowBackground = true;
+            settingsService.Settings.ShowBorder = true;
+            settingsService.Settings.Opacity = 0.95;
+
+            var gEvent = settingsService.Settings.Events.FirstOrDefault(e => e.Id == "gravity-abyss");
+            if (gEvent != null) gEvent.IsEnabled = true;
+            var cEvent = settingsService.Settings.Events.FirstOrDefault(e => e.Id == "cargo-scramble");
+            if (cEvent != null) cEvent.IsEnabled = true;
+
+            var scheduler = _serviceProvider!.GetRequiredService<IEventScheduler>();
+            scheduler.SetTrackedEvents(settingsService.Settings.Events, settingsService.Settings.ActiveEventId, 0);
 
             // 1. Setup & Capture Settings Window Tabs
             var settingsVm = _serviceProvider!.GetRequiredService<SettingsViewModel>();
+            settingsVm.ConfirmAction = (_, _) => true;
             var settingsWindow = new SettingsWindow(settingsVm)
             {
                 WindowStartupLocation = WindowStartupLocation.CenterScreen,
@@ -85,18 +97,19 @@ public partial class App
             // 2. Capture HUD Overlay
             var overlayWindow = Current.Windows.OfType<OverlayWindow>().FirstOrDefault() ?? (OverlayWindow)MainWindow;
             var overlayVm = _serviceProvider!.GetRequiredService<OverlayViewModel>();
+            var darkBackdrop = new SolidColorBrush(Color.FromRgb(0x08, 0x0C, 0x14));
 
             overlayVm.CompactMode = false;
             overlayWindow.Show();
             overlayWindow.UpdateLayout();
             await Task.Delay(300);
-            CaptureVisual(overlayWindow, Path.Combine(docsDir, "hud-multitimer.png"));
+            CaptureVisual(overlayWindow, Path.Combine(docsDir, "hud-multitimer.png"), backdrop: darkBackdrop);
             File.AppendAllText(logFile, "Captured hud-multitimer.png\n");
 
             overlayVm.CompactMode = true;
             overlayWindow.UpdateLayout();
             await Task.Delay(300);
-            CaptureVisual(overlayWindow, Path.Combine(docsDir, "hud-mini.png"));
+            CaptureVisual(overlayWindow, Path.Combine(docsDir, "hud-mini.png"), backdrop: darkBackdrop);
             File.AppendAllText(logFile, "Captured hud-mini.png\n");
 
             File.AppendAllText(logFile, "Capture completed successfully!\n");
@@ -112,7 +125,7 @@ public partial class App
         }
     }
 
-    private static void CaptureVisual(FrameworkElement visual, string outputPath, int defaultW = 0, int defaultH = 0, bool isJpeg = false)
+    private static void CaptureVisual(FrameworkElement visual, string outputPath, int defaultW = 0, int defaultH = 0, bool isJpeg = false, Brush? backdrop = null)
     {
         int width = (int)Math.Max(visual.ActualWidth, visual.Width);
         int height = (int)Math.Max(visual.ActualHeight, visual.Height);
@@ -120,6 +133,15 @@ public partial class App
         if (height <= 0) height = defaultH > 0 ? defaultH : 300;
 
         var rtb = new RenderTargetBitmap(width, height, 96, 96, PixelFormats.Pbgra32);
+        if (backdrop != null)
+        {
+            var dv = new DrawingVisual();
+            using (var dc = dv.RenderOpen())
+            {
+                dc.DrawRectangle(backdrop, null, new Rect(0, 0, width, height));
+            }
+            rtb.Render(dv);
+        }
         rtb.Render(visual);
 
         using var fs = File.Create(outputPath);

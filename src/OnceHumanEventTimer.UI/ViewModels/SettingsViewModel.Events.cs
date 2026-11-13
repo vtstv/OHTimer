@@ -33,49 +33,41 @@ public partial class SettingsViewModel
         get => SelectedEvent?.Name ?? string.Empty;
         set { if (SelectedEvent != null && SelectedEvent.Name != value) { SelectedEvent.Name = value; OnPropertyChanged(); } }
     }
-
     public int SelectedEventCycleMinutes
     {
         get => SelectedEvent?.CycleMinutes ?? 60;
         set { if (SelectedEvent != null && SelectedEvent.CycleMinutes != value) { SelectedEvent.CycleMinutes = Math.Max(1, value); OnPropertyChanged(); } }
     }
-
     public int SelectedEventStartMinute
     {
         get => SelectedEvent?.StartMinute ?? 0;
         set { if (SelectedEvent != null && SelectedEvent.StartMinute != value) { SelectedEvent.StartMinute = Math.Max(0, value); OnPropertyChanged(); } }
     }
-
     public int SelectedEventStartSecond
     {
         get => SelectedEvent?.StartSecond ?? 0;
         set { if (SelectedEvent != null && SelectedEvent.StartSecond != value) { SelectedEvent.StartSecond = Math.Clamp(value, 0, 59); OnPropertyChanged(); } }
     }
-
     public int SelectedEventDurationMinutes
     {
         get => SelectedEvent?.DurationMinutes ?? 15;
         set { if (SelectedEvent != null && SelectedEvent.DurationMinutes != value) { SelectedEvent.DurationMinutes = Math.Max(1, value); OnPropertyChanged(); } }
     }
-
     public int SelectedEventTimeOffsetSeconds
     {
         get => SelectedEvent?.TimeOffsetSeconds ?? 0;
         set { if (SelectedEvent != null && SelectedEvent.TimeOffsetSeconds != value) { SelectedEvent.TimeOffsetSeconds = value; OnPropertyChanged(); } }
     }
-
     public string SelectedEventColorHex
     {
         get => SelectedEvent?.ColorHex ?? "#00E5FF";
         set { if (SelectedEvent != null && SelectedEvent.ColorHex != value) { SelectedEvent.ColorHex = value; OnPropertyChanged(); } }
     }
-
     public string SelectedEventDescription
     {
         get => SelectedEvent?.Description ?? string.Empty;
         set { if (SelectedEvent != null && SelectedEvent.Description != value) { SelectedEvent.Description = value; OnPropertyChanged(); } }
     }
-
     public bool SelectedEventIsEnabled
     {
         get => SelectedEvent?.IsEnabled ?? false;
@@ -204,10 +196,23 @@ public partial class SettingsViewModel
         SelectedEvent = newEvent;
     }
 
+    public Func<string, string, bool>? ConfirmAction { get; set; }
+
+    private bool Confirm(string message, string title)
+    {
+        if (ConfirmAction != null) return ConfirmAction(message, title);
+        return MessageBox.Show(message, title, MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes;
+    }
+
     [RelayCommand]
     private void DeleteEvent()
     {
         if (SelectedEvent == null || Events.Count <= 1) return;
+
+        string msg = _loc.Format("Settings_DeleteEvent_Confirm", SelectedEvent.Name);
+        string title = _loc.GetString("Settings_DeleteEvent_Title");
+        if (!Confirm(msg, title)) return;
+
         var toRemove = SelectedEvent;
         int index = Events.IndexOf(toRemove);
         Events.Remove(toRemove);
@@ -221,6 +226,10 @@ public partial class SettingsViewModel
     [RelayCommand]
     private void RestoreDefaultPresets()
     {
+        string msg = _loc.GetString("Settings_RestorePresets_Confirm");
+        string title = _loc.GetString("Settings_RestorePresets_Title");
+        if (!Confirm(msg, title)) return;
+
         var defaults = DefaultEventPresets.CreateDefaultEvents();
         var existingIds = new HashSet<string>(Events.Select(e => e.Id), StringComparer.OrdinalIgnoreCase);
 
