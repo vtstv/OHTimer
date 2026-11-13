@@ -24,7 +24,7 @@ public class UniversalSchedulerTests
         var settings = new UserSettings();
 
         Assert.NotNull(settings.Events);
-        Assert.Equal(8, settings.Events.Count);
+        Assert.Equal(14, settings.Events.Count);
         Assert.Equal("gravity-abyss", settings.ActiveEventId);
 
         var active = settings.GetActiveEvent();

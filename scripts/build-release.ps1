@@ -91,6 +91,9 @@ $releaseFolder = "OnceHumanTimer-v$Version"
 $releaseTargetDir = Join-Path $releaseBaseDir $releaseFolder
 $zipFilePath = Join-Path $releaseBaseDir "$releaseFolder.zip"
 
+Get-Process -Name "OnceHumanEventTimer", "OnceHumanStarfallTimer" -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
+Start-Sleep -Milliseconds 500
+
 if (Test-Path $releaseTargetDir) {
     Write-Host "      Cleaning existing target directory: $releaseTargetDir" -ForegroundColor Gray
     Remove-Item -Recurse -Force $releaseTargetDir

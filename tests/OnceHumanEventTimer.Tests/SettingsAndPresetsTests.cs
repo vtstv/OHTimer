@@ -63,9 +63,22 @@ public class SettingsAndPresetsTests
         var events = DefaultEventPresets.CreateDefaultEvents();
 
         Assert.NotEmpty(events);
+        Assert.Equal(14, events.Count);
+
         var gravityAbyss = events.FirstOrDefault(e => e.Id == "gravity-abyss");
         Assert.NotNull(gravityAbyss);
+        Assert.Equal("Gravity Abyss", gravityAbyss.Name);
         Assert.Equal(SoundPreset.CelestialBell, gravityAbyss.SoundPreset);
+
+        var skyripper = events.FirstOrDefault(e => e.Id == "skyripper");
+        Assert.NotNull(skyripper);
+        Assert.Equal("Skyripper Anomaly", skyripper.Name);
+        Assert.Equal(SoundPreset.EmergencySiren, skyripper.SoundPreset);
+
+        var primeWar = events.FirstOrDefault(e => e.Id == "prime-war");
+        Assert.NotNull(primeWar);
+        Assert.Equal("Prime War (Nightmare Defense)", primeWar.Name);
+        Assert.Equal(SoundPreset.DeepResonance, primeWar.SoundPreset);
 
         var cargoScramble = events.FirstOrDefault(e => e.Id == "cargo-scramble");
         Assert.NotNull(cargoScramble);

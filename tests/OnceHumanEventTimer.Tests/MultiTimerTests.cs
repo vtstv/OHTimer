@@ -30,13 +30,13 @@ public class MultiTimerTests
     }
 
     [Fact]
-    public void AllEightVisionalWheelPresets_AreConfiguredProperly()
+    public void AllVisionalWheelPresets_AreConfiguredProperly()
     {
         var presets = DefaultEventPresets.CreateDefaultEvents();
-        Assert.Equal(8, presets.Count);
+        Assert.Equal(14, presets.Count);
 
         var abyss = presets.Single(e => e.Id == "gravity-abyss");
-        Assert.Equal("Gravity Abyss (Starfall Inversion)", abyss.Name);
+        Assert.Equal("Gravity Abyss", abyss.Name);
         Assert.Equal(60, abyss.CycleMinutes);
         Assert.Equal(22, abyss.StartMinute);
         Assert.Equal(29, abyss.StartSecond);
@@ -44,6 +44,14 @@ public class MultiTimerTests
         Assert.Equal(0, abyss.TimeOffsetSeconds);
         Assert.Equal("#00F0FF", abyss.ColorHex);
         Assert.True(abyss.IsEnabled);
+
+        var skyripper = presets.Single(e => e.Id == "skyripper");
+        Assert.Equal("Skyripper Anomaly", skyripper.Name);
+        Assert.Equal(60, skyripper.CycleMinutes);
+        Assert.Equal(37, skyripper.StartMinute);
+        Assert.Equal(29, skyripper.StartSecond);
+        Assert.Equal(20, skyripper.DurationMinutes);
+        Assert.False(skyripper.IsEnabled);
 
         var cargo = presets.Single(e => e.Id == "cargo-scramble");
         Assert.Equal("Cargo Scramble (Sproutlet Truck)", cargo.Name);
@@ -104,8 +112,8 @@ public class MultiTimerTests
         var presets = DefaultEventPresets.CreateDefaultEvents();
 
         // Enable Gravity Abyss and Cargo Scramble
-        presets[0].IsEnabled = true;
-        presets[1].IsEnabled = true;
+        presets.Single(e => e.Id == "gravity-abyss").IsEnabled = true;
+        presets.Single(e => e.Id == "cargo-scramble").IsEnabled = true;
 
         scheduler.SetTrackedEvents(presets, activeEventId: "gravity-abyss");
 
@@ -135,7 +143,7 @@ public class MultiTimerTests
         var presets = DefaultEventPresets.CreateDefaultEvents();
 
         foreach (var p in presets) p.IsEnabled = false;
-        presets[2].IsEnabled = true; // only Lunar Oracle enabled
+        presets.Single(e => e.Id == "lunar-oracle").IsEnabled = true; // only Lunar Oracle enabled
 
         scheduler.SetTrackedEvents(presets);
 

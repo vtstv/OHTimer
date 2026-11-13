@@ -84,15 +84,15 @@ public class LocalizationTests
     public void Catalogs_TranslateEventNamesCorrectly()
     {
         _loc.SetLanguage("en-US");
-        Assert.Equal("Gravity Abyss (Starfall Inversion)", _loc.GetString("Event_GravityAbyss_Name"));
+        Assert.Equal("Gravity Abyss", _loc.GetString("Event_GravityAbyss_Name"));
         Assert.Equal("Cargo Scramble (Sproutlet Truck)", _loc.GetString("Event_CargoScramble_Name"));
 
         _loc.SetLanguage("de-DE");
-        Assert.Equal("Gravitationsabgrund (Sternenfall-Inversion)", _loc.GetString("Event_GravityAbyss_Name"));
+        Assert.Equal("Gravity Abyss", _loc.GetString("Event_GravityAbyss_Name"));
         Assert.Equal("Frachtgerangel (Spross-LKW)", _loc.GetString("Event_CargoScramble_Name"));
 
         _loc.SetLanguage("ru-RU");
-        Assert.Equal("Гравитационный провал (Инверсия Звездопада)", _loc.GetString("Event_GravityAbyss_Name"));
+        Assert.Equal("Gravity Abyss", _loc.GetString("Event_GravityAbyss_Name"));
         Assert.Equal("Заварушка с грузом (Грузовик со спорками)", _loc.GetString("Event_CargoScramble_Name"));
     }
 
