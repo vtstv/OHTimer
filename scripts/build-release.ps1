@@ -3,30 +3,32 @@
 
 <#
 .SYNOPSIS
-    Builds, publishes, and packages a release of Once Human: Event Timer.
+    Builds, publishes, and packages releases for Once Human: Event Timer.
 
 .DESCRIPTION
-    Runs automated unit tests, publishes optimized binaries (lightweight framework-dependent or standalone),
-    bundles documentation and licenses, and generates a distributable ZIP package inside the 'release' directory
-    with version suffix.
+    Supports building:
+    1. Portable (Framework-Dependent): ultra-lightweight (~0.38MB ZIP, requires .NET 8 runtime).
+    2. Standalone (Self-Contained): plug-and-play (~63MB ZIP, zero dependencies).
+    3. Windows Setup Installer: Inno Setup (.exe installer with shortcuts and uninstaller).
+    4. -All: builds all 3 packages and extracts release notes in one command.
 
 .PARAMETER Version
-    The semantic version string for the release (e.g., "1.1.0").
-    If omitted, extracts the version from OnceHumanEventTimer.UI.csproj.
+    The semantic version string (e.g., "1.5.0"). If omitted, read from UI csproj.
 
 .PARAMETER Runtime
-    The target runtime identifier (default: "win-x64").
+    Target runtime identifier (default: "win-x64").
 
 .PARAMETER Standalone
-    When specified as $true, produces a self-contained single-file executable.
-    Default: $false (framework-dependent for ultra-lightweight ~2-4MB distribution; requires .NET 8 Desktop Runtime).
+    Builds the self-contained single-file portable archive.
+
+.PARAMETER Installer
+    Compiles the Inno Setup Windows installer.
+
+.PARAMETER All
+    Builds Portable, Standalone, and Windows Installer packages together.
 
 .PARAMETER SkipTests
-    Skips running xUnit tests prior to packaging.
-
-.EXAMPLE
-    .\scripts\build-release.ps1 -Version "1.1.0"
-    .\scripts\build-release.ps1 -Version "1.1.0" -Standalone:$true
+    Skips running automated xUnit tests.
 #>
 
 [CmdletBinding()]
@@ -36,7 +38,11 @@ param(
 
     [string]$Runtime = "win-x64",
 
-    [bool]$Standalone = $false,
+    [switch]$Standalone,
+
+    [switch]$Installer,
+
+    [switch]$All,
 
     [switch]$SkipTests = $false
 )
@@ -57,7 +63,7 @@ if ([string]::IsNullOrWhiteSpace($Version)) {
     [xml]$projXml = Get-Content $projectPath
     $Version = $projXml.Project.PropertyGroup.Version
     if ([string]::IsNullOrWhiteSpace($Version)) {
-        $Version = "1.2.1"
+        $Version = "1.5.0"
     }
 }
 
@@ -85,83 +91,160 @@ if (-not $SkipTests) {
     Write-Host "[3/6] Skipping tests as requested (-SkipTests)." -ForegroundColor DarkYellow
 }
 
-# 4. Prepare Output Directories
+# 4. Prepare Output Directories & Stop Running Instances
 $releaseBaseDir = Join-Path $repoRoot "release"
-$releaseFolder = "OnceHumanTimer-v$Version"
-$releaseTargetDir = Join-Path $releaseBaseDir $releaseFolder
-$zipFilePath = Join-Path $releaseBaseDir "$releaseFolder.zip"
+if (-not (Test-Path $releaseBaseDir)) {
+    New-Item -ItemType Directory -Force -Path $releaseBaseDir | Out-Null
+}
 
 Get-Process -Name "OnceHumanEventTimer", "OnceHumanStarfallTimer" -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
 Start-Sleep -Milliseconds 500
 
-if (Test-Path $releaseTargetDir) {
-    Write-Host "      Cleaning existing target directory: $releaseTargetDir" -ForegroundColor Gray
-    Remove-Item -Recurse -Force $releaseTargetDir
-}
-if (Test-Path $zipFilePath) {
-    Remove-Item -Force $zipFilePath
-}
-New-Item -ItemType Directory -Force -Path $releaseTargetDir | Out-Null
-
-# 5. Publish Application
-Write-Host "[4/6] Publishing application..." -ForegroundColor Yellow
-
-$selfContainedArg = if ($Standalone) { "--self-contained" } else { "--no-self-contained" }
-$publishArgs = @(
-    "publish", $projectPath,
-    "-c", "Release",
-    "-r", $Runtime,
-    $selfContainedArg,
-    "-p:PublishSingleFile=true",
-    "-p:IncludeNativeLibrariesForSelfExtract=true",
-    "-p:DebugType=none",
-    "-p:DebugSymbols=false",
-    "-p:Version=$Version",
-    "-p:AssemblyVersion=$Version.0",
-    "-p:FileVersion=$Version.0",
-    "-o", $releaseTargetDir
-)
-
-if ($Standalone) {
-    $publishArgs += "-p:EnableCompressionInSingleFile=true"
+# Helper function to find ISCC compiler
+function Find-InnoSetupCompiler {
+    $candidates = @(
+        (Get-Command iscc.exe -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source -ErrorAction SilentlyContinue),
+        "$env:LOCALAPPDATA\Programs\Inno Setup 6\ISCC.exe",
+        "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe",
+        "$env:ProgramFiles\Inno Setup 6\ISCC.exe"
+    )
+    foreach ($path in $candidates) {
+        if (![string]::IsNullOrEmpty($path) -and (Test-Path $path)) {
+            return $path
+        }
+    }
+    return $null
 }
 
-Write-Host "      Executing: dotnet $($publishArgs -join ' ')" -ForegroundColor Gray
-& dotnet $publishArgs
-if ($LASTEXITCODE -ne 0) {
-    Write-Error "dotnet publish failed."
-    exit 1
+# Helper to publish a specific profile
+function Publish-Target {
+    param(
+        [string]$TargetDir,
+        [bool]$IsSelfContained
+    )
+
+    if (Test-Path $TargetDir) {
+        Remove-Item -Recurse -Force $TargetDir
+    }
+    New-Item -ItemType Directory -Force -Path $TargetDir | Out-Null
+
+    $selfContainedArg = if ($IsSelfContained) { "--self-contained" } else { "--no-self-contained" }
+    $pArgs = @(
+        "publish", $projectPath,
+        "-c", "Release",
+        "-r", $Runtime,
+        $selfContainedArg,
+        "-p:PublishSingleFile=true",
+        "-p:IncludeNativeLibrariesForSelfExtract=true",
+        "-p:DebugType=none",
+        "-p:DebugSymbols=false",
+        "-p:Version=$Version",
+        "-p:AssemblyVersion=$Version.0",
+        "-p:FileVersion=$Version.0",
+        "-o", $TargetDir
+    )
+    if ($IsSelfContained) {
+        $pArgs += "-p:EnableCompressionInSingleFile=true"
+    }
+
+    Write-Host "      Executing: dotnet $($pArgs -join ' ')" -ForegroundColor Gray
+    & dotnet $pArgs
+    if ($LASTEXITCODE -ne 0) {
+        Write-Error "dotnet publish failed."
+        exit 1
+    }
+
+    Copy-Item (Join-Path $repoRoot "LICENSE") -Destination $TargetDir -Force
+    Copy-Item (Join-Path $repoRoot "README.md") -Destination $TargetDir -Force
+    $changelogSrc = Join-Path $repoRoot "CHANGELOG.md"
+    if (Test-Path $changelogSrc) {
+        Copy-Item $changelogSrc -Destination $TargetDir -Force
+    }
 }
 
-# 6. Copy Bundled Documentation and Assets
-Write-Host "[5/6] Bundling documentation, changelog, and licenses..." -ForegroundColor Yellow
-Copy-Item (Join-Path $repoRoot "LICENSE") -Destination $releaseTargetDir -Force
-Copy-Item (Join-Path $repoRoot "README.md") -Destination $releaseTargetDir -Force
-
+# 5. Extract Changelog & Release Notes
+Write-Host "[4/6] Generating Release Notes..." -ForegroundColor Yellow
 $changelogSrc = Join-Path $repoRoot "CHANGELOG.md"
 if (Test-Path $changelogSrc) {
-    Copy-Item $changelogSrc -Destination $releaseTargetDir -Force
-    # Generate release/CHANGELOG.txt for GitHub releases
-    $changelogContent = Get-Content $changelogSrc -Raw
-    Set-Content -Path (Join-Path $releaseBaseDir "CHANGELOG.txt") -Value $changelogContent -Encoding UTF8
-    Set-Content -Path (Join-Path $releaseTargetDir "CHANGELOG.txt") -Value $changelogContent -Encoding UTF8
+    $fullChangelog = Get-Content $changelogSrc -Raw
+    Set-Content -Path (Join-Path $releaseBaseDir "CHANGELOG.txt") -Value $fullChangelog -Encoding UTF8
+
+    $escapedVer = [regex]::Escape($Version)
+    if ($fullChangelog -match "(?ms)(## \[$escapedVer\].*?)(?=---|\z)") {
+        $versionNotes = $matches[1].Trim()
+        Set-Content -Path (Join-Path $releaseBaseDir "RELEASE_NOTES_v$Version.md") -Value $versionNotes -Encoding UTF8
+        Write-Host "      Extracted release notes for v$Version." -ForegroundColor Gray
+    }
 }
 
-# 7. Create ZIP Package
-Write-Host "[6/6] Creating ZIP archive..." -ForegroundColor Yellow
-Compress-Archive -Path "$releaseTargetDir\*" -DestinationPath $zipFilePath -Force
+$buildPortable = $All -or (-not $Standalone -and -not $Installer)
+$buildStandalone = $All -or $Standalone
+$buildInstaller = $All -or $Installer
 
-$zipItem = Get-Item $zipFilePath
-$zipSizeMb = [math]::Round($zipItem.Length / 1MB, 2)
-$sha256 = (Get-FileHash -Path $zipFilePath -Algorithm SHA256).Hash
+# Build Portable
+if ($buildPortable) {
+    Write-Host "[5/6] Building Portable Package (Framework-Dependent)..." -ForegroundColor Yellow
+    $portableDir = Join-Path $releaseBaseDir "OnceHumanTimer-v$Version-portable"
+    Publish-Target -TargetDir $portableDir -IsSelfContained $false
+
+    $portableZip = Join-Path $releaseBaseDir "OnceHumanTimer-v$Version-portable.zip"
+    $defaultZip = Join-Path $releaseBaseDir "OnceHumanTimer-v$Version.zip"
+
+    if (Test-Path $portableZip) { Remove-Item -Force $portableZip }
+    if (Test-Path $defaultZip) { Remove-Item -Force $defaultZip }
+
+    Compress-Archive -Path "$portableDir\*" -DestinationPath $portableZip -Force
+    Copy-Item $portableZip -Destination $defaultZip -Force
+
+    $pSize = [math]::Round((Get-Item $portableZip).Length / 1KB, 2)
+    Write-Host "      Portable ZIP created: $portableZip ($pSize KB)" -ForegroundColor Green
+}
+
+# Build Standalone
+$standaloneDir = Join-Path $releaseBaseDir "OnceHumanTimer-v$Version"
+if ($buildStandalone -or $buildInstaller) {
+    Write-Host "[5/6] Building Standalone Package (Self-Contained)..." -ForegroundColor Yellow
+    Publish-Target -TargetDir $standaloneDir -IsSelfContained $true
+
+    if ($buildStandalone) {
+        $standaloneZip = Join-Path $releaseBaseDir "OnceHumanTimer-v$Version-standalone.zip"
+        if (Test-Path $standaloneZip) { Remove-Item -Force $standaloneZip }
+        Compress-Archive -Path "$standaloneDir\*" -DestinationPath $standaloneZip -Force
+        $sSize = [math]::Round((Get-Item $standaloneZip).Length / 1MB, 2)
+        Write-Host "      Standalone ZIP created: $standaloneZip ($sSize MB)" -ForegroundColor Green
+    }
+}
+
+# Build Installer
+if ($buildInstaller) {
+    Write-Host "[6/6] Building Windows Setup Installer..." -ForegroundColor Yellow
+    $iscc = Find-InnoSetupCompiler
+    if ($iscc) {
+        $issScript = Join-Path $repoRoot "scripts\installer\setup.iss"
+        $installerArgs = @(
+            "/Qp",
+            "/DMyAppVersion=$Version",
+            "/DSourceDir=$standaloneDir",
+            "/DOutputDir=$releaseBaseDir",
+            "/DOutputBaseFilename=OnceHumanTimer-v$Version-Setup",
+            $issScript
+        )
+        Write-Host "      Compiling: $iscc $($installerArgs -join ' ')" -ForegroundColor Gray
+        & $iscc $installerArgs
+        if ($LASTEXITCODE -eq 0) {
+            $setupPath = Join-Path $releaseBaseDir "OnceHumanTimer-v$Version-Setup.exe"
+            $setupSize = [math]::Round((Get-Item $setupPath).Length / 1MB, 2)
+            Write-Host "      Installer created: $setupPath ($setupSize MB)" -ForegroundColor Green
+        } else {
+            Write-Warning "Inno Setup compiler failed with exit code $LASTEXITCODE."
+        }
+    } else {
+        Write-Warning "Inno Setup compiler (ISCC.exe) was not found. Skipping installer generation."
+    }
+}
 
 Write-Host "`n==========================================================" -ForegroundColor Green
-Write-Host " RELEASE BUILD SUCCESSFUL!                               " -ForegroundColor Green
+Write-Host " RELEASE BUILD COMPLETED SUCCESSFULLY!                   " -ForegroundColor Green
 Write-Host "==========================================================" -ForegroundColor Green
-Write-Host " Package Directory : $releaseTargetDir" -ForegroundColor White
-Write-Host " ZIP Archive       : $zipFilePath" -ForegroundColor White
-Write-Host " Archive Size      : $zipSizeMb MB" -ForegroundColor White
-Write-Host " SHA256 Checksum   : $sha256" -ForegroundColor White
-Write-Host " Executable        : OnceHumanEventTimer.exe" -ForegroundColor White
-Write-Host " Mode              : $(if ($Standalone) { 'Self-Contained (Plug & Play)' } else { 'Framework-Dependent (Lightweight)' })" -ForegroundColor White
+Get-ChildItem -Path $releaseBaseDir -Filter "*v$Version*" | Select-Object Name, @{Name="Size (MB)"; Expression={[math]::Round($_.Length/1MB, 2)}}, LastWriteTime | Format-Table -AutoSize
 Write-Host "==========================================================`n" -ForegroundColor Green

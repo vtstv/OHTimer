@@ -43,14 +43,9 @@ public sealed class GitHubUpdateService : IUpdateService, IDisposable
 
         if (json == null)
         {
-            return new UpdateInfo(
-                HasUpdate: false,
-                CurrentVersion: currentVersion,
-                LatestVersion: currentVersion,
-                ReleaseNotes: "No releases published yet on GitHub (vtstv/OHTimer). You are running the latest version.",
-                DownloadUrl: null,
-                PublishedAt: null,
-                IsNotFoundOnGitHub: true);
+            return new UpdateInfo(false, currentVersion, currentVersion,
+                "No releases published yet on GitHub (vtstv/OHTimer). You are running the latest version.",
+                null, null, IsNotFoundOnGitHub: true);
         }
 
         using var doc = JsonDocument.Parse(json);
@@ -65,22 +60,17 @@ public sealed class GitHubUpdateService : IUpdateService, IDisposable
         return new UpdateInfo(hasUpdate, currentVersion, cleanVersion, releaseNotes, downloadUrl, publishedAt, IsNotFoundOnGitHub: false);
     }
 
-    public async Task<bool> DownloadAndApplyUpdateAsync(
-        string downloadUrl,
-        IProgress<double>? progress = null,
-        CancellationToken cancellationToken = default)
+    public async Task<bool> DownloadAndApplyUpdateAsync(string downloadUrl, IProgress<double>? progress = null, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(downloadUrl)) return false;
 
         string? currentExePath = Environment.ProcessPath;
         if (string.IsNullOrEmpty(currentExePath) || !File.Exists(currentExePath))
             currentExePath = Process.GetCurrentProcess().MainModule?.FileName;
-
         if (string.IsNullOrEmpty(currentExePath) || !File.Exists(currentExePath)) return false;
 
         string tempDir = Path.Combine(Path.GetTempPath(), "OnceHumanTimer_Update");
         Directory.CreateDirectory(tempDir);
-
         string downloadedPayload = Path.Combine(tempDir, "update_payload.bin");
         if (File.Exists(downloadedPayload)) File.Delete(downloadedPayload);
 
@@ -88,14 +78,12 @@ public sealed class GitHubUpdateService : IUpdateService, IDisposable
         {
             response.EnsureSuccessStatusCode();
             long totalBytes = response.Content.Headers.ContentLength ?? -1L;
-
             await using var contentStream = await response.Content.ReadAsStreamAsync(cancellationToken);
             await using var fileStream = new FileStream(downloadedPayload, FileMode.Create, FileAccess.Write, FileShare.None, 81920, true);
 
             var buffer = new byte[81920];
             long totalRead = 0;
             int bytesRead;
-
             while ((bytesRead = await contentStream.ReadAsync(buffer, 0, buffer.Length, cancellationToken)) > 0)
             {
                 await fileStream.WriteAsync(buffer.AsMemory(0, bytesRead), cancellationToken);
@@ -124,34 +112,16 @@ chcp 65001 >nul
 set PID={currentPid}
 set TARGET=""{currentExePath}""
 set SOURCE=""{stagedExePath}""
-
 :wait_loop
 tasklist /fi ""PID eq %PID%"" 2>nul | findstr /i ""%PID%"" >nul
-if %ERRORLEVEL% EQU 0 (
-    timeout /t 1 /nobreak >nul
-    goto wait_loop
-)
-
+if %ERRORLEVEL% EQU 0 ( timeout /t 1 /nobreak >nul & goto wait_loop )
 copy /y %SOURCE% %TARGET% >nul
-if %ERRORLEVEL% NEQ 0 (
-    timeout /t 1 /nobreak >nul
-    copy /y %SOURCE% %TARGET% >nul
-)
-
+if %ERRORLEVEL% NEQ 0 ( timeout /t 1 /nobreak >nul & copy /y %SOURCE% %TARGET% >nul )
 start """" %TARGET%
 del ""%~f0"" >nul 2>&1
 ";
         await File.WriteAllTextAsync(scriptPath, cmdScript, cancellationToken);
-
-        var psi = new ProcessStartInfo
-        {
-            FileName = "cmd.exe",
-            Arguments = $"/c \"\"{scriptPath}\"\"",
-            CreateNoWindow = true,
-            UseShellExecute = false,
-            WorkingDirectory = tempDir
-        };
-
+        var psi = new ProcessStartInfo { FileName = "cmd.exe", Arguments = $"/c \"\"{scriptPath}\"\"", CreateNoWindow = true, UseShellExecute = false, WorkingDirectory = tempDir };
         Process.Start(psi);
         _ = Task.Run(async () => { await Task.Delay(400); Environment.Exit(0); });
         return true;
@@ -164,45 +134,70 @@ del ""%~f0"" >nul 2>&1
             using var response = await _httpClient.GetAsync(PrimaryRepoApi, cancellationToken);
             if (response.IsSuccessStatusCode)
                 return await response.Content.ReadAsStringAsync(cancellationToken);
+            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                return null;
         }
-        catch { /* Fallback to secondary endpoint */ }
+        catch { }
 
         try
         {
             using var fallbackResponse = await _httpClient.GetAsync(FallbackRepoApi, cancellationToken);
             if (fallbackResponse.IsSuccessStatusCode)
                 return await fallbackResponse.Content.ReadAsStringAsync(cancellationToken);
-            if (fallbackResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
+            if (fallbackResponse.StatusCode == System.Net.HttpStatusCode.NotFound ||
+                fallbackResponse.StatusCode == System.Net.HttpStatusCode.MovedPermanently)
                 return null;
 
             fallbackResponse.EnsureSuccessStatusCode();
             return await fallbackResponse.Content.ReadAsStringAsync(cancellationToken);
         }
-        catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
-        {
-            return null;
-        }
+        catch { return null; }
     }
 
     private static string? ExtractBestDownloadUrl(JsonElement root)
     {
         if (root.TryGetProperty("assets", out var assets) && assets.ValueKind == JsonValueKind.Array)
         {
-            string? zipUrl = null;
+            string? portableZipUrl = null;
+            string? standaloneZipUrl = null;
+            string? generalZipUrl = null;
+            string? directExeUrl = null;
+            bool isStandalone = IsRunningStandalone();
+
             foreach (var asset in assets.EnumerateArray())
             {
-                string name = asset.TryGetProperty("name", out var nameProp) ? nameProp.GetString() ?? "" : "";
-                string url = asset.TryGetProperty("browser_download_url", out var urlProp) ? urlProp.GetString() ?? "" : "";
+                string name = asset.TryGetProperty("name", out var n) ? n.GetString() ?? "" : "";
+                string url = asset.TryGetProperty("browser_download_url", out var u) ? u.GetString() ?? "" : "";
 
-                if (name.EndsWith(".exe", StringComparison.OrdinalIgnoreCase)) return url;
-                if (name.EndsWith(".zip", StringComparison.OrdinalIgnoreCase) && zipUrl == null) zipUrl = url;
+                if (name.Contains("Setup", StringComparison.OrdinalIgnoreCase) || name.Contains("Installer", StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                if (name.Contains("standalone", StringComparison.OrdinalIgnoreCase) && name.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
+                    standaloneZipUrl = url;
+                else if (name.Contains("portable", StringComparison.OrdinalIgnoreCase) && name.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
+                    portableZipUrl = url;
+                else if (name.EndsWith(".zip", StringComparison.OrdinalIgnoreCase) && generalZipUrl == null)
+                    generalZipUrl = url;
+                else if (name.Equals("OnceHumanEventTimer.exe", StringComparison.OrdinalIgnoreCase))
+                    directExeUrl = url;
             }
 
-            if (!string.IsNullOrEmpty(zipUrl)) return zipUrl;
+            if (isStandalone && !string.IsNullOrEmpty(standaloneZipUrl)) return standaloneZipUrl;
+            if (!isStandalone && !string.IsNullOrEmpty(portableZipUrl)) return portableZipUrl;
+            return portableZipUrl ?? standaloneZipUrl ?? generalZipUrl ?? directExeUrl;
         }
 
-        if (root.TryGetProperty("zipball_url", out var zipball)) return zipball.GetString();
-        return null;
+        return root.TryGetProperty("zipball_url", out var zipball) ? zipball.GetString() : null;
+    }
+
+    private static bool IsRunningStandalone()
+    {
+        try
+        {
+            string? path = Environment.ProcessPath;
+            return !string.IsNullOrEmpty(path) && File.Exists(path) && new FileInfo(path).Length > 20 * 1024 * 1024;
+        }
+        catch { return false; }
     }
 
     private static bool IsZipArchive(string filePath)

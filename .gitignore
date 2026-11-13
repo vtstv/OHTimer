@@ -45,10 +45,6 @@ settings.json
 *.log
 
 # Release artifacts (distribute via GitHub Releases)
-release/*.zip
-release/*.txt
-release/**/*.exe
-release/**/*.dll
-release/OnceHuman*/
+release/
 !release/README.md
 AGENTS.md

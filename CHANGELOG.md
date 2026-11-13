@@ -10,14 +10,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.5.0] - 2026-11-13
 
 ### Added
-- **Second-Precision Event Scheduling Engine (`StartSecond`)**: Extended `EventDefinition` and `EventTimeCalculator` with sub-minute resolution. Configured `Gravity Abyss (Starfall Inversion)` to start at exact in-game server cycle **XX:22:29** with **0s default offset**, providing drift-free zero-calibration countdown accuracy immediately out-of-the-box matching Once Human server ticks.
+- **Second-Precision Event Scheduling Engine (`StartSecond`)**: Extended `EventDefinition` and `EventTimeCalculator` with sub-minute resolution. Configured `Gravity Abyss` to start at exact in-game server cycle **XX:22:29** with **0s default offset**, providing drift-free zero-calibration countdown accuracy immediately out-of-the-box matching Once Human server ticks.
 - **Dedicated System Settings Tab**: Added a clean cyberpunk-styled **System** tab to the Settings window organizing OS-level and application lifecycle preferences.
 - **Windows Autostart Integration**: Added user-configurable toggle "Start with Windows" in System settings using `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`, allowing the timer to seamlessly launch on computer boot.
 - **Auto-Hide Overlay when Game is Out of Focus (Default: ON)**: Added real-time foreground window detection via Win32 `GetForegroundWindow` and process checking. When the player Alt-Tabs away from *Once Human* to a browser or desktop app, the overlay automatically hides itself to keep the screen clear, and instantly reappears when switching back to Once Human.
+- **Expanded Once Human Event Presets**: Expanded built-in event templates library to 14 authentic Once Human events (Gravity Abyss, Skyripper Anomaly, Cargo Scramble, Prime War, Public Crisis, Chiron the Centaur, Extraction Workshop Defense, Blackfell Stronghold Loot Run, Lunar Oracle, Lunar Revelry, Aberrant Progeny, Dissonant Resonance, Crate Loot Reset, Custom Wheel Event).
+- **Multi-Package Distribution Channel**: Introduced 3 distribution formats for releases:
+  1. *Portable (Framework-Dependent)*: Ultra-lightweight (~0.38 MB ZIP) for users with .NET 8 Desktop Runtime.
+  2. *Standalone (Self-Contained)*: Plug-and-play (~63 MB ZIP) with bundled runtime, zero dependencies required.
+  3. *Full Windows Setup Installer*: Setup wizard (`OnceHumanTimer-v1.5.0-Setup.exe`) with Start Menu & Desktop shortcuts, clean uninstaller in Windows Settings, and multilingual support (EN/DE/RU).
 - **Multilingual Support**: Fully localized all new System settings, descriptions, and second-precision inputs across English (`en-US`), German (`de-DE`), and Russian (`ru-RU`).
 
 ### Fixed
 - **Persistent Red Border on Sound Selection ComboBox**: Fixed WPF data binding validation error where clicking "Save & Apply" caused the sound preset ComboBoxes to turn red. Converted `SoundPresetOption` into an observable model and updated display titles in-place without clearing the item collection, preventing null coercion and type conversion validation faults.
+- **GitHub Updater Repository Discovery**: Fixed in-app updater handling when checking for releases on repositories before first release publication, displaying a clear status message instead of throwing an unhandled request error. Differentiated update targets so standalone builds download standalone updates.
 
 ---
 

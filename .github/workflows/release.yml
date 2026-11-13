@@ -1,0 +1,44 @@
+name: Build & Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Package & Publish Release
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET 8 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Run Tests and Build All Packages
+        shell: pwsh
+        run: |
+          ./scripts/build-release.ps1 -All
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "Once Human: Event Timer ${{ github.ref_name }}"
+          body_path: release/CHANGELOG.txt
+          draft: false
+          prerelease: false
+          files: |
+            release/*-portable.zip
+            release/*-standalone.zip
+            release/*-Setup.exe
+            release/*.zip
