@@ -78,7 +78,7 @@
                     <TabItem Header="{loc:Loc Settings_TabEvents}">
                         <Grid Margin="12">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="260" />
+                                <ColumnDefinition Width="280" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
@@ -117,20 +117,38 @@
                                     </ListBox.ItemTemplate>
                                 </ListBox>
 
-                                <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,8,0,0">
-                                    <Button Command="{Binding AddEventCommand}"
+                                <Grid Grid.Row="1" Margin="0,8,0,0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Top row: Add and Delete side-by-side -->
+                                    <Button Grid.Row="0" Grid.Column="0"
+                                            Command="{Binding AddEventCommand}"
                                             Style="{StaticResource ModernDarkButtonStyle}"
                                             Content="{loc:Loc Settings_AddEvent}"
-                                            Padding="8,4" FontSize="11" Margin="0,0,6,0" />
-                                    <Button Command="{Binding DeleteEventCommand}"
+                                            Padding="4,6" FontSize="11" Margin="0,0,3,4"
+                                            HorizontalAlignment="Stretch" />
+                                    <Button Grid.Row="0" Grid.Column="1"
+                                            Command="{Binding DeleteEventCommand}"
                                             Style="{StaticResource DangerDarkButtonStyle}"
                                             Content="{loc:Loc Settings_DeleteEvent}"
-                                            Padding="8,4" FontSize="11" Margin="0,0,6,0" />
-                                    <Button Command="{Binding RestoreDefaultPresetsCommand}"
+                                            Padding="4,6" FontSize="11" Margin="3,0,0,4"
+                                            HorizontalAlignment="Stretch" />
+
+                                    <!-- Bottom row: Full-width Restore Presets button -->
+                                    <Button Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                            Command="{Binding RestoreDefaultPresetsCommand}"
                                             Style="{StaticResource ModernDarkButtonStyle}"
                                             Content="{loc:Loc Settings_RestorePresets}"
-                                            Padding="8,4" FontSize="11" />
-                                </StackPanel>
+                                            Padding="4,6" FontSize="11" Margin="0,2,0,0"
+                                            HorizontalAlignment="Stretch" />
+                                </Grid>
                             </Grid>
 
                             <!-- Right: Selected Event Details & Game Sync -->
