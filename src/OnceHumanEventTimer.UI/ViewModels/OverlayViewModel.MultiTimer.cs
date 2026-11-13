@@ -41,9 +41,15 @@ public partial class OverlayViewModel
 
         IsMultiTimer = snapshots.Count > 1;
 
+        // Dynamic ordering: active events first, followed by events closest to starting (shortest remaining time)
+        var sortedSnapshots = snapshots
+            .OrderBy(s => s.IsActive ? 0 : 1)
+            .ThenBy(s => s.TimeRemaining)
+            .ToList();
+
         var targetIds = new HashSet<string>();
 
-        foreach (var snapshot in snapshots)
+        foreach (var snapshot in sortedSnapshots)
         {
             string id = snapshot.Event?.Id ?? "default";
             targetIds.Add(id);
@@ -84,6 +90,26 @@ public partial class OverlayViewModel
             if (!targetIds.Contains(ActiveTimers[i].Id))
             {
                 ActiveTimers.RemoveAt(i);
+            }
+        }
+
+        // Align ActiveTimers order with dynamically sorted snapshots
+        for (int i = 0; i < sortedSnapshots.Count; i++)
+        {
+            string expectedId = sortedSnapshots[i].Event?.Id ?? "default";
+            int currentIndex = -1;
+            for (int j = 0; j < ActiveTimers.Count; j++)
+            {
+                if (ActiveTimers[j].Id == expectedId)
+                {
+                    currentIndex = j;
+                    break;
+                }
+            }
+
+            if (currentIndex >= 0 && currentIndex != i && i < ActiveTimers.Count)
+            {
+                ActiveTimers.Move(currentIndex, i);
             }
         }
     }

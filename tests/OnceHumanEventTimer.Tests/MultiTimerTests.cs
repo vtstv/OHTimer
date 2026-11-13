@@ -165,4 +165,56 @@ public class MultiTimerTests
         var duplicate = evaluator.Evaluate(snap1);
         Assert.Null(duplicate);
     }
+
+    [Fact]
+    public void MultiTimer_SortingOrder_PrioritizesActiveAndClosestToStart()
+    {
+        var ev1 = new EventDefinition { Id = "ev1", Name = "Event Far Away", StartMinute = 50, DurationMinutes = 10, TimeOffsetSeconds = 0 };
+        var ev2 = new EventDefinition { Id = "ev2", Name = "Event Starting Soon", StartMinute = 25, DurationMinutes = 15, TimeOffsetSeconds = 0 };
+        var ev3 = new EventDefinition { Id = "ev3", Name = "Event Currently Active", StartMinute = 10, DurationMinutes = 30, TimeOffsetSeconds = 0 };
+
+        var testTime = new DateTimeOffset(2026, 11, 13, 10, 20, 0, TimeSpan.Zero);
+        // At 10:20:00:
+        // ev3 (10:10 -> 10:40) is ACTIVE (20m remaining)
+        // ev2 (10:25) is INACTIVE/STARTING SOON (5m until start)
+        // ev1 (10:50) is INACTIVE (30m until start)
+
+        var snap1 = EventTimeCalculator.CalculateSnapshot(testTime, ev1);
+        var snap2 = EventTimeCalculator.CalculateSnapshot(testTime, ev2);
+        var snap3 = EventTimeCalculator.CalculateSnapshot(testTime, ev3);
+
+        var list = new List<EventSnapshot> { snap1, snap2, snap3 };
+        var sorted = list.OrderBy(s => s.IsActive ? 0 : 1).ThenBy(s => s.TimeRemaining).ToList();
+
+        Assert.Equal("ev3", sorted[0].Event?.Id); // Active event first
+        Assert.Equal("ev2", sorted[1].Event?.Id); // Starts in 5m
+        Assert.Equal("ev1", sorted[2].Event?.Id); // Starts in 30m
+    }
+
+    [Fact]
+    public void EventDefinition_Clone_CopiesCustomSoundPath()
+    {
+        var ev = new EventDefinition
+        {
+            Id = "test-ev",
+            Name = "Sound Test Event",
+            CustomSoundPath = @"C:\Sounds\alert.wav",
+            ColorHex = "#A855F7"
+        };
+
+        var clone = ev.Clone();
+        Assert.Equal(@"C:\Sounds\alert.wav", clone.CustomSoundPath);
+        Assert.Equal("#A855F7", clone.ColorHex);
+        Assert.Equal("Sound Test Event", clone.Name);
+    }
+
+    [Fact]
+    public void UserSettings_DefaultAppearanceOptions_AreTrue()
+    {
+        var settings = new UserSettings();
+        Assert.True(settings.ShowBorder);
+        Assert.True(settings.ShowBackground);
+        Assert.True(settings.ShowProgressRing);
+        Assert.True(settings.ShowNextEventTime);
+    }
 }

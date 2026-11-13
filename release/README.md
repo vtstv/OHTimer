@@ -21,5 +21,5 @@ Or double-click `scripts\build-release.cmd` on Windows.
 
 ### Output Artifacts
 - Folder: `release/OnceHumanTimer-v<version>/`
-- Single-File Executable: `OnceHumanStarfallTimer.exe` (< 1 MB framework-dependent)
+- Single-File Executable: `OnceHumanEventTimer.exe` (< 1 MB framework-dependent)
 - Bundled Zip: `release/OnceHumanTimer-v<version>.zip`

@@ -54,6 +54,11 @@ public class EventDefinition
     public bool IsEnabled { get; set; } = true;
 
     /// <summary>
+    /// Optional file path to a custom WAV audio alert specifically for this event.
+    /// </summary>
+    public string? CustomSoundPath { get; set; }
+
+    /// <summary>
     /// Creates an exact clone of the event definition.
     /// </summary>
     public EventDefinition Clone()
@@ -68,7 +73,8 @@ public class EventDefinition
             TimeOffsetSeconds = TimeOffsetSeconds,
             ColorHex = ColorHex,
             Description = Description,
-            IsEnabled = IsEnabled
+            IsEnabled = IsEnabled,
+            CustomSoundPath = CustomSoundPath
         };
     }
 }

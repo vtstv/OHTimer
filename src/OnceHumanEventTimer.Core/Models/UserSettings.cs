@@ -49,6 +49,26 @@ public class UserSettings
     public bool CompactMode { get; set; } = false;
 
     /// <summary>
+    /// When true, renders an outer glow/border around the overlay card.
+    /// </summary>
+    public bool ShowBorder { get; set; } = true;
+
+    /// <summary>
+    /// When true, renders the card background brush. When false, the card background is completely transparent.
+    /// </summary>
+    public bool ShowBackground { get; set; } = true;
+
+    /// <summary>
+    /// When true, renders circular progress indicator ring for active/waiting events.
+    /// </summary>
+    public bool ShowProgressRing { get; set; } = true;
+
+    /// <summary>
+    /// When true, displays footer next event time and details.
+    /// </summary>
+    public bool ShowNextEventTime { get; set; } = true;
+
+    /// <summary>
     /// Master volume for sound notifications (0.0 to 1.0).
     /// </summary>
     public double Volume { get; set; } = 0.8;

@@ -66,6 +66,18 @@ public partial class SettingsViewModel : ObservableObject
     private bool _compactMode;
 
     [ObservableProperty]
+    private bool _showBorder;
+
+    [ObservableProperty]
+    private bool _showBackground;
+
+    [ObservableProperty]
+    private bool _showProgressRing;
+
+    [ObservableProperty]
+    private bool _showNextEventTime;
+
+    [ObservableProperty]
     private LanguageInfo _selectedLanguage;
 
     [ObservableProperty]
@@ -74,23 +86,13 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private string _toggleClickThroughHotkey;
 
-    partial void OnOpacityChanged(double value)
-    {
-        _settingsService.Settings.Opacity = value;
-        _settingsService.NotifyChanged();
-    }
-
-    partial void OnScaleChanged(double value)
-    {
-        _settingsService.Settings.Scale = value;
-        _settingsService.NotifyChanged();
-    }
-
-    partial void OnCompactModeChanged(bool value)
-    {
-        _settingsService.Settings.CompactMode = value;
-        _settingsService.NotifyChanged();
-    }
+    partial void OnOpacityChanged(double value) { _settingsService.Settings.Opacity = value; _settingsService.NotifyChanged(); }
+    partial void OnScaleChanged(double value) { _settingsService.Settings.Scale = value; _settingsService.NotifyChanged(); }
+    partial void OnCompactModeChanged(bool value) { _settingsService.Settings.CompactMode = value; _settingsService.NotifyChanged(); }
+    partial void OnShowBorderChanged(bool value) { _settingsService.Settings.ShowBorder = value; _settingsService.NotifyChanged(); }
+    partial void OnShowBackgroundChanged(bool value) { _settingsService.Settings.ShowBackground = value; _settingsService.NotifyChanged(); }
+    partial void OnShowProgressRingChanged(bool value) { _settingsService.Settings.ShowProgressRing = value; _settingsService.NotifyChanged(); }
+    partial void OnShowNextEventTimeChanged(bool value) { _settingsService.Settings.ShowNextEventTime = value; _settingsService.NotifyChanged(); }
 
     [ObservableProperty]
     private bool _showSavedNotification;
@@ -129,6 +131,10 @@ public partial class SettingsViewModel : ObservableObject
         _isClickThrough = current.IsClickThrough;
         _isLocked = current.IsLocked;
         _compactMode = current.CompactMode;
+        _showBorder = current.ShowBorder;
+        _showBackground = current.ShowBackground;
+        _showProgressRing = current.ShowProgressRing;
+        _showNextEventTime = current.ShowNextEventTime;
         _toggleVisibilityHotkey = current.ToggleVisibilityHotkey;
         _toggleClickThroughHotkey = current.ToggleClickThroughHotkey;
 
@@ -184,6 +190,10 @@ public partial class SettingsViewModel : ObservableObject
         s.IsClickThrough = IsClickThrough;
         s.IsLocked = IsLocked;
         s.CompactMode = CompactMode;
+        s.ShowBorder = ShowBorder;
+        s.ShowBackground = ShowBackground;
+        s.ShowProgressRing = ShowProgressRing;
+        s.ShowNextEventTime = ShowNextEventTime;
         s.Language = SelectedLanguage.Code;
         s.ToggleVisibilityHotkey = ToggleVisibilityHotkey;
         s.ToggleClickThroughHotkey = ToggleClickThroughHotkey;

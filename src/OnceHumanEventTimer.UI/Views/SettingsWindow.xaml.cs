@@ -2,9 +2,11 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using OnceHumanEventTimer.UI.ViewModels;
 
 namespace OnceHumanEventTimer.UI.Views;
@@ -18,6 +20,46 @@ public partial class SettingsWindow : Window
 
         viewModel.RequestCloseSettings = Close;
         LoadWindowIcon();
+    }
+
+    private void MinimizeButton_Click(object sender, RoutedEventArgs e)
+    {
+        WindowState = WindowState.Minimized;
+    }
+
+    private void MaximizeButton_Click(object sender, RoutedEventArgs e)
+    {
+        WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+    }
+
+    private void CloseButton_Click(object sender, RoutedEventArgs e)
+    {
+        Close();
+    }
+
+    private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+    {
+        try
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
+            e.Handled = true;
+        }
+        catch
+        {
+            // Ignore failure to launch default browser
+        }
+    }
+
+    private void OpenGitHub_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            Process.Start(new ProcessStartInfo("https://github.com/vtstv/OHTimer") { UseShellExecute = true });
+        }
+        catch
+        {
+            // Ignore failure to launch default browser
+        }
     }
 
     private void LoadWindowIcon()

@@ -31,17 +31,31 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <Border Margin="12"
-            Background="#E80D1117"
-            BorderBrush="{Binding StatusColorHex, FallbackValue='#00F0FF'}"
-            BorderThickness="1.5"
-            CornerRadius="10">
+    <Border Margin="12" CornerRadius="10">
+        <Border.Style>
+            <Style TargetType="Border">
+                <Setter Property="Background" Value="#E80D1117" />
+                <Setter Property="BorderBrush" Value="{Binding StatusColorHex, FallbackValue='#00F0FF'}" />
+                <Setter Property="BorderThickness" Value="1.5" />
+                <Setter Property="Effect">
+                    <Setter.Value>
+                        <DropShadowEffect Color="#000000" BlurRadius="16" ShadowDepth="4" Opacity="0.75" />
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding ShowBackground}" Value="False">
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="Effect" Value="{x:Null}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding ShowBorder}" Value="False">
+                        <Setter Property="BorderThickness" Value="0" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Border.Style>
         <Border.LayoutTransform>
             <ScaleTransform ScaleX="{Binding Scale}" ScaleY="{Binding Scale}" />
         </Border.LayoutTransform>
-        <Border.Effect>
-            <DropShadowEffect Color="#000000" BlurRadius="16" ShadowDepth="4" Opacity="0.75" />
-        </Border.Effect>
 
         <Grid>
             <!-- 1. FULL HUD MODE -->
@@ -138,7 +152,8 @@
                             <controls:CircularTimerProgress Grid.Column="0" 
                                                            Width="52" Height="52"
                                                            Progress="{Binding ProgressRatio}"
-                                                           Margin="0,0,10,0" />
+                                                           Margin="0,0,10,0"
+                                                           Visibility="{Binding ShowProgressRing, Converter={StaticResource BoolToVis}}" />
 
                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                 <TextBlock Text="{Binding ActiveEventName}"
@@ -173,7 +188,8 @@
                                      Foreground="{Binding StatusColorHex}"
                                      Background="#1F2937"
                                      BorderThickness="0"
-                                     Margin="0,2,0,6" />
+                                     Margin="0,2,0,6"
+                                     Visibility="{Binding ShowProgressRing, Converter={StaticResource BoolToVis}}" />
 
                         <!-- Footer -->
                         <Grid>
@@ -193,7 +209,8 @@
                                        Text="{Binding NextEventTimeText}"
                                        Foreground="{StaticResource TextMutedBrush}"
                                        FontSize="10"
-                                       HorizontalAlignment="Right" />
+                                       HorizontalAlignment="Right"
+                                       Visibility="{Binding ShowNextEventTime, Converter={StaticResource BoolToVis}}" />
                         </Grid>
                     </StackPanel>
 
@@ -202,12 +219,22 @@
                                  Visibility="{Binding IsMultiTimer, Converter={StaticResource BoolToVis}}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Border Background="#121824"
-                                        BorderBrush="{Binding StatusColorHex}"
-                                        BorderThickness="1"
-                                        CornerRadius="6"
-                                        Padding="8,6"
-                                        Margin="0,3">
+                                <Border Margin="0,3" CornerRadius="6" Padding="8,6">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Background" Value="#121824" />
+                                            <Setter Property="BorderBrush" Value="{Binding StatusColorHex}" />
+                                            <Setter Property="BorderThickness" Value="1" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding DataContext.ShowBackground, RelativeSource={RelativeSource AncestorType=Window}}" Value="False">
+                                                    <Setter Property="Background" Value="Transparent" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding DataContext.ShowBorder, RelativeSource={RelativeSource AncestorType=Window}}" Value="False">
+                                                    <Setter Property="BorderThickness" Value="0" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
                                     <Grid>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto" />
@@ -236,7 +263,8 @@
                                                 <ColumnDefinition Width="Auto" />
                                             </Grid.ColumnDefinitions>
 
-                                            <controls:CircularTimerProgress Grid.Column="0" Width="32" Height="32" Progress="{Binding ProgressRatio}" Margin="0,0,8,0" />
+                                            <controls:CircularTimerProgress Grid.Column="0" Width="32" Height="32" Progress="{Binding ProgressRatio}" Margin="0,0,8,0"
+                                                                           Visibility="{Binding DataContext.ShowProgressRing, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BoolToVis}}" />
 
                                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                                 <TextBlock Text="{Binding PhaseDescriptionText}" FontSize="8" Foreground="{StaticResource TextSecondaryBrush}" />
@@ -247,11 +275,13 @@
                                                            FontWeight="Bold" />
                                             </StackPanel>
 
-                                            <TextBlock Grid.Column="2" Text="{Binding NextEventTimeText}" FontSize="8" Foreground="{StaticResource TextMutedBrush}" VerticalAlignment="Bottom" />
+                                            <TextBlock Grid.Column="2" Text="{Binding NextEventTimeText}" FontSize="8" Foreground="{StaticResource TextMutedBrush}" VerticalAlignment="Bottom"
+                                                       Visibility="{Binding DataContext.ShowNextEventTime, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BoolToVis}}" />
                                         </Grid>
 
                                         <!-- Card Linear Bar -->
-                                        <ProgressBar Grid.Row="2" Height="2" Minimum="0" Maximum="1" Value="{Binding ProgressRatio}" Foreground="{Binding StatusColorHex}" Background="#1F2937" BorderThickness="0" Margin="0,2,0,0" />
+                                        <ProgressBar Grid.Row="2" Height="2" Minimum="0" Maximum="1" Value="{Binding ProgressRatio}" Foreground="{Binding StatusColorHex}" Background="#1F2937" BorderThickness="0" Margin="0,2,0,0"
+                                                     Visibility="{Binding DataContext.ShowProgressRing, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BoolToVis}}" />
                                     </Grid>
                                 </Border>
                             </DataTemplate>

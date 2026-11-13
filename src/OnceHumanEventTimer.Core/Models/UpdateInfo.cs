@@ -12,4 +12,5 @@ public record UpdateInfo(
     string LatestVersion,
     string? ReleaseNotes,
     string? DownloadUrl,
-    string? PublishedAt = null);
+    string? PublishedAt = null,
+    bool IsNotFoundOnGitHub = false);

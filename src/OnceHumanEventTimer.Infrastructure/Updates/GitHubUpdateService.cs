@@ -30,35 +30,39 @@ public sealed class GitHubUpdateService : IUpdateService, IDisposable
         _httpClient = httpClient ?? new HttpClient();
 
         if (!_httpClient.DefaultRequestHeaders.Contains("User-Agent"))
-        {
-            _httpClient.DefaultRequestHeaders.UserAgent.Add(
-                new ProductInfoHeaderValue("OnceHumanEventTimer-Updater", GetCurrentVersionString()));
-        }
+            _httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("OnceHumanEventTimer-Updater", GetCurrentVersionString()));
 
         if (!_httpClient.DefaultRequestHeaders.Accept.Any(h => h.MediaType == "application/vnd.github.v3+json"))
-        {
-            _httpClient.DefaultRequestHeaders.Accept.Add(
-                new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json"));
-        }
+            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json"));
     }
 
     public async Task<UpdateInfo> CheckForUpdatesAsync(CancellationToken cancellationToken = default)
     {
         string currentVersion = GetCurrentVersionString();
-        string json = await FetchLatestReleaseJsonAsync(cancellationToken);
+        string? json = await FetchLatestReleaseJsonAsync(cancellationToken);
+
+        if (json == null)
+        {
+            return new UpdateInfo(
+                HasUpdate: false,
+                CurrentVersion: currentVersion,
+                LatestVersion: currentVersion,
+                ReleaseNotes: "No releases published yet on GitHub (vtstv/OHTimer). You are running the latest version.",
+                DownloadUrl: null,
+                PublishedAt: null,
+                IsNotFoundOnGitHub: true);
+        }
 
         using var doc = JsonDocument.Parse(json);
         var root = doc.RootElement;
-
         string tagName = root.TryGetProperty("tag_name", out var tagProp) ? tagProp.GetString() ?? "" : "";
         string cleanVersion = tagName.Trim().TrimStart('v', 'V');
         string releaseNotes = root.TryGetProperty("body", out var bodyProp) ? bodyProp.GetString() ?? "" : "";
         string publishedAt = root.TryGetProperty("published_at", out var pubProp) ? pubProp.GetString() ?? "" : "";
-
         string? downloadUrl = ExtractBestDownloadUrl(root);
 
         bool hasUpdate = IsNewerVersion(cleanVersion, currentVersion);
-        return new UpdateInfo(hasUpdate, currentVersion, cleanVersion, releaseNotes, downloadUrl, publishedAt);
+        return new UpdateInfo(hasUpdate, currentVersion, cleanVersion, releaseNotes, downloadUrl, publishedAt, IsNotFoundOnGitHub: false);
     }
 
     public async Task<bool> DownloadAndApplyUpdateAsync(
@@ -70,9 +74,7 @@ public sealed class GitHubUpdateService : IUpdateService, IDisposable
 
         string? currentExePath = Environment.ProcessPath;
         if (string.IsNullOrEmpty(currentExePath) || !File.Exists(currentExePath))
-        {
             currentExePath = Process.GetCurrentProcess().MainModule?.FileName;
-        }
 
         if (string.IsNullOrEmpty(currentExePath) || !File.Exists(currentExePath)) return false;
 
@@ -98,11 +100,7 @@ public sealed class GitHubUpdateService : IUpdateService, IDisposable
             {
                 await fileStream.WriteAsync(buffer.AsMemory(0, bytesRead), cancellationToken);
                 totalRead += bytesRead;
-
-                if (totalBytes > 0 && progress != null)
-                {
-                    progress.Report((double)totalRead / totalBytes);
-                }
+                if (totalBytes > 0 && progress != null) progress.Report((double)totalRead / totalBytes);
             }
         }
 
@@ -115,16 +113,13 @@ public sealed class GitHubUpdateService : IUpdateService, IDisposable
 
             ZipFile.ExtractToDirectory(downloadedPayload, extractDir, true);
             var exeFiles = Directory.GetFiles(extractDir, "*.exe", SearchOption.AllDirectories);
-            var matchedExe = exeFiles.FirstOrDefault(f => Path.GetFileName(f).Contains("OnceHuman", StringComparison.OrdinalIgnoreCase))
-                             ?? exeFiles.FirstOrDefault();
-
+            var matchedExe = exeFiles.FirstOrDefault(f => Path.GetFileName(f).Contains("OnceHuman", StringComparison.OrdinalIgnoreCase)) ?? exeFiles.FirstOrDefault();
             if (matchedExe != null) stagedExePath = matchedExe;
         }
 
         int currentPid = Environment.ProcessId;
         string scriptPath = Path.Combine(tempDir, "apply_update.cmd");
-        string cmdScript =
-$@"@echo off
+        string cmdScript = $@"@echo off
 chcp 65001 >nul
 set PID={currentPid}
 set TARGET=""{currentExePath}""
@@ -158,17 +153,11 @@ del ""%~f0"" >nul 2>&1
         };
 
         Process.Start(psi);
-
-        _ = Task.Run(async () =>
-        {
-            await Task.Delay(400);
-            Environment.Exit(0);
-        });
-
+        _ = Task.Run(async () => { await Task.Delay(400); Environment.Exit(0); });
         return true;
     }
 
-    private async Task<string> FetchLatestReleaseJsonAsync(CancellationToken cancellationToken)
+    private async Task<string?> FetchLatestReleaseJsonAsync(CancellationToken cancellationToken)
     {
         try
         {
@@ -176,11 +165,23 @@ del ""%~f0"" >nul 2>&1
             if (response.IsSuccessStatusCode)
                 return await response.Content.ReadAsStringAsync(cancellationToken);
         }
-        catch { /* Fallback to secondary repo endpoint below */ }
+        catch { /* Fallback to secondary endpoint */ }
 
-        using var fallbackResponse = await _httpClient.GetAsync(FallbackRepoApi, cancellationToken);
-        fallbackResponse.EnsureSuccessStatusCode();
-        return await fallbackResponse.Content.ReadAsStringAsync(cancellationToken);
+        try
+        {
+            using var fallbackResponse = await _httpClient.GetAsync(FallbackRepoApi, cancellationToken);
+            if (fallbackResponse.IsSuccessStatusCode)
+                return await fallbackResponse.Content.ReadAsStringAsync(cancellationToken);
+            if (fallbackResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
+                return null;
+
+            fallbackResponse.EnsureSuccessStatusCode();
+            return await fallbackResponse.Content.ReadAsStringAsync(cancellationToken);
+        }
+        catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+        {
+            return null;
+        }
     }
 
     private static string? ExtractBestDownloadUrl(JsonElement root)
@@ -212,34 +213,25 @@ del ""%~f0"" >nul 2>&1
             var header = new byte[2];
             return fs.Read(header, 0, 2) == 2 && header[0] == 'P' && header[1] == 'K';
         }
-        catch
-        {
-            return false;
-        }
+        catch { return false; }
     }
 
     private static bool IsNewerVersion(string remoteVersion, string currentVersion)
     {
         if (Version.TryParse(remoteVersion, out var remoteVer) && Version.TryParse(currentVersion, out var curVer))
-        {
             return remoteVer > curVer;
-        }
 
-        return !string.IsNullOrWhiteSpace(remoteVersion) &&
-               !string.Equals(remoteVersion, currentVersion, StringComparison.OrdinalIgnoreCase);
+        return !string.IsNullOrWhiteSpace(remoteVersion) && !string.Equals(remoteVersion, currentVersion, StringComparison.OrdinalIgnoreCase);
     }
 
     private static string GetCurrentVersionString()
     {
         var entry = Assembly.GetEntryAssembly() ?? typeof(GitHubUpdateService).Assembly;
         var infoVer = entry.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
-        if (!string.IsNullOrWhiteSpace(infoVer))
-        {
-            return infoVer.Split('+')[0];
-        }
+        if (!string.IsNullOrWhiteSpace(infoVer)) return infoVer.Split('+')[0];
 
         var ver = entry.GetName().Version;
-        return ver != null ? $"{ver.Major}.{ver.Minor}.{ver.Build}" : "1.2.1";
+        return ver != null ? $"{ver.Major}.{ver.Minor}.{ver.Build}" : "1.3.0";
     }
 
     public void Dispose()

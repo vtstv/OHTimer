@@ -78,20 +78,32 @@ public partial class App : Application
         {
             if (args.PlaySound && settingsService.Settings.PlayAlertSound)
             {
+                string? soundPath = args.Event?.CustomSoundPath;
+                if (string.IsNullOrWhiteSpace(soundPath))
+                {
+                    soundPath = settingsService.Settings.CustomSoundPath;
+                }
+
                 if (args.Phase == EventPhase.Active)
                 {
                     if (settingsService.Settings.PlayOnEventStart)
                     {
-                        audio.PlayEventStart(settingsService.Settings.Volume);
+                        if (!string.IsNullOrWhiteSpace(soundPath))
+                            audio.PlayWarning(settingsService.Settings.Volume, soundPath);
+                        else
+                            audio.PlayEventStart(settingsService.Settings.Volume);
                     }
                 }
                 else if (args.Phase == EventPhase.EndingSoon)
                 {
-                    audio.PlayEventEnding(settingsService.Settings.Volume);
+                    if (!string.IsNullOrWhiteSpace(soundPath))
+                        audio.PlayWarning(settingsService.Settings.Volume, soundPath);
+                    else
+                        audio.PlayEventEnding(settingsService.Settings.Volume);
                 }
                 else
                 {
-                    audio.PlayWarning(settingsService.Settings.Volume, settingsService.Settings.CustomSoundPath);
+                    audio.PlayWarning(settingsService.Settings.Volume, soundPath);
                 }
             }
 

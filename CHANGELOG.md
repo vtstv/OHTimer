@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.3.0] - 2026-11-13
+
+### Added
+- **Custom Dark Titlebar**: Replaced standard OS title bar on Settings dialog with a sleek dark title bar (`WindowChrome`), matching the Once Human theme with custom minimize, maximize, and close buttons.
+- **Dynamic Event Ordering**: Multi-timer list automatically reorders events dynamically so that active events appear first, followed by events closest to starting.
+- **Visual Accent Color Picker**: Added neon palette swatch buttons (Cyan, Purple, Amber, Emerald, Rose, Blue, Gold, Coral) with live preview box and custom HEX input in Events & Presets tab.
+- **HUD Minimization & Appearance Options**: Added toggles for outer border, background transparency, circular progress ring, and next event footer, enabling ultra-minimal floating badges.
+- **Per-Event Custom Audio**: Added custom WAV audio alert assignment for individual events with browse, test, and clear controls.
+- **Clickable About Links**: Made author and repository links in About tab clickable to open directly in the default browser.
+
+### Fixed
+- **Graceful GitHub Update Handling**: Handled 404 response on empty or newly created GitHub repositories gracefully with informative status message instead of failing with a generic error.
+
+### Changed
+- **Simplified User Documentation**: Replaced technical architectural documentation in `README.md` with a clean, user-oriented gamer guide.
+- **Repository Hygiene**: Untracked `AGENTS.md` and added to `.gitignore` to prevent committing internal agent files.
+
+---
+
 ## [1.2.1] - 2026-11-13
 
 ### Fixed

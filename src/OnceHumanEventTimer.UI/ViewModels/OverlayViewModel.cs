@@ -49,6 +49,18 @@ public partial class OverlayViewModel : ObservableObject
     private bool _compactMode = false;
 
     [ObservableProperty]
+    private bool _showBorder = true;
+
+    [ObservableProperty]
+    private bool _showBackground = true;
+
+    [ObservableProperty]
+    private bool _showProgressRing = true;
+
+    [ObservableProperty]
+    private bool _showNextEventTime = true;
+
+    [ObservableProperty]
     private double _opacity = 0.92;
 
     [ObservableProperty]
@@ -97,6 +109,10 @@ public partial class OverlayViewModel : ObservableObject
         IsLocked = settings.IsLocked;
         AlwaysOnTop = settings.AlwaysOnTop;
         CompactMode = settings.CompactMode;
+        ShowBorder = settings.ShowBorder;
+        ShowBackground = settings.ShowBackground;
+        ShowProgressRing = settings.ShowProgressRing;
+        ShowNextEventTime = settings.ShowNextEventTime;
     }
 
     private void OnSettingsChanged(object? sender, UserSettings settings)

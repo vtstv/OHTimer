@@ -78,4 +78,25 @@ public class UpdateServiceTests
 
         Assert.True(success);
     }
+
+    [Fact]
+    public async Task CheckForUpdatesAsync_WhenNotFoundOnGitHub_ReturnsIsNotFoundOnGitHubTrue()
+    {
+        var expectedInfo = new UpdateInfo(
+            HasUpdate: false,
+            CurrentVersion: "1.3.0",
+            LatestVersion: "1.3.0",
+            ReleaseNotes: "No releases published yet on GitHub (vtstv/OHTimer). You are running the latest version.",
+            DownloadUrl: null,
+            PublishedAt: null,
+            IsNotFoundOnGitHub: true);
+
+        var service = new MockUpdateService(expectedInfo);
+        var info = await service.CheckForUpdatesAsync();
+
+        Assert.False(info.HasUpdate);
+        Assert.True(info.IsNotFoundOnGitHub);
+        Assert.Contains("No releases published yet on GitHub", info.ReleaseNotes);
+        Assert.Null(info.DownloadUrl);
+    }
 }

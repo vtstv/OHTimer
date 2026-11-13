@@ -32,7 +32,7 @@ bld/
 *.rsuser
 *.suo
 *.user
-*.userosscache
+*.userosscacheAGENTS.md
 *.sln.docstates
 
 # Windows thumbnail & desktop caches
@@ -51,3 +51,4 @@ release/**/*.exe
 release/**/*.dll
 release/OnceHuman*/
 !release/README.md
+AGENTS.md

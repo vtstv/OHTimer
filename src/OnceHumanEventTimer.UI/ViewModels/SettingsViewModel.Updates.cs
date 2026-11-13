@@ -59,6 +59,11 @@ public partial class SettingsViewModel
                 UpdateStatusMessage = _loc.Format("Update_Available", info.LatestVersion);
                 ShowUpdateAvailablePanel = true;
             }
+            else if (info.IsNotFoundOnGitHub)
+            {
+                UpdateStatusMessage = _loc.GetString("Update_NoReleases");
+                ShowUpdateAvailablePanel = false;
+            }
             else
             {
                 UpdateStatusMessage = _loc.GetString("Update_UpToDate");

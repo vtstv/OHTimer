@@ -4,6 +4,7 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Win32;
 using OnceHumanEventTimer.Core.Models;
 
 namespace OnceHumanEventTimer.UI.ViewModels;
@@ -81,6 +82,12 @@ public partial class SettingsViewModel
         set { if (SelectedEvent != null && SelectedEvent.IsEnabled != value) { SelectedEvent.IsEnabled = value; OnPropertyChanged(); } }
     }
 
+    public string? SelectedEventCustomSoundPath
+    {
+        get => SelectedEvent?.CustomSoundPath;
+        set { if (SelectedEvent != null && SelectedEvent.CustomSoundPath != value) { SelectedEvent.CustomSoundPath = value; OnPropertyChanged(); } }
+    }
+
     private void InitializeEvents(UserSettings current)
     {
         GlobalTimeOffsetSeconds = current.GlobalTimeOffsetSeconds;
@@ -99,7 +106,40 @@ public partial class SettingsViewModel
         OnPropertyChanged(nameof(SelectedEventColorHex));
         OnPropertyChanged(nameof(SelectedEventDescription));
         OnPropertyChanged(nameof(SelectedEventIsEnabled));
+        OnPropertyChanged(nameof(SelectedEventCustomSoundPath));
         OnPropertyChanged(nameof(IsSelectedEventActive));
+    }
+
+    [RelayCommand]
+    private void SelectEventColor(string hex)
+    {
+        if (!string.IsNullOrWhiteSpace(hex)) SelectedEventColorHex = hex.Trim();
+    }
+
+    [RelayCommand]
+    private void BrowseEventSound()
+    {
+        var dlg = new OpenFileDialog
+        {
+            Filter = "WAV Audio Files (*.wav)|*.wav|All Files (*.*)|*.*",
+            Title = "Select Event Alert Sound"
+        };
+        if (dlg.ShowDialog() == true && SelectedEvent != null)
+        {
+            SelectedEventCustomSoundPath = dlg.FileName;
+        }
+    }
+
+    [RelayCommand]
+    private void TestEventAudio()
+    {
+        _audio.PlayWarning(Volume, SelectedEventCustomSoundPath ?? CustomSoundPath);
+    }
+
+    [RelayCommand]
+    private void ClearEventSound()
+    {
+        SelectedEventCustomSoundPath = null;
     }
 
     partial void OnActiveEventIdChanged(string value) => OnPropertyChanged(nameof(IsSelectedEventActive));
