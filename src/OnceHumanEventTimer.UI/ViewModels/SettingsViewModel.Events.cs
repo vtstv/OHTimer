@@ -217,4 +217,23 @@ public partial class SettingsViewModel
         }
         SelectedEvent = Events[Math.Min(index, Events.Count - 1)];
     }
+
+    [RelayCommand]
+    private void RestoreDefaultPresets()
+    {
+        var defaults = DefaultEventPresets.CreateDefaultEvents();
+        var existingIds = new HashSet<string>(Events.Select(e => e.Id), StringComparer.OrdinalIgnoreCase);
+
+        foreach (var def in defaults)
+        {
+            if (!existingIds.Contains(def.Id))
+            {
+                def.IsEnabled = false;
+                Events.Add(def);
+                existingIds.Add(def.Id);
+            }
+        }
+
+        SelectedEvent = Events.FirstOrDefault(e => e.Id == ActiveEventId) ?? Events.FirstOrDefault();
+    }
 }

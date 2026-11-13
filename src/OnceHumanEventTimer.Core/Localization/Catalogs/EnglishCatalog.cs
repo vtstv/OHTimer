@@ -49,6 +49,7 @@ internal static class EnglishCatalog
         ["Settings_SyncSuccess"] = "Synchronized to game time! Offset set to {0}s.",
         ["Settings_AddEvent"] = "Add New Event",
         ["Settings_DeleteEvent"] = "Delete Event",
+        ["Settings_RestorePresets"] = "Restore Presets",
         ["Settings_EventName"] = "Event Name:",
         ["Settings_EventColor"] = "Accent Color:",
         ["Settings_EventDesc"] = "Description:",

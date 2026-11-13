@@ -49,6 +49,7 @@ internal static class RussianCatalog
         ["Settings_SyncSuccess"] = "Синхронизировано с игрой! Смещение установлено на {0}с.",
         ["Settings_AddEvent"] = "Добавить событие",
         ["Settings_DeleteEvent"] = "Удалить событие",
+        ["Settings_RestorePresets"] = "Восстановить пресеты",
         ["Settings_EventName"] = "Название события:",
         ["Settings_EventColor"] = "Цвет акцента:",
         ["Settings_EventDesc"] = "Описание:",

@@ -49,6 +49,7 @@ internal static class GermanCatalog
         ["Settings_SyncSuccess"] = "Mit Spielzeit synchronisiert! Versatz auf {0}s gesetzt.",
         ["Settings_AddEvent"] = "Neues Event hinzufügen",
         ["Settings_DeleteEvent"] = "Event löschen",
+        ["Settings_RestorePresets"] = "Presets wiederherstellen",
         ["Settings_EventName"] = "Event-Name:",
         ["Settings_EventColor"] = "Akzentfarbe:",
         ["Settings_EventDesc"] = "Beschreibung:",

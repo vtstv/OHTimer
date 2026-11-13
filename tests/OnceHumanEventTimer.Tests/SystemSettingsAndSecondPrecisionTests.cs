@@ -122,4 +122,34 @@ public class SystemSettingsAndSecondPrecisionTests
             Assert.DoesNotContain("[", translated);
         }
     }
+
+    [Fact]
+    public void EnsureDefaultPresets_MergesMissingPresets_IntoLegacyUserSettings()
+    {
+        // Simulate an old config that only had 2 events:
+        var legacySettings = new UserSettings
+        {
+            Events = new List<EventDefinition>
+            {
+                new() { Id = "gravity-abyss", Name = "Gravity Abyss", IsEnabled = true },
+                new() { Id = "cargo-scramble", Name = "Cargo Scramble", IsEnabled = false }
+            }
+        };
+
+        Assert.Equal(2, legacySettings.Events.Count);
+
+        legacySettings.EnsureDefaultPresets();
+
+        // All 14 presets should now exist
+        Assert.Equal(14, legacySettings.Events.Count);
+
+        // Existing events retain their state
+        var gravityAbyss = legacySettings.Events.First(e => e.Id == "gravity-abyss");
+        Assert.True(gravityAbyss.IsEnabled);
+
+        // Newly added presets are disabled by default
+        var skyripper = legacySettings.Events.First(e => e.Id == "skyripper");
+        Assert.False(skyripper.IsEnabled);
+        Assert.Equal("Skyripper Anomaly", skyripper.Name);
+    }
 }

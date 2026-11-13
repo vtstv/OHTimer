@@ -69,6 +69,7 @@ public sealed class FileSettingsService : ISettingsService
                 var loaded = await JsonSerializer.DeserializeAsync<UserSettings>(stream, _jsonOptions);
                 if (loaded != null)
                 {
+                    loaded.EnsureDefaultPresets();
                     lock (_lock)
                     {
                         Settings = loaded;

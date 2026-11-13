@@ -33,16 +33,12 @@ public partial class App : Application
     protected override async void OnStartup(StartupEventArgs e)
     {
         // Enforce single instance
-        const string mutexName = "OnceHuman_EventTimer_Mutex_V1";
-        _singleInstanceMutex = new Mutex(true, mutexName, out bool isNewInstance);
-        if (!isNewInstance)
+        var cmdArgs = Environment.GetCommandLineArgs();
+        bool isCapture = cmdArgs.Any(a => a.StartsWith("--capture-screenshots", StringComparison.OrdinalIgnoreCase));
+        _singleInstanceMutex = new Mutex(true, "OnceHuman_EventTimer_Mutex_V1", out bool isNewInstance);
+        if (!isNewInstance && !isCapture)
         {
-            MessageBox.Show(
-                "Once Human: Event Timer is already running. Check your system tray.",
-                "Once Human: Event Timer",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information);
-
+            MessageBox.Show("Once Human: Event Timer is already running. Check your system tray.", "Once Human: Event Timer", MessageBoxButton.OK, MessageBoxImage.Information);
             Shutdown();
             return;
         }
@@ -155,19 +151,13 @@ public partial class App : Application
                     }
                 });
             },
-            toggleLockAction: () =>
-            {
-                Dispatcher.Invoke(() => overlayVm.ToggleLockCommand.Execute(null));
-            },
+            toggleLockAction: () => Dispatcher.Invoke(() => overlayVm.ToggleLockCommand.Execute(null)),
             openSettingsAction: OpenSettingsWindow,
             exitAction: ShutdownApp);
 
         _trayService.Initialize(overlayWindow.Handle);
-
         if (notifications is WindowsNotificationService winNotif)
-        {
             winNotif.OnShowNotification = (title, msg) => _trayService.ShowNotification(title, msg);
-        }
 
         // 8. Setup Game Focus Monitor (Auto-hide when Once Human not in focus)
         var focusMonitor = _serviceProvider.GetRequiredService<IGameFocusMonitor>();
@@ -208,6 +198,11 @@ public partial class App : Application
 
         // 9. Start Timing Engine
         scheduler.Start();
+
+        if (isCapture)
+        {
+            _ = HandleScreenshotGenerationAsync(cmdArgs);
+        }
     }
 
     private void OpenSettingsWindow()

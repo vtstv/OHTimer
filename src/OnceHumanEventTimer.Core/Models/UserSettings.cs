@@ -213,4 +213,29 @@ public class UserSettings
     /// Generates the default event presets for Once Human.
     /// </summary>
     public static List<EventDefinition> GetDefaultEvents() => DefaultEventPresets.CreateDefaultEvents();
+
+    /// <summary>
+    /// Merges any missing built-in default event presets into the configured event list.
+    /// </summary>
+    public void EnsureDefaultPresets()
+    {
+        if (Events == null || Events.Count == 0)
+        {
+            Events = GetDefaultEvents();
+            return;
+        }
+
+        var defaults = DefaultEventPresets.CreateDefaultEvents();
+        var existingIds = new HashSet<string>(Events.Select(e => e.Id), StringComparer.OrdinalIgnoreCase);
+
+        foreach (var def in defaults)
+        {
+            if (!existingIds.Contains(def.Id))
+            {
+                def.IsEnabled = false;
+                Events.Add(def);
+                existingIds.Add(def.Id);
+            }
+        }
+    }
 }
