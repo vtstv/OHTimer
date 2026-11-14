@@ -152,7 +152,7 @@ public partial class App : Application
         var focusMonitor = _serviceProvider.GetRequiredService<IGameFocusMonitor>();
         focusMonitor.GameFocusChanged += (s, isFocused) =>
         {
-            Dispatcher.Invoke(() =>
+            Dispatcher.BeginInvoke(new Action(() =>
             {
                 if (!settingsService.Settings.AutoHideWhenGameOutOfFocus) return;
 
@@ -170,7 +170,7 @@ public partial class App : Application
                         overlayWindow.Hide();
                     }
                 }
-            });
+            }), System.Windows.Threading.DispatcherPriority.Normal);
         };
         focusMonitor.Start();
 
