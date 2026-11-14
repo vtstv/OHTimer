@@ -495,7 +495,6 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
                     <!-- Event Badge -->
@@ -528,20 +527,6 @@
                             <DropShadowEffect Color="{Binding StatusColorHex}" BlurRadius="6" ShadowDepth="0" Opacity="0.7" />
                         </TextBlock.Effect>
                     </TextBlock>
-
-                    <!-- Miniature Mute Indicator in Mini-HUD -->
-                    <Border Grid.Column="2"
-                            Margin="8,0,0,0"
-                            Padding="4,2"
-                            CornerRadius="3"
-                            Background="#25EF4444"
-                            BorderBrush="#EF4444"
-                            BorderThickness="1"
-                            VerticalAlignment="Center"
-                            ToolTip="{loc:Loc HUD_ResumeAlerts}"
-                            Visibility="{Binding AreAlertsPaused, Converter={StaticResource BoolToVis}}">
-                        <TextBlock Text="🔕" FontSize="11" Foreground="#EF4444" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                    </Border>
                 </Grid>
 
                 <!-- Compact Multi-Timer View (Clean Stacked Rows) -->
