@@ -58,4 +58,50 @@ public partial class SettingsViewModel
 
         SelectedEvent = Events.FirstOrDefault(e => e.Id == ActiveEventId) ?? Events.FirstOrDefault();
     }
+
+    public bool CanMoveSelectedEventUp => SelectedEvent != null && Events.IndexOf(SelectedEvent) > 0;
+
+    public bool CanMoveSelectedEventDown => SelectedEvent != null && Events.IndexOf(SelectedEvent) >= 0 && Events.IndexOf(SelectedEvent) < Events.Count - 1;
+
+    [RelayCommand]
+    private void MoveEventUp()
+    {
+        if (SelectedEvent == null) return;
+        int index = Events.IndexOf(SelectedEvent);
+        if (index > 0)
+        {
+            Events.Move(index, index - 1);
+            NotifyReorderState();
+        }
+    }
+
+    [RelayCommand]
+    private void MoveEventDown()
+    {
+        if (SelectedEvent == null) return;
+        int index = Events.IndexOf(SelectedEvent);
+        if (index >= 0 && index < Events.Count - 1)
+        {
+            Events.Move(index, index + 1);
+            NotifyReorderState();
+        }
+    }
+
+    [RelayCommand]
+    private void MoveEventToTop()
+    {
+        if (SelectedEvent == null) return;
+        int index = Events.IndexOf(SelectedEvent);
+        if (index > 0)
+        {
+            Events.Move(index, 0);
+            NotifyReorderState();
+        }
+    }
+
+    private void NotifyReorderState()
+    {
+        OnPropertyChanged(nameof(CanMoveSelectedEventUp));
+        OnPropertyChanged(nameof(CanMoveSelectedEventDown));
+    }
 }

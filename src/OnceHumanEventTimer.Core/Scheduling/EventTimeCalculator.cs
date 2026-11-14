@@ -23,7 +23,8 @@ public static class EventTimeCalculator
         var effectiveTime = referenceTime.AddSeconds(offsetSeconds);
 
         int cycleMinutes = Math.Max(1, eventDefinition.CycleMinutes);
-        int startMinute = Math.Clamp(eventDefinition.StartMinute, 0, cycleMinutes - 1);
+        int totalStartMinutes = (Math.Max(0, eventDefinition.StartHour) * 60) + Math.Max(0, eventDefinition.StartMinute);
+        int startMinute = Math.Clamp(totalStartMinutes, 0, cycleMinutes - 1);
         int startSecond = Math.Clamp(eventDefinition.StartSecond, 0, 59);
         int durationMinutes = Math.Clamp(eventDefinition.DurationMinutes, 1, cycleMinutes);
 

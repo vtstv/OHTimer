@@ -3,6 +3,7 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using OnceHumanEventTimer.Core.Scheduling;
 
 namespace OnceHumanEventTimer.UI.ViewModels;
 
@@ -27,28 +28,9 @@ public partial class SettingsViewModel
             return;
         }
 
-        string raw = GameRemainingInput.Trim();
-        TimeSpan remaining;
-        var parts = raw.Split(':');
-        if (parts.Length == 2 && int.TryParse(parts[0], out int mins) && int.TryParse(parts[1], out int secs))
+        if (!GameTimeParser.TryParse(GameRemainingInput, out var remaining))
         {
-            remaining = new TimeSpan(0, mins, secs);
-        }
-        else if (parts.Length == 3 && int.TryParse(parts[0], out int hrs) && int.TryParse(parts[1], out int m) && int.TryParse(parts[2], out int s))
-        {
-            remaining = new TimeSpan(hrs, m, s);
-        }
-        else if (TryParseGameTimeString(raw, out var parsedGameTime))
-        {
-            remaining = parsedGameTime;
-        }
-        else if (TimeSpan.TryParse(raw, out var parsed))
-        {
-            remaining = parsed;
-        }
-        else
-        {
-            SyncFeedbackMessage = "Invalid format. Use mm:ss (e.g. 08:23) or 2h 29m 4s";
+            SyncFeedbackMessage = "Invalid format. Use hh:mm:ss, mm:ss, or 1h 3m 29s (1 Std 3 Min 29 Sek)";
             ShowSyncFeedback = true;
             return;
         }
@@ -79,26 +61,5 @@ public partial class SettingsViewModel
             SyncFeedbackMessage = $"Offset adjusted to {SelectedEvent.TimeOffsetSeconds}s";
             ShowSyncFeedback = true;
         }
-    }
-
-    private static bool TryParseGameTimeString(string input, out TimeSpan result)
-    {
-        result = TimeSpan.Zero;
-        var match = System.Text.RegularExpressions.Regex.Match(
-            input,
-            @"^(?:(?<h>\d+)\s*h(?:ours?|ч)?)?\s*(?:(?<m>\d+)\s*m(?:in(?:utes?)?|м(?:ин)?)?)?\s*(?:(?<s>\d+)\s*s(?:ec(?:onds?)?|с(?:ек)?)?)?$",
-            System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-
-        if (!match.Success || (!match.Groups["h"].Success && !match.Groups["m"].Success && !match.Groups["s"].Success))
-        {
-            return false;
-        }
-
-        int hours = match.Groups["h"].Success ? int.Parse(match.Groups["h"].Value) : 0;
-        int minutes = match.Groups["m"].Success ? int.Parse(match.Groups["m"].Value) : 0;
-        int seconds = match.Groups["s"].Success ? int.Parse(match.Groups["s"].Value) : 0;
-
-        result = new TimeSpan(hours, minutes, seconds);
-        return result > TimeSpan.Zero;
     }
 }

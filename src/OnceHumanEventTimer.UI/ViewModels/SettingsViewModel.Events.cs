@@ -38,6 +38,11 @@ public partial class SettingsViewModel
         get => SelectedEvent?.CycleMinutes ?? 60;
         set { if (SelectedEvent != null && SelectedEvent.CycleMinutes != value) { SelectedEvent.CycleMinutes = Math.Max(1, value); OnPropertyChanged(); } }
     }
+    public int SelectedEventStartHour
+    {
+        get => SelectedEvent?.StartHour ?? 0;
+        set { if (SelectedEvent != null && SelectedEvent.StartHour != value) { SelectedEvent.StartHour = Math.Max(0, value); OnPropertyChanged(); } }
+    }
     public int SelectedEventStartMinute
     {
         get => SelectedEvent?.StartMinute ?? 0;
@@ -120,6 +125,7 @@ public partial class SettingsViewModel
     {
         OnPropertyChanged(nameof(SelectedEventName));
         OnPropertyChanged(nameof(SelectedEventCycleMinutes));
+        OnPropertyChanged(nameof(SelectedEventStartHour));
         OnPropertyChanged(nameof(SelectedEventStartMinute));
         OnPropertyChanged(nameof(SelectedEventStartSecond));
         OnPropertyChanged(nameof(SelectedEventDurationMinutes));
@@ -133,6 +139,7 @@ public partial class SettingsViewModel
         OnPropertyChanged(nameof(IsSelectedEventCustomSound));
         OnPropertyChanged(nameof(SelectedEventCustomSoundPath));
         OnPropertyChanged(nameof(IsSelectedEventActive));
+        NotifyReorderState();
     }
 
     [RelayCommand]

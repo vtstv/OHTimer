@@ -196,4 +196,45 @@ public class SettingsAndPresetsTests
         Assert.False(deserialized.ShowBackground);
         Assert.False(deserialized.ShowBorder);
     }
+
+    [Fact]
+    public void EventDefinition_StartHour_ClonesAndSerializesProperly()
+    {
+        var ev = new EventDefinition
+        {
+            Id = "four-hour-boss",
+            Name = "Four Hour Boss",
+            CycleMinutes = 240,
+            StartHour = 1,
+            StartMinute = 3,
+            StartSecond = 29,
+            DurationMinutes = 30
+        };
+
+        var clone = ev.Clone();
+        Assert.Equal(1, clone.StartHour);
+        Assert.Equal(3, clone.StartMinute);
+        Assert.Equal(29, clone.StartSecond);
+
+        string json = JsonSerializer.Serialize(ev);
+        var deserialized = JsonSerializer.Deserialize<EventDefinition>(json);
+        Assert.NotNull(deserialized);
+        Assert.Equal(1, deserialized.StartHour);
+        Assert.Equal(3, deserialized.StartMinute);
+        Assert.Equal(29, deserialized.StartSecond);
+    }
+
+    [Fact]
+    public void EventList_Reorder_MovesItemsCorrectly()
+    {
+        var list = new System.Collections.ObjectModel.ObservableCollection<string> { "First", "Second", "Third" };
+
+        // Move "Third" to top
+        list.Move(2, 0);
+        Assert.Equal(new[] { "Third", "First", "Second" }, list);
+
+        // Move "First" down
+        list.Move(1, 2);
+        Assert.Equal(new[] { "Third", "Second", "First" }, list);
+    }
 }

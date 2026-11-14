@@ -63,7 +63,7 @@ if ([string]::IsNullOrWhiteSpace($Version)) {
     [xml]$projXml = Get-Content $projectPath
     $Version = $projXml.Project.PropertyGroup.Version
     if ([string]::IsNullOrWhiteSpace($Version)) {
-        $Version = "1.5.3"
+        $Version = "1.5.4"
     }
 }
 

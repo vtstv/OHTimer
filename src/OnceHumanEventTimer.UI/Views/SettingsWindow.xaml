@@ -88,6 +88,7 @@
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*" />
                                     <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
 
                                 <ListBox Grid.Row="0"
@@ -118,7 +119,37 @@
                                     </ListBox.ItemTemplate>
                                 </ListBox>
 
-                                <Grid Grid.Row="1" Margin="0,8,0,0">
+                                <!-- Reordering controls -->
+                                <Grid Grid.Row="1" Margin="0,6,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Button Grid.Column="0"
+                                            Command="{Binding MoveEventToTopCommand}"
+                                            IsEnabled="{Binding CanMoveSelectedEventUp}"
+                                            Style="{StaticResource ModernDarkButtonStyle}"
+                                            Content="{loc:Loc Settings_MoveTop}"
+                                            Padding="2,4" FontSize="10" Margin="0,0,2,0"
+                                            ToolTip="{loc:Loc Settings_MoveTop}" />
+                                    <Button Grid.Column="1"
+                                            Command="{Binding MoveEventUpCommand}"
+                                            IsEnabled="{Binding CanMoveSelectedEventUp}"
+                                            Style="{StaticResource ModernDarkButtonStyle}"
+                                            Content="▲"
+                                            Padding="2,4" FontSize="10" Margin="2,0,2,0"
+                                            ToolTip="{loc:Loc Settings_MoveUp}" />
+                                    <Button Grid.Column="2"
+                                            Command="{Binding MoveEventDownCommand}"
+                                            IsEnabled="{Binding CanMoveSelectedEventDown}"
+                                            Style="{StaticResource ModernDarkButtonStyle}"
+                                            Content="▼"
+                                            Padding="2,4" FontSize="10" Margin="2,0,0,0"
+                                            ToolTip="{loc:Loc Settings_MoveDown}" />
+                                </Grid>
+
+                                <Grid Grid.Row="2" Margin="0,6,0,0">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="Auto" />
@@ -215,19 +246,16 @@
                                     <Grid Margin="0,0,0,6">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="80" />
+                                            <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Text="{loc:Loc Settings_StartMinute}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11" />
-                                        <TextBox Grid.Column="1" Text="{Binding SelectedEventStartMinute, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center" />
-                                    </Grid>
-
-                                    <Grid Margin="0,0,0,6">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="80" />
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Text="{loc:Loc Settings_StartSecond}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11" />
-                                        <TextBox Grid.Column="1" Text="{Binding SelectedEventStartSecond, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center" />
+                                        <TextBlock Text="{loc:Loc Settings_StartTime}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11" />
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBox Width="36" Text="{Binding SelectedEventStartHour, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center" ToolTip="Hour (0-23)" />
+                                            <TextBlock Text=":" VerticalAlignment="Center" Margin="3,0" Foreground="{StaticResource TextMutedBrush}" FontWeight="Bold" />
+                                            <TextBox Width="36" Text="{Binding SelectedEventStartMinute, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center" ToolTip="Minute (0-59)" />
+                                            <TextBlock Text=":" VerticalAlignment="Center" Margin="3,0" Foreground="{StaticResource TextMutedBrush}" FontWeight="Bold" />
+                                            <TextBox Width="36" Text="{Binding SelectedEventStartSecond, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center" ToolTip="Second (0-59)" />
+                                        </StackPanel>
                                     </Grid>
 
                                     <Grid Margin="0,0,0,6">
@@ -633,7 +661,7 @@
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
                             <StackPanel Margin="16">
                                 <TextBlock Text="{loc:Loc App_Title}" FontSize="15" FontWeight="Bold" Foreground="{StaticResource AccentWaitingBrush}" Margin="0,0,0,4" />
-                                <TextBlock Text="Version 1.5.3" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,10" />
+                                <TextBlock Text="Version 1.5.4" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,10" />
                                 <TextBlock Text="{loc:Loc About_Desc}" TextWrapping="Wrap" Foreground="{StaticResource TextSecondaryBrush}" FontSize="13" Margin="0,0,0,12" />
 
                                 <!-- Clickable Author & Repository Link -->

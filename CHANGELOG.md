@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.5.4] - 2026-11-14
+
+### Added
+- **Hour-Precision Cycle Start Timing (HH:MM:SS)**: Added `StartHour` property to `EventDefinition` and updated `EventTimeCalculator` to compute `(StartHour * 60) + StartMinute`, clamped to `cycleMinutes - 1`. Replaced the separate minute/second input rows with a unified `[ Cycle Start Time (HH:MM:SS) ]` editor containing `[ Hour ] : [ Min ] : [ Sec ]` textboxes in `SettingsWindow.xaml`. Players can now configure exact multi-hour start times for events with cycles longer than 60 minutes (such as 4-hour Public Crisis events like Drift Greenhouse, Prime War, or world boss resets).
+- **Event Reordering & Priority Sorting (Move Up / Down / To Top)**: Added `MoveEventUpCommand`, `MoveEventDownCommand`, and `MoveEventToTopCommand` with reactive `CanMoveSelectedEventUp` and `CanMoveSelectedEventDown` states. Added dedicated reordering buttons (`🔝 To Top`, `▲ Move Up`, `▼ Move Down`) beneath the events presets list in the Settings window. Frequently adjusted or synchronized events can now be prioritized at the top of the list for quick access.
+- **Universal Multi-Lingual Game Time Parser (`GameTimeParser`)**: Introduced `GameTimeParser` in `OnceHumanEventTimer.Core.Scheduling` supporting natural in-game countdown strings in English (`2h 29m 4s`, `2 h 54 m 4 s`, `1h 3m 29s`), German (`1 Std 3 Min 29 Sek`, `1 Std. 3 Min. 29 Sek.`, `2 Stunden 15 Minuten`), Russian (`1ч 3м 29с`, `1 ч 3 м 29 с`, `2 часа 15 минут 30 секунд`), standard colon formats (`08:23`, `01:03:29`), and automatic stripping of game prompt prefixes (`Opens at ...`, `Öffnet in ...`, `Откроется через ...`).
+- **Unit Test Coverage Expansion**: Added 39 new unit test cases covering multi-lingual parsing, in-game prefix tolerance, `StartHour` serialization, and list reordering, bringing total test suite pass count to 110 tests.
+
+### Fixed
+- **German and Multilingual Sync Input Formatting**: Resolved issue where German in-game countdown format (`1 Std 3 Min 29 Sek`) was rejected by the game sync parser, and updated sync UI input labels across all catalogs with localized formatting hints.
+
+---
+
 ## [1.5.3] - 2026-11-14
 
 ### Added

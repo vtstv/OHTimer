@@ -24,7 +24,12 @@ public class EventDefinition
     public int CycleMinutes { get; set; } = 60;
 
     /// <summary>
-    /// Minute past the cycle anchor when the event begins (0 to CycleMinutes - 1).
+    /// Hour past the cycle anchor when the event begins (0 to (CycleMinutes / 60) - 1).
+    /// </summary>
+    public int StartHour { get; set; } = 0;
+
+    /// <summary>
+    /// Minute past the start hour when the event begins (0 to 59).
     /// </summary>
     public int StartMinute { get; set; } = 22;
 
@@ -89,6 +94,7 @@ public class EventDefinition
             Id = Id,
             Name = Name,
             CycleMinutes = CycleMinutes,
+            StartHour = StartHour,
             StartMinute = StartMinute,
             StartSecond = StartSecond,
             DurationMinutes = DurationMinutes,
