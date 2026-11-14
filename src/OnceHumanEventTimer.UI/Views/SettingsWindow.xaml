@@ -567,7 +567,7 @@
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
                             <StackPanel Margin="16">
                                 <TextBlock Text="{loc:Loc App_Title}" FontSize="15" FontWeight="Bold" Foreground="{StaticResource AccentWaitingBrush}" Margin="0,0,0,4" />
-                                <TextBlock Text="Version 1.5.0" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,10" />
+                                <TextBlock Text="Version 1.5.1" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,10" />
                                 <TextBlock Text="{loc:Loc About_Desc}" TextWrapping="Wrap" Foreground="{StaticResource TextSecondaryBrush}" FontSize="13" Margin="0,0,0,12" />
 
                                 <!-- Clickable Author & Repository Link -->

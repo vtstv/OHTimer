@@ -4,7 +4,7 @@
 ![.NET 8](https://img.shields.io/badge/.NET-8.0_LTS-512BD4?logo=dotnet&logoColor=white)
 ![Platform](https://img.shields.io/badge/Platform-Windows_10%20%2F%2011-0078D6?logo=windows&logoColor=white)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-![Version](https://img.shields.io/badge/Release-v1.5.0-00F0FF)
+![Version](https://img.shields.io/badge/Release-v1.5.1-00F0FF)
 
 A modern, high-performance desktop HUD overlay for **Once Human** that tracks recurring in-game events in real time. Designed with a dark cyberpunk aesthetic, sub-second server clock synchronization, customizable sound alerts, and zero-impact click-through gameplay support.
 
@@ -96,9 +96,9 @@ Releases are available in three distinct packages on the [GitHub Releases](https
 
 | Package | Filename | Size | Requirements |
 | :--- | :--- | :---: | :--- |
-| **Portable (Lightweight)** | `OnceHumanTimer-v1.5.0-portable.zip` | ~0.38 MB | Requires [.NET 8 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/8.0). Ultra-compact single file. |
-| **Standalone (Plug & Play)** | `OnceHumanTimer-v1.5.0-standalone.zip` | ~63 MB | Zero dependencies. Fully self-contained single executable. |
-| **Windows Setup Installer** | `OnceHumanTimer-v1.5.0-Setup.exe` | ~64 MB | Inno Setup wizard with Start Menu / Desktop shortcuts and Windows uninstaller. |
+| **Portable (Lightweight)** | `OnceHumanTimer-v1.5.1-portable.zip` | ~0.38 MB | Requires [.NET 8 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/8.0). Ultra-compact single file. |
+| **Standalone (Plug & Play)** | `OnceHumanTimer-v1.5.1-standalone.zip` | ~63 MB | Zero dependencies. Fully self-contained single executable. |
+| **Windows Setup Installer** | `OnceHumanTimer-v1.5.1-Setup.exe` | ~64 MB | Inno Setup wizard with Start Menu / Desktop shortcuts and Windows uninstaller. |
 
 ---
 
@@ -117,7 +117,7 @@ Releases are available in three distinct packages on the [GitHub Releases](https
 1. **Download**: Obtain your preferred release format from [GitHub Releases](https://github.com/vtstv/OHTimer/releases).
 2. **Run**:
    - For portable editions, extract the ZIP file and run `OnceHumanEventTimer.exe`.
-   - For the installer, run `OnceHumanTimer-v1.5.0-Setup.exe` and follow the setup wizard.
+   - For the installer, run `OnceHumanTimer-v1.5.1-Setup.exe` and follow the setup wizard.
 3. **Positioning**: Drag the HUD overlay to your preferred screen location. Use the lock button on the overlay or context menu to lock the position.
 4. **Configuration**: Click the gear icon or right-click the system tray icon to access Settings. Select which events to track, customize colors, configure sound alerts, or calibrate time.
 5. **Game Synchronization**: Under **Events & Presets**, compare the in-game event timer with the HUD. Enter the minutes and seconds remaining in-game and click **Sync** to calibrate.

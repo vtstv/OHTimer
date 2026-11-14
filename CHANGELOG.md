@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.5.1] - 2026-11-14
+
+### Performance & Optimizations
+- **Hardware DirectFlip & MPO Compatibility (`WS_EX_NOACTIVATE`)**: Added the `WS_EX_NOACTIVATE` Win32 extended window style to the HUD overlay. Informs Windows DWM and GPU drivers that the overlay will never steal input focus, allowing DirectX 11/12 hardware presentation models (Independent Flip / DirectFlip / Multi-Plane Overlays) to stay fully engaged in *Once Human*, preventing in-game frame rate drops, G-Sync/FreeSync stutter, and flip queue interruptions.
+- **Zero-CPU Foreground Window Detection in `GameFocusMonitor`**: Eliminated recurring 350ms process inspections (`Process.GetProcessById`). Implemented fast-path foreground window handle caching (`_lastForegroundHwnd`) and lightweight Win32 title matching, reducing background polling CPU usage and garbage collection allocations to virtually 0% during gameplay.
+
+### Added
+- **Global Hotkey to Pause/Resume Alerts (`Ctrl+Alt+M`)**: Added configurable hotkey (`TogglePauseAlertsHotkey`), overlay quick button, right-click context menu option, and system tray toggle allowing players to immediately mute or resume audio alerts and desktop notifications on demand without leaving the game.
+- **Confirmation Dialogs for Destructive & Reset Actions**: Added modal confirmation prompts to "Delete Event" and "Restore Presets" in the Event Manager to protect against accidental clicks, fully localized in English, German, and Russian.
+- **Custom Cyberpunk ScrollBar Styling**: Implemented a sleek dark slate track with neon cyan hover glow (`Styles/ScrollBars.xaml`) replacing standard bright Windows scrollbars across all scrollable panels.
+- **Responsive 2-Row Event Manager Button Layout**: Reorganized Event actions (`Add New Event`, `Delete Event`, `Restore Presets`) into a clean 2-row layout, completely eliminating button text truncation across all languages.
+- **Overlay Visual Showcase in Documentation**: Updated `README.md` to showcase actual in-game HUD overlay and floating Mini-HUD screenshots.
+
+---
+
 ## [1.5.0] - 2026-11-13
 
 ### Added
