@@ -25,16 +25,17 @@ public static class WindowStyleManager
     }
 
     /// <summary>
-    /// Hides window from Alt+Tab switcher by setting WS_EX_TOOLWINDOW.
+    /// Hides window from Alt+Tab switcher and prevents activation steal (WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE).
     /// </summary>
     public static void SetToolWindow(nint hwnd, bool isToolWindow)
     {
         if (hwnd == 0) return;
 
         nint currentStyle = NativeMethods.GetWindowLongPtr(hwnd, NativeMethods.GWL_EXSTYLE);
+        nint flags = NativeMethods.WS_EX_TOOLWINDOW | NativeMethods.WS_EX_NOACTIVATE;
         nint newStyle = isToolWindow
-            ? (currentStyle | NativeMethods.WS_EX_TOOLWINDOW)
-            : (currentStyle & ~NativeMethods.WS_EX_TOOLWINDOW);
+            ? (currentStyle | flags)
+            : (currentStyle & ~flags);
 
         NativeMethods.SetWindowLongPtr(hwnd, NativeMethods.GWL_EXSTYLE, newStyle);
     }

@@ -16,6 +16,7 @@ public class GameFocusMonitor : IGameFocusMonitor
     private readonly System.Timers.Timer _timer;
     private readonly int _currentProcessId;
     private readonly object _lock = new();
+    private nint _lastForegroundHwnd;
     private bool _isGameFocused = true;
     private bool _disposed;
 
@@ -30,7 +31,7 @@ public class GameFocusMonitor : IGameFocusMonitor
     public GameFocusMonitor()
     {
         _currentProcessId = Environment.ProcessId;
-        _timer = new System.Timers.Timer(350);
+        _timer = new System.Timers.Timer(500);
         _timer.Elapsed += OnTimerElapsed;
         _timer.AutoReset = true;
     }
@@ -55,6 +56,10 @@ public class GameFocusMonitor : IGameFocusMonitor
         nint fgHwnd = NativeMethods.GetForegroundWindow();
         if (fgHwnd == 0) return;
 
+        // Fast-path: if the foreground window hasn't changed, zero CPU overhead
+        if (fgHwnd == _lastForegroundHwnd) return;
+        _lastForegroundHwnd = fgHwnd;
+
         NativeMethods.GetWindowThreadProcessId(fgHwnd, out uint pid);
         if (pid == 0) return;
 
@@ -66,7 +71,8 @@ public class GameFocusMonitor : IGameFocusMonitor
         }
         else
         {
-            focused = IsOnceHumanProcess((int)pid) || IsOnceHumanWindow(fgHwnd);
+            // Fast title check first (< 1 microsecond, no heavy Process allocation)
+            focused = IsOnceHumanWindow(fgHwnd) || IsOnceHumanProcess((int)pid);
         }
 
         bool stateChanged = false;
