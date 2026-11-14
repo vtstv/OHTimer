@@ -38,7 +38,5 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            release/*-portable.zip
-            release/*-standalone.zip
-            release/*-Setup.exe
             release/*.zip
+            release/*.exe
