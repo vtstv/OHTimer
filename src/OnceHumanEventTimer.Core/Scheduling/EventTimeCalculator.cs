@@ -109,4 +109,45 @@ public static class EventTimeCalculator
             EffectiveOffsetSeconds = offsetSeconds
         };
     }
+
+    /// <summary>
+    /// Calculates the cycle start time (Hour, Minute, Second) within a repeating cycle
+    /// such that an event cycle starts at the specified target start time.
+    /// </summary>
+    public static (int StartHour, int StartMinute, int StartSecond) CalculateCycleStartTime(
+        DateTimeOffset targetStartTime,
+        int cycleMinutes)
+    {
+        cycleMinutes = Math.Max(1, cycleMinutes);
+        var baseDay = new DateTimeOffset(
+            targetStartTime.Year,
+            targetStartTime.Month,
+            targetStartTime.Day,
+            0,
+            0,
+            0,
+            targetStartTime.Offset);
+
+        double totalSecondsSinceDay = (targetStartTime - baseDay).TotalSeconds;
+        double cycleSeconds = cycleMinutes * 60.0;
+
+        double offsetInCycle = totalSecondsSinceDay % cycleSeconds;
+        if (offsetInCycle < 0)
+        {
+            offsetInCycle += cycleSeconds;
+        }
+
+        int totalSeconds = (int)Math.Round(offsetInCycle);
+        if (totalSeconds >= (int)cycleSeconds)
+        {
+            totalSeconds = 0;
+        }
+
+        int startSecond = totalSeconds % 60;
+        int totalMinutes = totalSeconds / 60;
+        int startHour = totalMinutes / 60;
+        int startMinute = totalMinutes % 60;
+
+        return (startHour, startMinute, startSecond);
+    }
 }

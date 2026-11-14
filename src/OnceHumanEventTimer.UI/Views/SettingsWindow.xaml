@@ -258,6 +258,51 @@
                                         </StackPanel>
                                     </Grid>
 
+                                    <!-- Calibrate Event Start from In-Game Countdown -->
+                                    <Border Background="#141D2B"
+                                            BorderBrush="#2A384C"
+                                            BorderThickness="1"
+                                            CornerRadius="6"
+                                            Padding="8,6"
+                                            Margin="0,0,0,8">
+                                        <StackPanel>
+                                            <TextBlock Text="{loc:Loc Settings_CalibrateStart_Title}"
+                                                       FontWeight="SemiBold"
+                                                       FontSize="11"
+                                                       Foreground="{StaticResource AccentWaitingBrush}"
+                                                       Margin="0,0,0,2" />
+                                            <TextBlock Text="{loc:Loc Settings_CalibrateStart_Desc}"
+                                                       FontSize="9.5"
+                                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                                       TextWrapping="Wrap"
+                                                       Margin="0,0,0,6" />
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBox Grid.Column="0"
+                                                         Text="{Binding EventRemainingInput, UpdateSourceTrigger=PropertyChanged}"
+                                                         Margin="0,0,6,0"
+                                                         VerticalContentAlignment="Center"
+                                                         ToolTip="e.g. 1h 3m 29s, 3h 55m, 2 h 29 m 4 s, 01:03:29" />
+                                                <Button Grid.Column="1"
+                                                        Command="{Binding CalibrateEventStartCommand}"
+                                                        Style="{StaticResource PrimaryAccentButtonStyle}"
+                                                        Content="{loc:Loc Settings_CalibrateStart_Button}"
+                                                        Padding="10,3"
+                                                        FontSize="11" />
+                                            </Grid>
+                                            <TextBlock Text="{Binding CalibrateFeedbackMessage}"
+                                                       Foreground="#22C55E"
+                                                       FontWeight="SemiBold"
+                                                       FontSize="10"
+                                                       Margin="0,4,0,0"
+                                                       Visibility="{Binding ShowCalibrateFeedback, Converter={StaticResource BoolToVis}}"
+                                                       TextWrapping="Wrap" />
+                                        </StackPanel>
+                                    </Border>
+
                                     <Grid Margin="0,0,0,6">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*" />
@@ -361,9 +406,9 @@
                                         </StackPanel>
                                     </Border>
 
-                                    <!-- Game Synchronization Card -->
+                                    <!-- Game Server Skew Calibration Card -->
                                     <Border Background="#141D2B"
-                                            BorderBrush="{StaticResource AccentWaitingBrush}"
+                                            BorderBrush="#2A384C"
                                             BorderThickness="1"
                                             CornerRadius="6"
                                             Padding="10"
@@ -374,9 +419,10 @@
                                                        FontSize="12"
                                                        Foreground="{StaticResource AccentWaitingBrush}" />
 
-                                            <TextBlock Text="Calibrate PC clock to Once Human server drift instantly:"
+                                            <TextBlock Text="{loc:Loc Settings_SyncDesc}"
                                                        FontSize="10"
                                                        Foreground="{StaticResource TextSecondaryBrush}"
+                                                       TextWrapping="Wrap"
                                                        Margin="0,2,0,6" />
 
                                             <Grid Margin="0,0,0,6">
@@ -417,7 +463,8 @@
                                                        FontWeight="SemiBold"
                                                        FontSize="10.5"
                                                        Margin="0,6,0,0"
-                                                       Visibility="{Binding ShowSyncFeedback, Converter={StaticResource BoolToVis}}" />
+                                                       Visibility="{Binding ShowSyncFeedback, Converter={StaticResource BoolToVis}}"
+                                                       TextWrapping="Wrap" />
                                         </StackPanel>
                                     </Border>
                                 </StackPanel>

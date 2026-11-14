@@ -72,7 +72,10 @@ public partial class App
             var tabControl = FindVisualChild<TabControl>(settingsWindow);
             if (tabControl != null)
             {
-                // Tab 0: Events & Presets
+                // Tab 0: Events & Presets (select Drift Greenhouse to showcase manual sync & calibration card)
+                var dg = settingsVm.Events.FirstOrDefault(e => e.Id == "drift-greenhouse");
+                if (dg != null) settingsVm.SelectedEvent = dg;
+
                 tabControl.SelectedIndex = 0;
                 settingsWindow.UpdateLayout();
                 await Task.Delay(250);

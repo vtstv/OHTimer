@@ -24,7 +24,7 @@ public static class GameTimeParser
     /// <summary>
     /// Attempts to parse an in-game countdown or remaining time string into a TimeSpan.
     /// </summary>
-    public static bool TryParse(string? input, out TimeSpan result)
+    public static bool TryParse(string? input, out TimeSpan result, bool allowZero = false)
     {
         result = TimeSpan.Zero;
         if (string.IsNullOrWhiteSpace(input))
@@ -35,6 +35,13 @@ public static class GameTimeParser
         string raw = input.Trim();
         raw = PrefixRegex.Replace(raw, string.Empty).Trim();
 
+        if (allowZero && (raw == "0" || raw.Equals("0s", StringComparison.OrdinalIgnoreCase) ||
+            raw.Equals("0m", StringComparison.OrdinalIgnoreCase) || raw.Equals("0h", StringComparison.OrdinalIgnoreCase)))
+        {
+            result = TimeSpan.Zero;
+            return true;
+        }
+
         // 1. Check colon-delimited formats (mm:ss or hh:mm:ss)
         var parts = raw.Split(':');
         if (parts.Length == 2 && int.TryParse(parts[0], out int mins) && int.TryParse(parts[1], out int secs))
@@ -42,7 +49,7 @@ public static class GameTimeParser
             if (mins >= 0 && secs >= 0 && secs < 60)
             {
                 result = new TimeSpan(0, mins, secs);
-                return result > TimeSpan.Zero;
+                return allowZero ? result >= TimeSpan.Zero : result > TimeSpan.Zero;
             }
         }
         else if (parts.Length == 3 && int.TryParse(parts[0], out int hrs) && int.TryParse(parts[1], out int m) && int.TryParse(parts[2], out int s))
@@ -50,7 +57,7 @@ public static class GameTimeParser
             if (hrs >= 0 && m >= 0 && m < 60 && s >= 0 && s < 60)
             {
                 result = new TimeSpan(hrs, m, s);
-                return result > TimeSpan.Zero;
+                return allowZero ? result >= TimeSpan.Zero : result > TimeSpan.Zero;
             }
         }
 
@@ -63,14 +70,17 @@ public static class GameTimeParser
             int seconds = match.Groups["s"].Success ? int.Parse(match.Groups["s"].Value) : 0;
 
             result = new TimeSpan(hours, minutes, seconds);
-            return result > TimeSpan.Zero;
+            return allowZero ? result >= TimeSpan.Zero : result > TimeSpan.Zero;
         }
 
         // 3. Fallback to standard TimeSpan.TryParse
-        if (TimeSpan.TryParse(raw, out var parsed) && parsed > TimeSpan.Zero)
+        if (TimeSpan.TryParse(raw, out var parsed))
         {
-            result = parsed;
-            return true;
+            if (allowZero ? parsed >= TimeSpan.Zero : parsed > TimeSpan.Zero)
+            {
+                result = parsed;
+                return true;
+            }
         }
 
         return false;

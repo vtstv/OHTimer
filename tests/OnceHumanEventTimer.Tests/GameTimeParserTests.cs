@@ -98,4 +98,18 @@ public class GameTimeParserTests
         Assert.False(success);
         Assert.Equal(TimeSpan.Zero, result);
     }
+
+    [Theory]
+    [InlineData("0")]
+    [InlineData("0s")]
+    [InlineData("0m")]
+    [InlineData("00:00")]
+    [InlineData("0:00:00")]
+    public void TryParse_AllowZero_ReturnsTrue(string input)
+    {
+        bool success = GameTimeParser.TryParse(input, out var result, allowZero: true);
+
+        Assert.True(success);
+        Assert.Equal(TimeSpan.Zero, result);
+    }
 }
