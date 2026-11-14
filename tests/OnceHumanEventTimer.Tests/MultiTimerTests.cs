@@ -33,7 +33,7 @@ public class MultiTimerTests
     public void AllVisionalWheelPresets_AreConfiguredProperly()
     {
         var presets = DefaultEventPresets.CreateDefaultEvents();
-        Assert.Equal(14, presets.Count);
+        Assert.Equal(15, presets.Count);
 
         var abyss = presets.Single(e => e.Id == "gravity-abyss");
         Assert.Equal("Gravity Abyss", abyss.Name);

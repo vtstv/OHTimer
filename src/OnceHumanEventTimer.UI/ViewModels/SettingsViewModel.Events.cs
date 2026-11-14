@@ -74,6 +74,18 @@ public partial class SettingsViewModel
         set { if (SelectedEvent != null && SelectedEvent.IsEnabled != value) { SelectedEvent.IsEnabled = value; OnPropertyChanged(); } }
     }
 
+    public bool SelectedEventShowOnlyWhenUpcoming
+    {
+        get => SelectedEvent?.ShowOnlyWhenUpcoming ?? false;
+        set { if (SelectedEvent != null && SelectedEvent.ShowOnlyWhenUpcoming != value) { SelectedEvent.ShowOnlyWhenUpcoming = value; OnPropertyChanged(); } }
+    }
+
+    public int SelectedEventUpcomingThresholdMinutes
+    {
+        get => SelectedEvent?.UpcomingThresholdMinutes ?? 10;
+        set { if (SelectedEvent != null && SelectedEvent.UpcomingThresholdMinutes != value) { SelectedEvent.UpcomingThresholdMinutes = Math.Max(1, value); OnPropertyChanged(); } }
+    }
+
     public SoundPreset SelectedEventSoundPreset
     {
         get => SelectedEvent?.SoundPreset ?? SoundPreset.CosmicPulse;
@@ -115,6 +127,8 @@ public partial class SettingsViewModel
         OnPropertyChanged(nameof(SelectedEventColorHex));
         OnPropertyChanged(nameof(SelectedEventDescription));
         OnPropertyChanged(nameof(SelectedEventIsEnabled));
+        OnPropertyChanged(nameof(SelectedEventShowOnlyWhenUpcoming));
+        OnPropertyChanged(nameof(SelectedEventUpcomingThresholdMinutes));
         OnPropertyChanged(nameof(SelectedEventSoundPreset));
         OnPropertyChanged(nameof(IsSelectedEventCustomSound));
         OnPropertyChanged(nameof(SelectedEventCustomSoundPath));
@@ -194,55 +208,5 @@ public partial class SettingsViewModel
         };
         Events.Add(newEvent);
         SelectedEvent = newEvent;
-    }
-
-    public Func<string, string, bool>? ConfirmAction { get; set; }
-
-    private bool Confirm(string message, string title)
-    {
-        if (ConfirmAction != null) return ConfirmAction(message, title);
-        return MessageBox.Show(message, title, MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes;
-    }
-
-    [RelayCommand]
-    private void DeleteEvent()
-    {
-        if (SelectedEvent == null || Events.Count <= 1) return;
-
-        string msg = _loc.Format("Settings_DeleteEvent_Confirm", SelectedEvent.Name);
-        string title = _loc.GetString("Settings_DeleteEvent_Title");
-        if (!Confirm(msg, title)) return;
-
-        var toRemove = SelectedEvent;
-        int index = Events.IndexOf(toRemove);
-        Events.Remove(toRemove);
-        if (ActiveEventId == toRemove.Id)
-        {
-            ActiveEventId = Events[0].Id;
-        }
-        SelectedEvent = Events[Math.Min(index, Events.Count - 1)];
-    }
-
-    [RelayCommand]
-    private void RestoreDefaultPresets()
-    {
-        string msg = _loc.GetString("Settings_RestorePresets_Confirm");
-        string title = _loc.GetString("Settings_RestorePresets_Title");
-        if (!Confirm(msg, title)) return;
-
-        var defaults = DefaultEventPresets.CreateDefaultEvents();
-        var existingIds = new HashSet<string>(Events.Select(e => e.Id), StringComparer.OrdinalIgnoreCase);
-
-        foreach (var def in defaults)
-        {
-            if (!existingIds.Contains(def.Id))
-            {
-                def.IsEnabled = false;
-                Events.Add(def);
-                existingIds.Add(def.Id);
-            }
-        }
-
-        SelectedEvent = Events.FirstOrDefault(e => e.Id == ActiveEventId) ?? Events.FirstOrDefault();
     }
 }

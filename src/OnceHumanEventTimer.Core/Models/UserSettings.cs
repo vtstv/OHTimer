@@ -6,7 +6,7 @@ namespace OnceHumanEventTimer.Core.Models;
 /// <summary>
 /// User configuration settings for overlay appearance, timing, and alerts.
 /// </summary>
-public class UserSettings
+public partial class UserSettings
 {
     /// <summary>
     /// X coordinate of the overlay window.
@@ -114,16 +114,6 @@ public class UserSettings
     public int GlobalTimeOffsetSeconds { get; set; } = 0;
 
     /// <summary>
-    /// Identifier of the currently active event definition.
-    /// </summary>
-    public string ActiveEventId { get; set; } = "gravity-abyss";
-
-    /// <summary>
-    /// List of configured event schedules and presets.
-    /// </summary>
-    public List<EventDefinition> Events { get; set; } = GetDefaultEvents();
-
-    /// <summary>
     /// Minutes before event start to trigger early notification (default: 2).
     /// </summary>
     public int AlertMinutesBefore { get; set; } = 2;
@@ -169,75 +159,4 @@ public class UserSettings
 
     /// <summary>Whether all audio alerts and toast notifications are temporarily paused/muted.</summary>
     public bool AreAlertsPaused { get; set; } = false;
-
-    /// <summary>
-    /// Retrieves the currently active event definition, falling back to default if not found.
-    /// </summary>
-    public EventDefinition GetActiveEvent()
-    {
-        if (Events == null || Events.Count == 0)
-        {
-            Events = GetDefaultEvents();
-        }
-
-        var active = Events.FirstOrDefault(e => string.Equals(e.Id, ActiveEventId, StringComparison.OrdinalIgnoreCase));
-        if (active == null)
-        {
-            active = Events[0];
-            ActiveEventId = active.Id;
-        }
-
-        return active;
-    }
-
-    /// <summary>
-    /// Returns all events that are currently enabled for HUD tracking.
-    /// </summary>
-    public List<EventDefinition> GetEnabledEvents()
-    {
-        if (Events == null || Events.Count == 0)
-        {
-            Events = GetDefaultEvents();
-        }
-
-        var enabled = Events.Where(e => e.IsEnabled).ToList();
-        if (enabled.Count == 0)
-        {
-            var active = GetActiveEvent();
-            active.IsEnabled = true;
-            enabled.Add(active);
-        }
-
-        return enabled;
-    }
-
-    /// <summary>
-    /// Generates the default event presets for Once Human.
-    /// </summary>
-    public static List<EventDefinition> GetDefaultEvents() => DefaultEventPresets.CreateDefaultEvents();
-
-    /// <summary>
-    /// Merges any missing built-in default event presets into the configured event list.
-    /// </summary>
-    public void EnsureDefaultPresets()
-    {
-        if (Events == null || Events.Count == 0)
-        {
-            Events = GetDefaultEvents();
-            return;
-        }
-
-        var defaults = DefaultEventPresets.CreateDefaultEvents();
-        var existingIds = new HashSet<string>(Events.Select(e => e.Id), StringComparer.OrdinalIgnoreCase);
-
-        foreach (var def in defaults)
-        {
-            if (!existingIds.Contains(def.Id))
-            {
-                def.IsEnabled = false;
-                Events.Add(def);
-                existingIds.Add(def.Id);
-            }
-        }
-    }
 }

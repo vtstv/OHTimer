@@ -63,7 +63,19 @@ public class SettingsAndPresetsTests
         var events = DefaultEventPresets.CreateDefaultEvents();
 
         Assert.NotEmpty(events);
-        Assert.Equal(14, events.Count);
+        Assert.Equal(15, events.Count);
+
+        var greenhouse = events.FirstOrDefault(e => e.Id == "drift-greenhouse");
+        Assert.NotNull(greenhouse);
+        Assert.Equal("Drift Greenhouse [Manual Sync]", greenhouse.Name);
+        Assert.Equal(240, greenhouse.CycleMinutes);
+        Assert.Equal(4, greenhouse.StartMinute);
+        Assert.Equal(4, greenhouse.StartSecond);
+        Assert.Equal(30, greenhouse.DurationMinutes);
+        Assert.False(greenhouse.IsEnabled);
+        Assert.True(greenhouse.ShowOnlyWhenUpcoming);
+        Assert.Equal(10, greenhouse.UpcomingThresholdMinutes);
+        Assert.Equal("#10B981", greenhouse.ColorHex);
 
         var gravityAbyss = events.FirstOrDefault(e => e.Id == "gravity-abyss");
         Assert.NotNull(gravityAbyss);

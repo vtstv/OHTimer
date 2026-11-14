@@ -82,6 +82,22 @@ public static class DefaultEventPresets
         },
         new EventDefinition
         {
+            Id = "drift-greenhouse",
+            Name = "Drift Greenhouse [Manual Sync]",
+            CycleMinutes = 240,
+            StartMinute = 4,
+            StartSecond = 4,
+            DurationMinutes = 30,
+            TimeOffsetSeconds = 0,
+            ColorHex = "#10B981",
+            IsEnabled = false,
+            SoundPreset = SoundPreset.CelestialBell,
+            ShowOnlyWhenUpcoming = true,
+            UpcomingThresholdMinutes = 10,
+            Description = "Isles of Abyss per-world dynamic spawn (World 1–12). Requires calibration via Sync from in-game map."
+        },
+        new EventDefinition
+        {
             Id = "chiron-centaur",
             Name = "Chiron the Centaur",
             CycleMinutes = 60,

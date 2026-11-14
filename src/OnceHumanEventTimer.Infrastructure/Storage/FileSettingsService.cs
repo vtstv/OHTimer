@@ -17,46 +17,107 @@ public sealed class FileSettingsService : ISettingsService
     private readonly JsonSerializerOptions _jsonOptions;
     private readonly object _lock = new();
 
+    /// <summary>
+    /// Full path to the active settings.json file.
+    /// </summary>
+    public string SettingsFilePath => _settingsFilePath;
+
+    /// <summary>
+    /// When true, settings are stored locally alongside the executable (portable mode).
+    /// </summary>
+    public bool IsPortableMode { get; }
+
     public UserSettings Settings { get; private set; } = new();
 
     public event EventHandler<UserSettings>? SettingsChanged;
 
     public FileSettingsService(string? customFolder = null)
     {
-        string modernFolder = customFolder ?? Path.Combine(
+        string modernFolder = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             "OnceHumanEventTimer");
 
-        string legacyFolder = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            "OnceHumanOnceHumanEventTimer");
+        string appDir = AppContext.BaseDirectory;
+        string localSettingsFile = Path.Combine(appDir, "settings.json");
+        string localMarker = Path.Combine(appDir, "portable");
+        string localMarkerTxt = Path.Combine(appDir, "portable.txt");
+        string localMarkerDot = Path.Combine(appDir, ".portable");
 
-        // Automatically migrate legacy settings folder if present
-        if (!Directory.Exists(modernFolder) && Directory.Exists(legacyFolder))
+        bool wantsPortable = File.Exists(localSettingsFile) ||
+                             File.Exists(localMarker) ||
+                             File.Exists(localMarkerTxt) ||
+                             File.Exists(localMarkerDot);
+
+        if (customFolder != null)
         {
-            try
+            Directory.CreateDirectory(customFolder);
+            _settingsFilePath = Path.Combine(customFolder, "settings.json");
+            IsPortableMode = false;
+        }
+        else if (wantsPortable && IsDirectoryWritable(appDir))
+        {
+            IsPortableMode = true;
+            _settingsFilePath = localSettingsFile;
+
+            // If local settings.json does not exist yet (e.g. portable marker file created), copy from AppData
+            if (!File.Exists(localSettingsFile))
             {
-                string legacyFile = Path.Combine(legacyFolder, "settings.json");
-                if (File.Exists(legacyFile))
+                string appDataFile = Path.Combine(modernFolder, "settings.json");
+                if (File.Exists(appDataFile))
                 {
-                    Directory.CreateDirectory(modernFolder);
-                    File.Copy(legacyFile, Path.Combine(modernFolder, "settings.json"), overwrite: false);
+                    try { File.Copy(appDataFile, localSettingsFile, overwrite: false); } catch { }
                 }
             }
-            catch
-            {
-                // Non-critical fallback
-            }
         }
+        else
+        {
+            IsPortableMode = false;
+            string legacyFolder = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "OnceHumanOnceHumanEventTimer");
 
-        Directory.CreateDirectory(modernFolder);
-        _settingsFilePath = Path.Combine(modernFolder, "settings.json");
+            // Automatically migrate legacy settings folder if present
+            if (!Directory.Exists(modernFolder) && Directory.Exists(legacyFolder))
+            {
+                try
+                {
+                    string legacyFile = Path.Combine(legacyFolder, "settings.json");
+                    if (File.Exists(legacyFile))
+                    {
+                        Directory.CreateDirectory(modernFolder);
+                        File.Copy(legacyFile, Path.Combine(modernFolder, "settings.json"), overwrite: false);
+                    }
+                }
+                catch
+                {
+                    // Non-critical fallback
+                }
+            }
+
+            Directory.CreateDirectory(modernFolder);
+            _settingsFilePath = Path.Combine(modernFolder, "settings.json");
+        }
 
         _jsonOptions = new JsonSerializerOptions
         {
             WriteIndented = true,
             PropertyNameCaseInsensitive = true
         };
+    }
+
+    private static bool IsDirectoryWritable(string directoryPath)
+    {
+        try
+        {
+            string probePath = Path.Combine(directoryPath, $".probe_{Guid.NewGuid():N}.tmp");
+            File.WriteAllText(probePath, "probe");
+            File.Delete(probePath);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     public async Task LoadAsync()

@@ -63,7 +63,7 @@ if ([string]::IsNullOrWhiteSpace($Version)) {
     [xml]$projXml = Get-Content $projectPath
     $Version = $projXml.Project.PropertyGroup.Version
     if ([string]::IsNullOrWhiteSpace($Version)) {
-        $Version = "1.5.2"
+        $Version = "1.5.3"
     }
 }
 
@@ -187,6 +187,7 @@ if ($buildPortable) {
     Write-Host "[5/6] Building Portable Package (Framework-Dependent)..." -ForegroundColor Yellow
     $portableDir = Join-Path $releaseBaseDir "OnceHumanTimer-v$Version-portable"
     Publish-Target -TargetDir $portableDir -IsSelfContained $false
+    Set-Content -Path (Join-Path $portableDir "portable.txt") -Value "Once Human Event Timer Portable Mode Marker" -Encoding UTF8
 
     $portableZip = Join-Path $releaseBaseDir "OnceHumanTimer-v$Version-portable.zip"
     $defaultZip = Join-Path $releaseBaseDir "OnceHumanTimer-v$Version.zip"
@@ -206,6 +207,7 @@ $standaloneDir = Join-Path $releaseBaseDir "OnceHumanTimer-v$Version"
 if ($buildStandalone -or $buildInstaller) {
     Write-Host "[5/6] Building Standalone Package (Self-Contained)..." -ForegroundColor Yellow
     Publish-Target -TargetDir $standaloneDir -IsSelfContained $true
+    Set-Content -Path (Join-Path $standaloneDir "portable.txt") -Value "Once Human Event Timer Portable Mode Marker" -Encoding UTF8
 
     if ($buildStandalone) {
         $standaloneZip = Join-Path $releaseBaseDir "OnceHumanTimer-v$Version-standalone.zip"

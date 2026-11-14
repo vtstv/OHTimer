@@ -161,8 +161,8 @@ public class SystemSettingsAndSecondPrecisionTests
 
         legacySettings.EnsureDefaultPresets();
 
-        // All 14 presets should now exist
-        Assert.Equal(14, legacySettings.Events.Count);
+        // All 15 presets should now exist
+        Assert.Equal(15, legacySettings.Events.Count);
 
         // Existing events retain their state
         var gravityAbyss = legacySettings.Events.First(e => e.Id == "gravity-abyss");

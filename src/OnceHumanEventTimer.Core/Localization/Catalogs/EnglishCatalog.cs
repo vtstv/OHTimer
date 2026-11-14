@@ -63,6 +63,8 @@ internal static class EnglishCatalog
         ["Settings_EventColor"] = "Accent Color:",
         ["Settings_EventDesc"] = "Description:",
         ["Settings_EventEnabled"] = "Track in HUD (Multi-Timer)",
+        ["Settings_ShowOnlyWhenUpcoming"] = "Show only when approaching event",
+        ["Settings_UpcomingThreshold"] = "Show before start (minutes):",
 
         ["Event_GravityAbyss_Name"] = "Gravity Abyss",
         ["Event_GravityAbyss_Desc"] = "Once Human hourly event with low-gravity tide and Stardust Crystals.",
@@ -74,6 +76,8 @@ internal static class EnglishCatalog
         ["Event_PrimeWar_Desc"] = "Massive cooperative battlefield defending the Staroid Restraint device against Manibus.",
         ["Event_PublicCrisis_Name"] = "Public Crisis (Harrowing)",
         ["Event_PublicCrisis_Desc"] = "Rapid dynamic open-world public crisis event rewarding weapon mods and Stardust Source.",
+        ["Event_DriftGreenhouse_Name"] = "Drift Greenhouse [Manual Sync]",
+        ["Event_DriftGreenhouse_Desc"] = "Isles of Abyss per-world dynamic spawn (World 1–12). Requires calibration via Sync from in-game map.",
         ["Event_ChironCentaur_Name"] = "Chiron the Centaur",
         ["Event_ChironCentaur_Desc"] = "Chiron centaur boss dynamic encounter in the Red Sands desert.",
         ["Event_WorkshopDefense_Name"] = "Extraction Workshop Defense",
@@ -122,6 +126,10 @@ internal static class EnglishCatalog
         ["Settings_StartWithWindows_Desc"] = "Automatically launch Once Human Event Timer when you log in to Windows.",
         ["Settings_AutoHideGameFocus"] = "Hide overlay when Once Human is not in focus",
         ["Settings_AutoHideGameFocus_Desc"] = "Automatically hides the overlay when you Alt-Tab or switch away from the game, and restores it when Once Human is active.",
+        ["Settings_StorageMode"] = "Settings Storage:",
+        ["Settings_StoragePortable"] = "Portable Mode — settings are saved locally in the application folder.",
+        ["Settings_StorageAppData"] = "Standard Mode — settings are saved in your Windows AppData profile.",
+        ["Settings_OpenFolder"] = "Open Folder",
         ["Settings_StartSecond"] = "Cycle Start Second (0-59):",
 
         ["Settings_Opacity"] = "Overlay Opacity:",

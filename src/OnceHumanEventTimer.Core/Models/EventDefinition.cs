@@ -69,6 +69,17 @@ public class EventDefinition
     public string? CustomSoundPath { get; set; }
 
     /// <summary>
+    /// Whether to display this event on the HUD overlay only when it is approaching or active.
+    /// Useful for long-cycle events (e.g. 4-hour loot resets or 3-hour bosses) to avoid screen clutter.
+    /// </summary>
+    public bool ShowOnlyWhenUpcoming { get; set; } = false;
+
+    /// <summary>
+    /// Threshold in minutes before event start to display it on the HUD overlay when ShowOnlyWhenUpcoming is enabled.
+    /// </summary>
+    public int UpcomingThresholdMinutes { get; set; } = 10;
+
+    /// <summary>
     /// Creates an exact clone of the event definition.
     /// </summary>
     public EventDefinition Clone()
@@ -86,7 +97,9 @@ public class EventDefinition
             Description = Description,
             IsEnabled = IsEnabled,
             SoundPreset = SoundPreset,
-            CustomSoundPath = CustomSoundPath
+            CustomSoundPath = CustomSoundPath,
+            ShowOnlyWhenUpcoming = ShowOnlyWhenUpcoming,
+            UpcomingThresholdMinutes = UpcomingThresholdMinutes
         };
     }
 }

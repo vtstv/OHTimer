@@ -63,6 +63,8 @@ internal static class GermanCatalog
         ["Settings_EventColor"] = "Akzentfarbe:",
         ["Settings_EventDesc"] = "Beschreibung:",
         ["Settings_EventEnabled"] = "Im HUD anzeigen (Multi-Timer)",
+        ["Settings_ShowOnlyWhenUpcoming"] = "Nur bei bevorstehendem Event anzeigen",
+        ["Settings_UpcomingThreshold"] = "Vor Event-Beginn anzeigen (Minuten):",
 
         ["Event_GravityAbyss_Name"] = "Gravity Abyss",
         ["Event_GravityAbyss_Desc"] = "Stündliches Event mit Niedriggravitations-Gezeiten und Sternenstaub-Kristallen.",
@@ -74,6 +76,8 @@ internal static class GermanCatalog
         ["Event_PrimeWar_Desc"] = "Massive Koop-Schlacht zur Verteidigung der Sternoid-Eindämmung gegen Manibus.",
         ["Event_PublicCrisis_Name"] = "Öffentliche Krise (Harrowing)",
         ["Event_PublicCrisis_Desc"] = "Schnelles dynamisches Krisenevent mit Belohnungen für Waffen-Mods und Sternenstaubquelle.",
+        ["Event_DriftGreenhouse_Name"] = "Treibendes Gewächshaus [Manueller Sync]",
+        ["Event_DriftGreenhouse_Desc"] = "Welt-abhängiger dynamischer Spawn (World 1–12). Erfordert Kalibrierung über Sync nach Ingame-Karte.",
         ["Event_ChironCentaur_Name"] = "Chiron der Zentaur",
         ["Event_ChironCentaur_Desc"] = "Dynamische Zentaur-Bossbegegnung in der Rotsand-Wüste.",
         ["Event_WorkshopDefense_Name"] = "Förderwerkstatt-Verteidigung",
@@ -122,6 +126,10 @@ internal static class GermanCatalog
         ["Settings_StartWithWindows_Desc"] = "Once Human Event Timer beim Anmelden an Windows automatisch starten.",
         ["Settings_AutoHideGameFocus"] = "Overlay ausblenden, wenn Once Human nicht im Fokus ist",
         ["Settings_AutoHideGameFocus_Desc"] = "Blendet das Overlay automatisch aus, wenn zu einer anderen App gewechselt wird, und wieder ein, wenn Once Human aktiv ist.",
+        ["Settings_StorageMode"] = "Einstellungen-Speicherort:",
+        ["Settings_StoragePortable"] = "Portabler Modus — Einstellungen werden lokal im Programmordner gespeichert.",
+        ["Settings_StorageAppData"] = "Standard-Modus — Einstellungen werden im Windows AppData-Profil gespeichert.",
+        ["Settings_OpenFolder"] = "Ordner öffnen",
         ["Settings_StartSecond"] = "Zyklus-Startsekunde (0-59):",
 
         ["Settings_Opacity"] = "Overlay-Deckkraft:",

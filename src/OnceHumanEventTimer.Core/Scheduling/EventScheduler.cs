@@ -45,7 +45,7 @@ public class EventScheduler : IEventScheduler
         _trackedEvents = DefaultEventPresets.CreateDefaultEvents();
         _activeEvent = _trackedEvents[0];
 
-        var now = DateTimeOffset.UtcNow;
+        var now = DateTimeOffset.Now;
         CurrentSnapshot = CalculateSnapshot(now, _activeEvent, _activeEvent.TimeOffsetSeconds);
         ActiveSnapshots = new List<EventSnapshot> { CurrentSnapshot };
         UpdateSnapshotsLocked(now);
@@ -65,7 +65,7 @@ public class EventScheduler : IEventScheduler
             if (index >= 0) _trackedEvents[index] = _activeEvent;
             else _trackedEvents.Insert(0, _activeEvent);
 
-            UpdateSnapshotsLocked(DateTimeOffset.UtcNow);
+            UpdateSnapshotsLocked(DateTimeOffset.Now);
         }
 
         SnapshotUpdated?.Invoke(this, CurrentSnapshot);
@@ -93,7 +93,7 @@ public class EventScheduler : IEventScheduler
                 _activeEvent = match ?? _trackedEvents[0];
             }
 
-            UpdateSnapshotsLocked(DateTimeOffset.UtcNow);
+            UpdateSnapshotsLocked(DateTimeOffset.Now);
         }
 
         SnapshotUpdated?.Invoke(this, CurrentSnapshot);
@@ -109,7 +109,7 @@ public class EventScheduler : IEventScheduler
             _activeEvent.DurationMinutes = Math.Clamp(durationMinutes, 1, Math.Max(1, _activeEvent.CycleMinutes));
             _alertBeforeStart = Math.Max(0, alertBeforeStart);
             _alertBeforeEnd = Math.Max(0, alertBeforeEnd);
-            UpdateSnapshotsLocked(DateTimeOffset.UtcNow);
+            UpdateSnapshotsLocked(DateTimeOffset.Now);
         }
 
         SnapshotUpdated?.Invoke(this, CurrentSnapshot);
@@ -121,7 +121,7 @@ public class EventScheduler : IEventScheduler
         lock (_lock)
         {
             _activeEvent.TimeOffsetSeconds = offsetSeconds - _globalTimeOffsetSeconds;
-            UpdateSnapshotsLocked(DateTimeOffset.UtcNow);
+            UpdateSnapshotsLocked(DateTimeOffset.Now);
         }
 
         TimeOffsetChanged?.Invoke(this, _activeEvent.TimeOffsetSeconds);
@@ -134,7 +134,7 @@ public class EventScheduler : IEventScheduler
         int newOffset;
         lock (_lock)
         {
-            var now = DateTimeOffset.UtcNow;
+            var now = DateTimeOffset.Now;
             int currentEffectiveOffset = _activeEvent.TimeOffsetSeconds + _globalTimeOffsetSeconds;
             var currentSnap = CalculateSnapshot(now, _activeEvent, currentEffectiveOffset);
 
@@ -159,7 +159,7 @@ public class EventScheduler : IEventScheduler
 
     public void Start()
     {
-        lock (_lock) { UpdateSnapshotsLocked(DateTimeOffset.UtcNow); }
+        lock (_lock) { UpdateSnapshotsLocked(DateTimeOffset.Now); }
         _timer.Start();
     }
 
@@ -173,7 +173,7 @@ public class EventScheduler : IEventScheduler
 
         lock (_lock)
         {
-            UpdateSnapshotsLocked(DateTimeOffset.UtcNow);
+            UpdateSnapshotsLocked(DateTimeOffset.Now);
             currentSnap = CurrentSnapshot;
             activeSnaps = ActiveSnapshots;
 

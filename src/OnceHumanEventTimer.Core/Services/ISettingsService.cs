@@ -16,6 +16,16 @@ public interface ISettingsService
     UserSettings Settings { get; }
 
     /// <summary>
+    /// Full path to the active settings.json file.
+    /// </summary>
+    string SettingsFilePath { get; }
+
+    /// <summary>
+    /// When true, settings are stored locally alongside the executable (portable mode).
+    /// </summary>
+    bool IsPortableMode { get; }
+
+    /// <summary>
     /// Raised whenever settings are updated and saved.
     /// </summary>
     event EventHandler<UserSettings>? SettingsChanged;

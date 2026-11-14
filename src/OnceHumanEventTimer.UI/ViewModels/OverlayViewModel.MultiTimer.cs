@@ -39,10 +39,27 @@ public partial class OverlayViewModel
             else return;
         }
 
-        IsMultiTimer = snapshots.Count > 1;
+        // Filter snapshots: events with ShowOnlyWhenUpcoming are displayed only when active or within threshold
+        var visibleSnapshots = snapshots.Where(s =>
+        {
+            if (s.Event == null) return true;
+            if (!s.Event.ShowOnlyWhenUpcoming) return true;
+            if (s.IsActive) return true;
+            int threshold = s.Event.UpcomingThresholdMinutes > 0 ? s.Event.UpcomingThresholdMinutes : 10;
+            return s.TimeRemaining <= TimeSpan.FromMinutes(threshold);
+        }).ToList();
+
+        // If all enabled events are hidden by upcoming filter, keep the closest one as fallback
+        if (visibleSnapshots.Count == 0 && snapshots.Count > 0)
+        {
+            var closest = snapshots.OrderBy(s => s.TimeRemaining).FirstOrDefault();
+            if (closest != null) visibleSnapshots.Add(closest);
+        }
+
+        IsMultiTimer = visibleSnapshots.Count > 1;
 
         // Dynamic ordering: active events first, followed by events closest to starting (shortest remaining time)
-        var sortedSnapshots = snapshots
+        var sortedSnapshots = visibleSnapshots
             .OrderBy(s => s.IsActive ? 0 : 1)
             .ThenBy(s => s.TimeRemaining)
             .ToList();

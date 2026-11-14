@@ -63,6 +63,8 @@ internal static class RussianCatalog
         ["Settings_EventColor"] = "Цвет акцента:",
         ["Settings_EventDesc"] = "Описание:",
         ["Settings_EventEnabled"] = "Отображать в HUD (Мульти-таймер)",
+        ["Settings_ShowOnlyWhenUpcoming"] = "Показывать только при приближении",
+        ["Settings_UpcomingThreshold"] = "Показывать за (минут):",
 
         ["Event_GravityAbyss_Name"] = "Gravity Abyss",
         ["Event_GravityAbyss_Desc"] = "Ежечасное событие с зоной низкой гравитации и сбором кристаллов Звездной пыли.",
@@ -74,6 +76,8 @@ internal static class RussianCatalog
         ["Event_PrimeWar_Desc"] = "Масштабная битва по защите Звездоидного сдерживателя от Манибуса.",
         ["Event_PublicCrisis_Name"] = "Кризис зоны (Harrowing)",
         ["Event_PublicCrisis_Desc"] = "Динамическое публичное событие с наградами в виде модов оружия и источника пыли.",
+        ["Event_DriftGreenhouse_Name"] = "Дрейфующая теплица [Ручной Sync]",
+        ["Event_DriftGreenhouse_Desc"] = "Динамический спавн по мирам (World 1–12). Требуется калибровка через Sync по меню карты.",
         ["Event_ChironCentaur_Name"] = "Хирон Кентавр",
         ["Event_ChironCentaur_Desc"] = "Динамическая битва с боссом-кентавром Хироном в Красных песках.",
         ["Event_WorkshopDefense_Name"] = "Оборона мастерской очистки",
@@ -122,6 +126,10 @@ internal static class RussianCatalog
         ["Settings_StartWithWindows_Desc"] = "Автоматически запускать Once Human Event Timer при входе в Windows.",
         ["Settings_AutoHideGameFocus"] = "Скрывать оверлей, если Once Human не в фокусе",
         ["Settings_AutoHideGameFocus_Desc"] = "Автоматически скрывает оверлей при переключении на другие программы и показывает его, когда Once Human в фокусе.",
+        ["Settings_StorageMode"] = "Хранилище настроек:",
+        ["Settings_StoragePortable"] = "Портативный режим — настройки сохраняются локально в папке с программой.",
+        ["Settings_StorageAppData"] = "Стандартный режим — настройки сохраняются в профиле пользователя Windows (AppData).",
+        ["Settings_OpenFolder"] = "Открыть папку",
         ["Settings_StartSecond"] = "Секунда старта цикла (0-59):",
 
         ["Settings_Opacity"] = "Прозрачность оверлея:",

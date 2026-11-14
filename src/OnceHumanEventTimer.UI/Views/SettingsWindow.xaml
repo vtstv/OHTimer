@@ -303,6 +303,36 @@
                                         </StackPanel>
                                     </Grid>
 
+                                    <!-- Upcoming Visibility Filter Card -->
+                                    <Border Background="#141D2B"
+                                            BorderBrush="#2A384C"
+                                            BorderThickness="1"
+                                            CornerRadius="6"
+                                            Padding="8,6"
+                                            Margin="0,0,0,8">
+                                        <StackPanel>
+                                            <CheckBox IsChecked="{Binding SelectedEventShowOnlyWhenUpcoming, UpdateSourceTrigger=PropertyChanged}"
+                                                      Content="{loc:Loc Settings_ShowOnlyWhenUpcoming}"
+                                                      FontSize="11"
+                                                      Foreground="{StaticResource TextPrimaryBrush}"
+                                                      Cursor="Hand" />
+                                            <Grid Margin="22,6,0,0" Visibility="{Binding SelectedEventShowOnlyWhenUpcoming, Converter={StaticResource BoolToVis}}">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="65" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{loc:Loc Settings_UpcomingThreshold}"
+                                                           VerticalAlignment="Center"
+                                                           Foreground="{StaticResource TextSecondaryBrush}"
+                                                           FontSize="10" />
+                                                <TextBox Grid.Column="1"
+                                                         Text="{Binding SelectedEventUpcomingThresholdMinutes, UpdateSourceTrigger=PropertyChanged}"
+                                                         HorizontalContentAlignment="Center"
+                                                         FontSize="11" />
+                                            </Grid>
+                                        </StackPanel>
+                                    </Border>
+
                                     <!-- Game Synchronization Card -->
                                     <Border Background="#141D2B"
                                             BorderBrush="{StaticResource AccentWaitingBrush}"
@@ -527,6 +557,41 @@
                                                    Margin="24,0,0,0" />
                                     </StackPanel>
                                 </Border>
+
+                                <!-- Settings Storage Location Card (Hybrid Portable / AppData) -->
+                                <Border Background="#141D2B" BorderBrush="{StaticResource BorderDarkBrush}" BorderThickness="1" CornerRadius="8" Padding="14" Margin="0,0,0,12">
+                                    <StackPanel>
+                                        <TextBlock Text="{loc:Loc Settings_StorageMode}"
+                                                   FontWeight="SemiBold"
+                                                   FontSize="12.5"
+                                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                                   Margin="0,0,0,4" />
+                                        <TextBlock Text="{Binding StorageModeDescription}"
+                                                   Foreground="{StaticResource TextMutedBrush}"
+                                                   FontSize="11"
+                                                   Margin="0,0,0,8"
+                                                   TextWrapping="Wrap" />
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBox Text="{Binding SettingsFilePath, Mode=OneWay}"
+                                                     IsReadOnly="True"
+                                                     FontSize="10.5"
+                                                     Foreground="{StaticResource TextSecondaryBrush}"
+                                                     VerticalAlignment="Center"
+                                                     ToolTip="{Binding SettingsFilePath}" />
+                                            <Button Grid.Column="1"
+                                                    Command="{Binding OpenSettingsFolderCommand}"
+                                                    Style="{StaticResource ModernDarkButtonStyle}"
+                                                    Content="{loc:Loc Settings_OpenFolder}"
+                                                    Padding="10,4"
+                                                    FontSize="10.5"
+                                                    Margin="6,0,0,0" />
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
                             </StackPanel>
                         </ScrollViewer>
                     </TabItem>
@@ -568,7 +633,7 @@
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
                             <StackPanel Margin="16">
                                 <TextBlock Text="{loc:Loc App_Title}" FontSize="15" FontWeight="Bold" Foreground="{StaticResource AccentWaitingBrush}" Margin="0,0,0,4" />
-                                <TextBlock Text="Version 1.5.2" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,10" />
+                                <TextBlock Text="Version 1.5.3" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,10" />
                                 <TextBlock Text="{loc:Loc About_Desc}" TextWrapping="Wrap" Foreground="{StaticResource TextSecondaryBrush}" FontSize="13" Margin="0,0,0,12" />
 
                                 <!-- Clickable Author & Repository Link -->

@@ -24,7 +24,7 @@ public class UniversalSchedulerTests
         var settings = new UserSettings();
 
         Assert.NotNull(settings.Events);
-        Assert.Equal(14, settings.Events.Count);
+        Assert.Equal(15, settings.Events.Count);
         Assert.Equal("gravity-abyss", settings.ActiveEventId);
 
         var active = settings.GetActiveEvent();
@@ -228,5 +228,21 @@ public class UniversalSchedulerTests
         Assert.Equal("custom-wheel", _scheduler.ActiveEvent.Id);
         Assert.Equal(10, _scheduler.TimeOffsetSeconds);
         Assert.Equal("Custom Wheel", _scheduler.CurrentSnapshot.EventName);
+    }
+
+    [Fact]
+    public void DriftGreenhouse_CalculatesFourHourCycleCorrectly()
+    {
+        var greenhouse = DefaultEventPresets.CreateDefaultEvents().First(e => e.Id == "drift-greenhouse");
+
+        // At 13:10:00 local time (CET, UTC+1), matching user's game screenshot showing "Opens at 2 h 54 m 4 s"
+        var testTime = new DateTimeOffset(2026, 11, 14, 13, 10, 0, TimeSpan.FromHours(1));
+        var snapshot = _scheduler.CalculateSnapshot(testTime, greenhouse);
+
+        Assert.Equal(EventPhase.Inactive, snapshot.Phase);
+        // Next start is at 16:04:04 local time
+        Assert.Equal(new DateTimeOffset(2026, 11, 14, 16, 4, 4, TimeSpan.FromHours(1)), snapshot.NextEventStart);
+        // Remaining time is exactly 2h 54m 4s
+        Assert.Equal(TimeSpan.FromHours(2) + TimeSpan.FromMinutes(54) + TimeSpan.FromSeconds(4), snapshot.TimeRemaining);
     }
 }

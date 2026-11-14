@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.5.3] - 2026-11-14
+
+### Added
+- **Hybrid Settings Storage (True Portable & AppData Dual Mode)**: Added intelligent storage detection in `FileSettingsService`. If `settings.json` or a `portable` / `portable.txt` marker file is present alongside `OnceHumanEventTimer.exe` (and the directory is writable), the application runs in True Portable mode, saving and loading all settings locally. Otherwise, it gracefully falls back to `%APPDATA%\OnceHumanEventTimer`. When activating portable mode via marker file, existing settings are automatically migrated from AppData without data loss.
+- **Settings Storage Inspector**: Added a dedicated "Settings Storage" card in the System tab displaying the active mode (Portable vs. Standard AppData), configuration file path, and a one-click "Open Folder" button.
+- **Approaching Event HUD Filter ("Show Only When Upcoming")**: Added a per-event configurable filter option (`ShowOnlyWhenUpcoming`) with custom threshold minutes (`UpcomingThresholdMinutes`). Long-cycle events (e.g. 4-hour loot resets or boss encounters) are hidden from the active HUD overlay during long inactive countdowns, keeping the screen clean and automatically appearing only when approaching the start threshold (e.g. 10 minutes prior) or actively running.
+- **Drift Greenhouse [Manual Sync] Preset**: Added built-in preset for the *Isles of Abyss* Public Crisis event «Drifting Greenhouse» (`drift-greenhouse`). Marked as `[Manual Sync]` with detailed descriptions across English, German, and Russian explaining per-world dynamic spawn mechanics (World 1–12) and calibrating via `Sync to Game Time`.
+- **Flexible Natural Duration Parser for Game Sync**: Enhanced the `Sync to Game Time` input parser to support natural in-game time formats such as `2h 54m 4s`, `2h 29m`, `15m 30s`, `45s`, as well as standard `mm:ss` and `hh:mm:ss`.
+
+### Fixed
+- **Multi-Hour Event Daily Anchor Skew**: Switched scheduler time reference to local wall-clock time (`DateTimeOffset.Now`), preventing 1-hour timezone drift on cycles longer than 60 minutes (120m, 180m, 240m) previously caused by UTC midnight anchoring.
+
+---
+
 ## [1.5.2] - 2026-11-14
 
 ### Fixed

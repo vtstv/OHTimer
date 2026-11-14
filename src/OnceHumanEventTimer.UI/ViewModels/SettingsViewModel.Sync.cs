@@ -38,13 +38,17 @@ public partial class SettingsViewModel
         {
             remaining = new TimeSpan(hrs, m, s);
         }
+        else if (TryParseGameTimeString(raw, out var parsedGameTime))
+        {
+            remaining = parsedGameTime;
+        }
         else if (TimeSpan.TryParse(raw, out var parsed))
         {
             remaining = parsed;
         }
         else
         {
-            SyncFeedbackMessage = "Invalid format. Use mm:ss (e.g. 08:23)";
+            SyncFeedbackMessage = "Invalid format. Use mm:ss (e.g. 08:23) or 2h 29m 4s";
             ShowSyncFeedback = true;
             return;
         }
@@ -75,5 +79,26 @@ public partial class SettingsViewModel
             SyncFeedbackMessage = $"Offset adjusted to {SelectedEvent.TimeOffsetSeconds}s";
             ShowSyncFeedback = true;
         }
+    }
+
+    private static bool TryParseGameTimeString(string input, out TimeSpan result)
+    {
+        result = TimeSpan.Zero;
+        var match = System.Text.RegularExpressions.Regex.Match(
+            input,
+            @"^(?:(?<h>\d+)\s*h(?:ours?|ч)?)?\s*(?:(?<m>\d+)\s*m(?:in(?:utes?)?|м(?:ин)?)?)?\s*(?:(?<s>\d+)\s*s(?:ec(?:onds?)?|с(?:ек)?)?)?$",
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
+        if (!match.Success || (!match.Groups["h"].Success && !match.Groups["m"].Success && !match.Groups["s"].Success))
+        {
+            return false;
+        }
+
+        int hours = match.Groups["h"].Success ? int.Parse(match.Groups["h"].Value) : 0;
+        int minutes = match.Groups["m"].Success ? int.Parse(match.Groups["m"].Value) : 0;
+        int seconds = match.Groups["s"].Success ? int.Parse(match.Groups["s"].Value) : 0;
+
+        result = new TimeSpan(hours, minutes, seconds);
+        return result > TimeSpan.Zero;
     }
 }
