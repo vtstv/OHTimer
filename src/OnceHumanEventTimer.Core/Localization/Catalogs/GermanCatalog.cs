@@ -12,6 +12,7 @@ internal static class GermanCatalog
         ["Status_StartingSoon"] = "BEGINNT BALD",
         ["Status_Active"] = "EVENT AKTIV",
         ["Status_EndingSoon"] = "ENDET BALD",
+        ["Status_Muted"] = "STUMM",
         ["HUD_UntilStart"] = "EVENT BEGINNT IN",
         ["HUD_UntilEnd"] = "EVENT ENDET IN",
         ["HUD_ClickThrough"] = "Durchklicken",

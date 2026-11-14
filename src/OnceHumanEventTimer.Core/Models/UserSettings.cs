@@ -164,8 +164,8 @@ public class UserSettings
     /// <summary>Global hotkey string to toggle click-through lock.</summary>
     public string ToggleClickThroughHotkey { get; set; } = "Ctrl+Alt+L";
 
-    /// <summary>Global hotkey string to toggle pause/mute for alerts (default: Ctrl+Alt+M).</summary>
-    public string TogglePauseAlertsHotkey { get; set; } = "Ctrl+Alt+M";
+    /// <summary>Global hotkey string to toggle pause/mute for alerts (default: Ctrl+Alt+P).</summary>
+    public string TogglePauseAlertsHotkey { get; set; } = "Ctrl+Alt+P";
 
     /// <summary>Whether all audio alerts and toast notifications are temporarily paused/muted.</summary>
     public bool AreAlertsPaused { get; set; } = false;

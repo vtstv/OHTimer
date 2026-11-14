@@ -26,6 +26,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Styles/Colors.xaml" />
+                <ResourceDictionary Source="../Styles/ScrollBars.xaml" />
                 <ResourceDictionary Source="../Styles/Controls.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BoolToVis" />
@@ -78,7 +79,7 @@
                     <TabItem Header="{loc:Loc Settings_TabEvents}">
                         <Grid Margin="12">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="280" />
+                                <ColumnDefinition Width="300" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
@@ -567,7 +568,7 @@
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
                             <StackPanel Margin="16">
                                 <TextBlock Text="{loc:Loc App_Title}" FontSize="15" FontWeight="Bold" Foreground="{StaticResource AccentWaitingBrush}" Margin="0,0,0,4" />
-                                <TextBlock Text="Version 1.5.1" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,10" />
+                                <TextBlock Text="Version 1.5.2" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,10" />
                                 <TextBlock Text="{loc:Loc About_Desc}" TextWrapping="Wrap" Foreground="{StaticResource TextSecondaryBrush}" FontSize="13" Margin="0,0,0,12" />
 
                                 <!-- Clickable Author & Repository Link -->

@@ -40,6 +40,10 @@ public sealed class Win32HotkeyService : IHotkeyService
 
         int id = Interlocked.Increment(ref _currentId);
         bool success = NativeMethods.RegisterHotKey(_windowHandle, id, modifiers | NativeMethods.MOD_NOREPEAT, vk);
+        if (!success)
+        {
+            success = NativeMethods.RegisterHotKey(_windowHandle, id, modifiers, vk);
+        }
 
         if (success)
         {

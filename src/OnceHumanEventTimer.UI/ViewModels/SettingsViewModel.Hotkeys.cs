@@ -15,7 +15,7 @@ public partial class SettingsViewModel
     private string _toggleClickThroughHotkey = "Ctrl+Alt+L";
 
     [ObservableProperty]
-    private string _togglePauseAlertsHotkey = "Ctrl+Alt+M";
+    private string _togglePauseAlertsHotkey = "Ctrl+Alt+P";
 
     private void InitializeHotkeys(UserSettings current)
     {

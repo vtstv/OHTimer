@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.5.2] - 2026-11-14
+
+### Fixed
+- **NVIDIA Overlay Global Hotkey Conflict (Error 1409)**: Switched the default Pause/Resume Alerts hotkey from `Ctrl+Alt+M` to `Ctrl+Alt+P`. NVIDIA App / GeForce Experience exclusively captures `Ctrl+Alt+M` system-wide for microphone muting, which prevented Once Human Event Timer from registering the hotkey (Win32 Error 1409: `ERROR_HOTKEY_ALREADY_REGISTERED`). Added automatic fallback to `Ctrl+Alt+P` for existing configurations with `Ctrl+Alt+M` and added fallback logic for `MOD_NOREPEAT` support.
+- **WPF ScrollViewer & ListBox Dark Theme Integration**: Added application-wide implicit `ScrollViewer` template and dark `ListBox` ControlTemplate ensuring the sleek dark cyberpunk scrollbar (`Styles/ScrollBars.xaml`) consistently applies across all list boxes, dropdowns, and scrollable panels, eliminating bright default Windows Aero chrome.
+- **Event Presets Column Width & Button Spacing**: Expanded presets list column width to 300px to guarantee ample breathing room for button labels across all languages (English, German, Russian).
+
+### Added
+- **Mini-HUD Miniature Mute Indicator**: Added a dedicated glowing muted indicator (`🔕`) in both Single-Timer and Multi-Timer Mini-HUD views. Even when Mini-HUD header controls are hidden (`ShowMiniControls: false`), players can immediately see when alerts and notifications are temporarily muted.
+
+---
+
 ## [1.5.1] - 2026-11-14
 
 ### Performance & Optimizations

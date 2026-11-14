@@ -12,6 +12,7 @@ internal static class RussianCatalog
         ["Status_StartingSoon"] = "СКОРО НАЧАЛО",
         ["Status_Active"] = "СОБЫТИЕ АКТИВНО",
         ["Status_EndingSoon"] = "СКОРО КОНЕЦ",
+        ["Status_Muted"] = "ПАУЗА",
         ["HUD_UntilStart"] = "СОБЫТИЕ НАЧНЕТСЯ ЧЕРЕЗ",
         ["HUD_UntilEnd"] = "СОБЫТИЕ ЗАВЕРШИТСЯ ЧЕРЕЗ",
         ["HUD_ClickThrough"] = "Сквозной клик",

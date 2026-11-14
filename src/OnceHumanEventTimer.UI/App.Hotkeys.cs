@@ -56,23 +56,31 @@ public partial class App
             });
         }
 
-        if (!string.IsNullOrWhiteSpace(settings.TogglePauseAlertsHotkey))
+        string pauseHotkey = !string.IsNullOrWhiteSpace(settings.TogglePauseAlertsHotkey)
+            ? settings.TogglePauseAlertsHotkey
+            : "Ctrl+Alt+P";
+
+        void HandlePauseToggle()
         {
-            hotkeyService.RegisterHotkey(settings.TogglePauseAlertsHotkey, () =>
+            Dispatcher.Invoke(() =>
             {
-                Dispatcher.Invoke(() =>
+                overlayVm.TogglePauseAlertsCommand.Execute(null);
+                if (settings.ShowToastAlert && notifications != null && loc != null)
                 {
-                    overlayVm.TogglePauseAlertsCommand.Execute(null);
-                    if (settings.ShowToastAlert && notifications != null && loc != null)
-                    {
-                        string title = loc.GetString("App_Title");
-                        string msg = overlayVm.AreAlertsPaused
-                            ? loc.GetString("HUD_AlertsPausedToast")
-                            : loc.GetString("HUD_AlertsResumedToast");
-                        notifications.ShowNotification(title, msg);
-                    }
-                });
+                    string title = loc.GetString("App_Title");
+                    string msg = overlayVm.AreAlertsPaused
+                        ? loc.GetString("HUD_AlertsPausedToast")
+                        : loc.GetString("HUD_AlertsResumedToast");
+                    notifications.ShowNotification(title, msg);
+                }
             });
+        }
+
+        bool pauseOk = hotkeyService.RegisterHotkey(pauseHotkey, HandlePauseToggle);
+        if (!pauseOk && pauseHotkey.Equals("Ctrl+Alt+M", StringComparison.OrdinalIgnoreCase))
+        {
+            settings.TogglePauseAlertsHotkey = "Ctrl+Alt+P";
+            hotkeyService.RegisterHotkey("Ctrl+Alt+P", HandlePauseToggle);
         }
     }
 }

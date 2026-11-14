@@ -12,6 +12,7 @@ internal static class EnglishCatalog
         ["Status_StartingSoon"] = "STARTING SOON",
         ["Status_Active"] = "EVENT ACTIVE",
         ["Status_EndingSoon"] = "ENDING SOON",
+        ["Status_Muted"] = "MUTED",
         ["HUD_UntilStart"] = "EVENT STARTS IN",
         ["HUD_UntilEnd"] = "EVENT ENDS IN",
         ["HUD_ClickThrough"] = "Click-Through",

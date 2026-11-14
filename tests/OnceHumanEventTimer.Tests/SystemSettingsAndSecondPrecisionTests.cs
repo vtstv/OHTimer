@@ -207,13 +207,13 @@ public class SystemSettingsAndSecondPrecisionTests
     {
         var settings = new UserSettings();
         Assert.False(settings.AreAlertsPaused);
-        Assert.Equal("Ctrl+Alt+M", settings.TogglePauseAlertsHotkey);
+        Assert.Equal("Ctrl+Alt+P", settings.TogglePauseAlertsHotkey);
 
         settings.AreAlertsPaused = true;
         settings.TogglePauseAlertsHotkey = "Ctrl+Shift+P";
 
-        string json = System.Text.Json.JsonSerializer.Serialize(settings);
-        var deserialized = System.Text.Json.JsonSerializer.Deserialize<UserSettings>(json);
+        string json = JsonSerializer.Serialize(settings);
+        var deserialized = JsonSerializer.Deserialize<UserSettings>(json);
 
         Assert.NotNull(deserialized);
         Assert.True(deserialized.AreAlertsPaused);
