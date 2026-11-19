@@ -80,7 +80,7 @@ if ([string]::IsNullOrWhiteSpace($Version)) {
         }
     }
     if ([string]::IsNullOrWhiteSpace($Version)) {
-        $Version = "1.5.9"
+        $Version = "1.6.0"
     }
 }
 

@@ -179,5 +179,5 @@ public partial class SettingsViewModel : ObservableObject
     /// Gets the application display version string formatted as "Version X.Y.Z".
     /// Dynamically reflects the assembly version centrally defined in Directory.Build.props.
     /// </summary>
-    public string AppVersionText => $"Version {typeof(App).Assembly.GetName().Version?.ToString(3) ?? "1.5.9"}";
+    public string AppVersionText => $"Version {typeof(App).Assembly.GetName().Version?.ToString(3) ?? "1.6.0"}";
 }

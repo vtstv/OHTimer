@@ -3,7 +3,7 @@
 ; License: MIT License
 
 #ifndef MyAppVersion
-  #define MyAppVersion "1.5.9"
+  #define MyAppVersion "1.6.0"
 #endif
 
 #ifndef SourceDir

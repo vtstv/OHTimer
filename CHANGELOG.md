@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.6.0] - 2026-11-19
+
+### Added
+- **Minimalist Dark System Tray Menu**: Complete redesign of the notification area context menu to seamlessly match the Once Human Stardust cyberpunk aesthetic (`#F50B0F17` obsidian background, `#333D4D` border, `#00F0FF` neon cyan hover highlight, `#263142` separator line, and smooth drop shadow).
+- **Dedicated Tray Host Window**: Isolated tray notification message host (`OnceHumanTrayHost`) that eliminates activation conflicts with game overlay windows.
+- **Low-Level Outside Click Tracking**: Implemented on-demand `WH_MOUSE_LL` hook active only while the tray menu is open, ensuring instant, seamless dismissal on any outside click across multi-monitor setups.
+- **Centralized Version Management**: Centralized all project assembly and file versions in root `Directory.Build.props`, with dynamic reflection in Settings About tab and automated packaging.
+
+### Fixed
+- **Shell Message Double-Trigger**: Debounced duplicate Windows Shell `WM_RBUTTONUP` and `WM_CONTEXTMENU` messages delivered within 5ms of each other, preventing immediate first-click closure.
+
 ## [1.5.9] - 2026-11-19
 
 ### Changed

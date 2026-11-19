@@ -19,9 +19,9 @@ public class VersionAndTrayLocalizationTests
 
         Assert.NotNull(version);
         Assert.Equal(1, version.Major);
-        Assert.Equal(5, version.Minor);
-        Assert.Equal(9, version.Build);
-        Assert.Equal("1.5.9", $"{version.Major}.{version.Minor}.{version.Build}");
+        Assert.Equal(6, version.Minor);
+        Assert.Equal(0, version.Build);
+        Assert.Equal("1.6.0", $"{version.Major}.{version.Minor}.{version.Build}");
     }
 
     [Theory]
@@ -126,10 +126,10 @@ public class VersionAndTrayLocalizationTests
         Assert.True(File.Exists(propsPath), "Directory.Build.props must exist at repository root");
 
         string content = File.ReadAllText(propsPath);
-        Assert.Contains("<Version>1.5.9</Version>", content);
-        Assert.Contains("<AssemblyVersion>1.5.9.0</AssemblyVersion>", content);
-        Assert.Contains("<FileVersion>1.5.9.0</FileVersion>", content);
-        Assert.Contains("<InformationalVersion>1.5.9</InformationalVersion>", content);
+        Assert.Contains("<Version>1.6.0</Version>", content);
+        Assert.Contains("<AssemblyVersion>1.6.0.0</AssemblyVersion>", content);
+        Assert.Contains("<FileVersion>1.6.0.0</FileVersion>", content);
+        Assert.Contains("<InformationalVersion>1.6.0</InformationalVersion>", content);
     }
 
     [Fact]
