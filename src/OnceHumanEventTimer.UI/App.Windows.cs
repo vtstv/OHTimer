@@ -34,13 +34,21 @@ public partial class App
     {
         if (_onboardingWindow != null && _onboardingWindow.IsLoaded)
         {
+            _onboardingWindow.Topmost = true;
             _onboardingWindow.Activate();
+            _onboardingWindow.Focus();
             return;
         }
 
         var vm = _serviceProvider!.GetRequiredService<OnboardingViewModel>();
-        _onboardingWindow = new OnboardingWindow(vm);
+        _onboardingWindow = new OnboardingWindow(vm)
+        {
+            Topmost = true,
+            WindowStartupLocation = WindowStartupLocation.CenterScreen
+        };
         _onboardingWindow.Closed += (s, e) => _onboardingWindow = null;
         _onboardingWindow.Show();
+        _onboardingWindow.Activate();
+        _onboardingWindow.Focus();
     }
 }

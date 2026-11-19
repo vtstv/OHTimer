@@ -15,11 +15,15 @@ public partial class OnboardingViewModel : ObservableObject
 {
     private readonly ISettingsService _settingsService;
     private readonly ILocalizationService _loc;
+    private readonly IEventScheduler? _scheduler;
 
     public const int MaxSteps = 5;
 
     [ObservableProperty]
     private int _currentStep = 1;
+
+    [ObservableProperty]
+    private string _currentLanguageCode = "en-US";
 
     [ObservableProperty]
     private string _stepTitle = string.Empty;
@@ -45,13 +49,35 @@ public partial class OnboardingViewModel : ObservableObject
     [ObservableProperty]
     private bool _isLastStep;
 
+    public bool IsEnglish => string.Equals(CurrentLanguageCode, "en-US", StringComparison.OrdinalIgnoreCase);
+    public bool IsGerman => string.Equals(CurrentLanguageCode, "de-DE", StringComparison.OrdinalIgnoreCase);
+    public bool IsRussian => string.Equals(CurrentLanguageCode, "ru-RU", StringComparison.OrdinalIgnoreCase);
+
     public Action? RequestClose { get; set; }
 
-    public OnboardingViewModel(ISettingsService settingsService, ILocalizationService loc)
+    public OnboardingViewModel(ISettingsService settingsService, ILocalizationService loc, IEventScheduler? scheduler = null)
     {
         _settingsService = settingsService;
         _loc = loc;
+        _scheduler = scheduler;
+        _currentLanguageCode = _loc.CurrentLanguage;
+
+        InitializeEvents();
         UpdateStepContent();
+    }
+
+    [RelayCommand]
+    public async Task SetLanguageAsync(string langCode)
+    {
+        if (string.IsNullOrWhiteSpace(langCode)) return;
+        _loc.SetLanguage(langCode);
+        _settingsService.Settings.Language = langCode;
+        await _settingsService.SaveAsync();
+        CurrentLanguageCode = _loc.CurrentLanguage;
+        UpdateStepContent();
+        OnPropertyChanged(nameof(IsEnglish));
+        OnPropertyChanged(nameof(IsGerman));
+        OnPropertyChanged(nameof(IsRussian));
     }
 
     private void UpdateStepContent()
@@ -70,28 +96,28 @@ public partial class OnboardingViewModel : ObservableObject
                 StepTip = _loc.GetString("Onboarding_Step1_Tip");
                 break;
             case 2:
-                StepIcon = "🖥️";
+                StepIcon = "📋";
                 StepTitle = _loc.GetString("Onboarding_Step2_Title");
                 StepSubtitle = _loc.GetString("Onboarding_Step2_Subtitle");
                 StepDescription = _loc.GetString("Onboarding_Step2_Desc");
                 StepTip = _loc.GetString("Onboarding_Step2_Tip");
                 break;
             case 3:
-                StepIcon = "⌨️";
+                StepIcon = "🌌";
                 StepTitle = _loc.GetString("Onboarding_Step3_Title");
                 StepSubtitle = _loc.GetString("Onboarding_Step3_Subtitle");
                 StepDescription = _loc.GetString("Onboarding_Step3_Desc");
                 StepTip = _loc.GetString("Onboarding_Step3_Tip");
                 break;
             case 4:
-                StepIcon = "🌌";
+                StepIcon = "🎯";
                 StepTitle = _loc.GetString("Onboarding_Step4_Title");
                 StepSubtitle = _loc.GetString("Onboarding_Step4_Subtitle");
                 StepDescription = _loc.GetString("Onboarding_Step4_Desc");
                 StepTip = _loc.GetString("Onboarding_Step4_Tip");
                 break;
             case 5:
-                StepIcon = "🎯";
+                StepIcon = "⌨️";
                 StepTitle = _loc.GetString("Onboarding_Step5_Title");
                 StepSubtitle = _loc.GetString("Onboarding_Step5_Subtitle");
                 StepDescription = _loc.GetString("Onboarding_Step5_Desc");
@@ -101,8 +127,9 @@ public partial class OnboardingViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void Next()
+    private async Task NextAsync()
     {
+        await SaveEventSelectionsAsync(ensureAtLeastOne: true);
         if (CurrentStep < MaxSteps)
         {
             CurrentStep++;
@@ -110,13 +137,14 @@ public partial class OnboardingViewModel : ObservableObject
         }
         else
         {
-            _ = FinishAsync();
+            await FinishAsync();
         }
     }
 
     [RelayCommand]
-    private void Previous()
+    private async Task PreviousAsync()
     {
+        await SaveEventSelectionsAsync(ensureAtLeastOne: true);
         if (CurrentStep > 1)
         {
             CurrentStep--;
@@ -127,6 +155,7 @@ public partial class OnboardingViewModel : ObservableObject
     [RelayCommand]
     private async Task SkipAsync()
     {
+        await SaveEventSelectionsAsync(ensureAtLeastOne: true);
         _settingsService.Settings.HasCompletedOnboarding = true;
         await _settingsService.SaveAsync();
         RequestClose?.Invoke();
@@ -135,6 +164,7 @@ public partial class OnboardingViewModel : ObservableObject
     [RelayCommand]
     private async Task FinishAsync()
     {
+        await SaveEventSelectionsAsync(ensureAtLeastOne: true);
         _settingsService.Settings.HasCompletedOnboarding = true;
         await _settingsService.SaveAsync();
         RequestClose?.Invoke();

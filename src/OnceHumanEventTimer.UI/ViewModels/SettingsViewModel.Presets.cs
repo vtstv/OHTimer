@@ -74,19 +74,21 @@ public partial class SettingsViewModel
         if (!Confirm(msg, title)) return;
 
         var defaults = DefaultEventPresets.CreateDefaultEvents();
-        var existingIds = new HashSet<string>(Events.Select(e => e.Id), StringComparer.OrdinalIgnoreCase);
+        var customEvents = Events.Where(e => e.Id.StartsWith("custom-", StringComparison.OrdinalIgnoreCase)).ToList();
 
+        Events.Clear();
         foreach (var def in defaults)
         {
-            if (!existingIds.Contains(def.Id))
-            {
-                def.IsEnabled = false;
-                Events.Add(def);
-                existingIds.Add(def.Id);
-            }
+            Events.Add(def);
+        }
+        foreach (var custom in customEvents)
+        {
+            Events.Add(custom);
         }
 
-        SelectedEvent = Events.FirstOrDefault(e => e.Id == ActiveEventId) ?? Events.FirstOrDefault();
+        ActiveEventId = Events.FirstOrDefault(e => e.IsEnabled)?.Id ?? Events[0].Id;
+        SelectedEvent = Events.FirstOrDefault(e => e.Id == ActiveEventId) ?? Events[0];
+        NotifyReorderState();
     }
 
     public bool CanMoveSelectedEventUp => SelectedEvent != null && Events.IndexOf(SelectedEvent) > 0;

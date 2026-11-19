@@ -8,20 +8,22 @@
         d:DataContext="{d:DesignInstance Type=vm:OnboardingViewModel}"
         mc:Ignorable="d"
         Title="{loc:Loc Onboarding_WindowTitle}"
-        Width="580" Height="430"
+        Width="780" Height="550"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
         AllowsTransparency="True"
         Background="Transparent"
+        Topmost="True"
+        ShowInTaskbar="True"
         MouseLeftButtonDown="Window_MouseLeftButtonDown">
 
-    <Border Background="#F20B0F17"
+    <Border Background="#F70B0F17"
             BorderBrush="#334155"
             BorderThickness="1"
             CornerRadius="10"
             Padding="22,18">
         <Border.Effect>
-            <DropShadowEffect Color="#00F0FF" BlurRadius="20" ShadowDepth="0" Opacity="0.18" />
+            <DropShadowEffect Color="#00F0FF" BlurRadius="26" ShadowDepth="0" Opacity="0.22" />
         </Border.Effect>
 
         <Grid>
@@ -32,9 +34,10 @@
             </Grid.RowDefinitions>
 
             <!-- Header -->
-            <Grid Grid.Row="0" Margin="0,0,0,14">
+            <Grid Grid.Row="0" Margin="0,0,0,12">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
@@ -44,7 +47,67 @@
                     <TextBlock Text="{loc:Loc Onboarding_Header}" FontWeight="Bold" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" />
                 </StackPanel>
 
-                <TextBlock Grid.Column="1"
+                <!-- Language Selector -->
+                <Border Grid.Column="1" Background="#161F30" BorderBrush="#334155" BorderThickness="1" CornerRadius="12" Padding="2" Margin="0,0,16,0" VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal">
+                        <Button Command="{Binding SetLanguageCommand}" CommandParameter="en-US"
+                                Padding="8,3" FontSize="10" Margin="0" BorderThickness="0"
+                                Cursor="Hand" ToolTip="English">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource ModernDarkButtonStyle}">
+                                    <Setter Property="Background" Value="Transparent" />
+                                    <Setter Property="Foreground" Value="#94A3B8" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsEnglish}" Value="True">
+                                            <Setter Property="Background" Value="#00F0FF" />
+                                            <Setter Property="Foreground" Value="#0B0F17" />
+                                            <Setter Property="FontWeight" Value="Bold" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                            <TextBlock Text="🇺🇸 English" />
+                        </Button>
+                        <Button Command="{Binding SetLanguageCommand}" CommandParameter="de-DE"
+                                Padding="8,3" FontSize="10" Margin="2,0,0,0" BorderThickness="0"
+                                Cursor="Hand" ToolTip="Deutsch">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource ModernDarkButtonStyle}">
+                                    <Setter Property="Background" Value="Transparent" />
+                                    <Setter Property="Foreground" Value="#94A3B8" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsGerman}" Value="True">
+                                            <Setter Property="Background" Value="#00F0FF" />
+                                            <Setter Property="Foreground" Value="#0B0F17" />
+                                            <Setter Property="FontWeight" Value="Bold" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                            <TextBlock Text="🇩🇪 Deutsch" />
+                        </Button>
+                        <Button Command="{Binding SetLanguageCommand}" CommandParameter="ru-RU"
+                                Padding="8,3" FontSize="10" Margin="2,0,0,0" BorderThickness="0"
+                                Cursor="Hand" ToolTip="Русский">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource ModernDarkButtonStyle}">
+                                    <Setter Property="Background" Value="Transparent" />
+                                    <Setter Property="Foreground" Value="#94A3B8" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsRussian}" Value="True">
+                                            <Setter Property="Background" Value="#00F0FF" />
+                                            <Setter Property="Foreground" Value="#0B0F17" />
+                                            <Setter Property="FontWeight" Value="Bold" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                            <TextBlock Text="🇷🇺 Русский" />
+                        </Button>
+                    </StackPanel>
+                </Border>
+
+                <TextBlock Grid.Column="2"
                            Text="{Binding StepIndicatorText}"
                            FontSize="11"
                            FontWeight="SemiBold"
@@ -52,7 +115,7 @@
                            VerticalAlignment="Center"
                            Margin="0,0,16,0" />
 
-                <Button Grid.Column="2"
+                <Button Grid.Column="3"
                         Command="{Binding SkipCommand}"
                         Style="{StaticResource HudIconButtonStyle}"
                         ToolTip="{loc:Loc Onboarding_Skip}"
@@ -61,51 +124,423 @@
                 </Button>
             </Grid>
 
-            <!-- Step Content -->
-            <Grid Grid.Row="1" Margin="4,0,4,12">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
+            <!-- Main 2-Column Content -->
+            <Grid Grid.Row="1" Margin="2,0,2,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="300" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.Row="0" Margin="0,0,0,10">
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
-                        <TextBlock Text="{Binding StepIcon}" FontSize="24" Margin="0,0,10,0" VerticalAlignment="Center" />
-                        <TextBlock Text="{Binding StepTitle}" FontSize="16" FontWeight="Bold" Foreground="{StaticResource AccentWaitingBrush}" VerticalAlignment="Center" />
+                <!-- Left Column: Description & Guidance -->
+                <Grid Grid.Column="0" Margin="0,0,14,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <!-- Title & Subtitle -->
+                    <StackPanel Grid.Row="0" Margin="0,0,0,10">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                            <TextBlock Text="{Binding StepIcon}" FontSize="22" Margin="0,0,8,0" VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding StepTitle}" FontSize="15" FontWeight="Bold" Foreground="{StaticResource AccentWaitingBrush}" VerticalAlignment="Center" TextWrapping="Wrap" MaxWidth="250" />
+                        </StackPanel>
+                        <TextBlock Text="{Binding StepSubtitle}" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" TextWrapping="Wrap" Margin="30,0,0,0" />
                     </StackPanel>
-                    <TextBlock Text="{Binding StepSubtitle}" FontSize="11.5" Foreground="{StaticResource TextSecondaryBrush}" Margin="34,0,0,0" />
-                </StackPanel>
 
-                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,4,0,10">
-                    <TextBlock Text="{Binding StepDescription}"
-                               FontSize="12"
-                               Foreground="{StaticResource TextPrimaryBrush}"
-                               TextWrapping="Wrap"
-                               LineHeight="18" />
-                </ScrollViewer>
-
-                <!-- Tip Card -->
-                <Border Grid.Row="2"
-                        Background="#141D2B"
-                        BorderBrush="#2A384C"
-                        BorderThickness="1"
-                        CornerRadius="6"
-                        Padding="12,8">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="💡" FontSize="14" Margin="0,0,10,0" VerticalAlignment="Center" />
-                        <TextBlock Text="{Binding StepTip}"
-                                   FontSize="11"
-                                   Foreground="{StaticResource TextSecondaryBrush}"
+                    <!-- Scrollable Description -->
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,2,0,10">
+                        <TextBlock Text="{Binding StepDescription}"
+                                   FontSize="11.5"
+                                   Foreground="{StaticResource TextPrimaryBrush}"
                                    TextWrapping="Wrap"
-                                   MaxWidth="470"
-                                   VerticalAlignment="Center" />
-                    </StackPanel>
+                                   LineHeight="17" />
+                    </ScrollViewer>
+
+                    <!-- Tip Box -->
+                    <Border Grid.Row="2"
+                            Background="#141D2B"
+                            BorderBrush="#2A384C"
+                            BorderThickness="1"
+                            CornerRadius="6"
+                            Padding="10,8">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="💡" FontSize="13" Margin="0,2,8,0" VerticalAlignment="Top" />
+                            <TextBlock Text="{Binding StepTip}"
+                                       FontSize="10.5"
+                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                       TextWrapping="Wrap"
+                                       MaxWidth="240"
+                                       VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!-- Right Column: Rich Visual Preview Mockup Card -->
+                <Border Grid.Column="1"
+                        Background="#090E17"
+                        BorderBrush="#1E293B"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Padding="14,12">
+                    <Grid>
+                        <!-- ============================================== -->
+                        <!-- STEP 1 MOCKUP: Frameless HUD Overlay & Controls -->
+                        <!-- ============================================== -->
+                        <Grid Visibility="{Binding CurrentStep, Converter={StaticResource StepToVis}, ConverterParameter=1}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Text="LIVE HUD OVERLAY PREVIEW" FontSize="9" FontWeight="Bold" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,8" />
+
+                            <!-- Simulated Floating HUD Card -->
+                            <Border Grid.Row="1"
+                                    Background="#111827"
+                                    BorderBrush="#00F0FF"
+                                    BorderThickness="1.5"
+                                    CornerRadius="8"
+                                    Padding="14,10"
+                                    VerticalAlignment="Center">
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#00F0FF" BlurRadius="16" ShadowDepth="0" Opacity="0.3" />
+                                </Border.Effect>
+
+                                <StackPanel>
+                                    <!-- Simulated Top Bar Controls -->
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock Text="⠿ DRAG HANDLE" FontSize="8.5" FontWeight="Bold" Foreground="#64748B" />
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                            <Border Background="#1E293B" CornerRadius="3" Padding="4,2" Margin="0,0,4,0">
+                                                <TextBlock Text="🔓 UNLOCKED" FontSize="8.5" FontWeight="Bold" Foreground="#38BDF8" />
+                                            </Border>
+                                            <Border Background="#1E293B" CornerRadius="3" Padding="4,2" Margin="0,0,4,0">
+                                                <TextBlock Text="🗖 MINI" FontSize="8.5" FontWeight="Bold" Foreground="#94A3B8" />
+                                            </Border>
+                                            <Border Background="#1E293B" CornerRadius="3" Padding="4,2" Margin="0,0,4,0">
+                                                <TextBlock Text="🔔 SOUND" FontSize="8.5" FontWeight="Bold" Foreground="#10B981" />
+                                            </Border>
+                                            <Border Background="#1E293B" CornerRadius="3" Padding="4,2">
+                                                <TextBlock Text="⚙" FontSize="8.5" FontWeight="Bold" Foreground="#94A3B8" />
+                                            </Border>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <!-- Simulated Event Name -->
+                                    <TextBlock Text="CARGO SCRAMBLE (SPROUTLET TRUCK)" FontSize="11" FontWeight="Bold" Foreground="#F59E0B" Margin="0,0,0,4" />
+
+                                    <!-- Badge & Large Countdown -->
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,6">
+                                        <Border Background="#25F59E0B" BorderBrush="#F59E0B" BorderThickness="1" CornerRadius="4" Padding="6,2" Margin="0,0,12,0" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Ellipse Width="6" Height="6" Fill="#F59E0B" Margin="0,0,4,0" VerticalAlignment="Center" />
+                                                <TextBlock Text="WAITING" FontWeight="Bold" FontSize="10" Foreground="#F59E0B" />
+                                            </StackPanel>
+                                        </Border>
+                                        <TextBlock Text="14:32" FontFamily="Consolas, monospace" FontSize="28" FontWeight="Bold" Foreground="#FFFFFF" VerticalAlignment="Center">
+                                            <TextBlock.Effect>
+                                                <DropShadowEffect Color="#F59E0B" BlurRadius="10" ShadowDepth="0" Opacity="0.6" />
+                                            </TextBlock.Effect>
+                                        </TextBlock>
+                                    </StackPanel>
+
+                                    <!-- Footer info -->
+                                    <TextBlock Text="Next Event: Starts at XX:00:00 (in 14m 32s)" FontSize="9.5" Foreground="#94A3B8" />
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Feature Tags -->
+                            <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,10,0,0">
+                                <Border Background="#1E293B" CornerRadius="4" Padding="6,3" Margin="0,0,6,0">
+                                    <TextBlock Text="✓ DirectFlip MPO" FontSize="9" FontWeight="SemiBold" Foreground="#38BDF8" />
+                                </Border>
+                                <Border Background="#1E293B" CornerRadius="4" Padding="6,3" Margin="0,0,6,0">
+                                    <TextBlock Text="✓ 0 FPS Drop" FontSize="9" FontWeight="SemiBold" Foreground="#10B981" />
+                                </Border>
+                                <Border Background="#1E293B" CornerRadius="4" Padding="6,3">
+                                    <TextBlock Text="✓ Click-Through Safe" FontSize="9" FontWeight="SemiBold" Foreground="#A855F7" />
+                                </Border>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- ============================================== -->
+                        <!-- STEP 2: Interactive Event Selection List        -->
+                        <!-- ============================================== -->
+                        <Grid Visibility="{Binding CurrentStep, Converter={StaticResource StepToVis}, ConverterParameter=2}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <Grid Grid.Row="0" Margin="0,0,0,6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{loc:Loc Onboarding_SelectEvents}" FontSize="9.5" FontWeight="Bold" Foreground="{StaticResource TextMutedBrush}" VerticalAlignment="Center" />
+                                <TextBlock Grid.Column="1" Text="Default: S5: The Echo" FontSize="8.5" Foreground="#D946EF" FontWeight="SemiBold" VerticalAlignment="Center" />
+                            </Grid>
+
+                            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" MaxHeight="290" Margin="0,2,0,4">
+                                <ItemsControl ItemsSource="{Binding Events}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Background="#121824" BorderBrush="#1E293B" BorderThickness="1" CornerRadius="5" Padding="8,5" Margin="0,0,6,4">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto" />
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <CheckBox Grid.Column="0"
+                                                              IsChecked="{Binding IsEnabled, Mode=TwoWay}"
+                                                              Style="{StaticResource ModernCheckBoxStyle}"
+                                                              VerticalAlignment="Center"
+                                                              Margin="0,0,8,0" />
+
+                                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <Ellipse Width="7" Height="7" Fill="{Binding ColorHex}" Margin="0,0,6,0" VerticalAlignment="Center" />
+                                                            <TextBlock Text="{Binding Name}" FontSize="10.5" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}" TextTrimming="CharacterEllipsis" MaxWidth="210" />
+                                                        </StackPanel>
+                                                        <TextBlock Text="{Binding TimingSummary}" FontSize="8.5" Foreground="#94A3B8" Margin="13,1,0,0" />
+                                                    </StackPanel>
+
+                                                    <Border Grid.Column="2"
+                                                            Background="#2038BDF8"
+                                                            BorderBrush="#38BDF8"
+                                                            BorderThickness="0.8"
+                                                            CornerRadius="3"
+                                                            Padding="4,2"
+                                                            VerticalAlignment="Center"
+                                                            Visibility="{Binding HasBadge, Converter={StaticResource BoolToVis}}">
+                                                        <TextBlock Text="{Binding BadgeText}" FontSize="7.5" FontWeight="Bold" Foreground="#38BDF8" />
+                                                    </Border>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+
+                            <!-- Hint at bottom -->
+                            <TextBlock Grid.Row="2" Text="{loc:Loc Onboarding_MultiTimerHint}" FontSize="8.5" Foreground="#10B981" Margin="2,2,0,0" />
+                        </Grid>
+
+                        <!-- ============================================== -->
+                        <!-- STEP 3 MOCKUP: S5 The Echo & Boss Portal       -->
+                        <!-- ============================================== -->
+                        <Grid Visibility="{Binding CurrentStep, Converter={StaticResource StepToVis}, ConverterParameter=3}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Text="SEASON 5: THE ECHO 3-PHASE TIMELINE" FontSize="9" FontWeight="Bold" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,6" />
+
+                            <StackPanel Grid.Row="1" VerticalAlignment="Center">
+                                <!-- Phase 1: Event Starts -->
+                                <Border Background="#1A0D1E" BorderBrush="#D946EF" BorderThickness="1" CornerRadius="5" Padding="8,5" Margin="0,0,0,6">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="1." FontSize="11" FontWeight="Bold" Foreground="#D946EF" Margin="0,0,8,0" VerticalAlignment="Center" />
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock Text="XX:15:00 — Vision Descends (Event Start)" FontSize="10" FontWeight="Bold" Foreground="#FFFFFF" />
+                                            <TextBlock Text="Hourly cycle begins. Acoustic tuning zone active." FontSize="8.5" Foreground="#A78BFA" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+
+                                <!-- Phase 2: Boss Portal Highlight -->
+                                <Border Background="#25091D" BorderBrush="#EC4899" BorderThickness="1.5" CornerRadius="5" Padding="8,6" Margin="0,0,0,6">
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#EC4899" BlurRadius="12" ShadowDepth="0" Opacity="0.4" />
+                                    </Border.Effect>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="2." FontSize="11" FontWeight="Bold" Foreground="#EC4899" Margin="0,0,8,0" VerticalAlignment="Center" />
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock Text="XX:30:00 (+15m) — THE ECHO WAR BOSS PORTAL!" FontSize="10.5" FontWeight="Bold" Foreground="#F472B6" />
+                                            <TextBlock Text="4-Player Dungeon opens. Dedicated Emergency Siren alarm!" FontSize="8.5" Foreground="#F9A8D4" />
+                                        </StackPanel>
+                                        <Border Grid.Column="2" Background="#EC4899" CornerRadius="3" Padding="4,2" VerticalAlignment="Center">
+                                            <TextBlock Text="🚨 ALARM" FontSize="8" FontWeight="Bold" Foreground="#FFFFFF" />
+                                        </Border>
+                                    </Grid>
+                                </Border>
+
+                                <!-- Phase 3: Conclusion -->
+                                <Border Background="#121824" BorderBrush="#334155" BorderThickness="1" CornerRadius="5" Padding="8,5">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="3." FontSize="11" FontWeight="Bold" Foreground="#64748B" Margin="0,0,8,0" VerticalAlignment="Center" />
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock Text="XX:45:00 — Vision Concludes (30 min duration)" FontSize="10" FontWeight="SemiBold" Foreground="#94A3B8" />
+                                            <TextBlock Text="Tide recedes; resets until next hour XX:15:00" FontSize="8.5" Foreground="#64748B" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </StackPanel>
+
+                            <!-- Checkpoint Toggles Mockup -->
+                            <StackPanel Grid.Row="2" Margin="0,8,0,0">
+                                <TextBlock Text="☑ Countdown to Boss Portal directly (HUD tracks XX:30:00)" FontSize="8.5" Foreground="#38BDF8" Margin="0,0,0,2" />
+                                <TextBlock Text="☑ 15-Minute Mid-Event Alert (Sirens on Boss Portal)" FontSize="8.5" Foreground="#EC4899" />
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- ============================================== -->
+                        <!-- STEP 4 MOCKUP: Fast Clock Calibration          -->
+                        <!-- ============================================== -->
+                        <Grid Visibility="{Binding CurrentStep, Converter={StaticResource StepToVis}, ConverterParameter=4}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Text="IN-GAME MAP TIME CALIBRATION" FontSize="9" FontWeight="Bold" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,6" />
+
+                            <StackPanel Grid.Row="1" VerticalAlignment="Center">
+                                <!-- Simulated in-game prompt -->
+                                <Border Background="#111B27" BorderBrush="#2563EB" BorderThickness="1" CornerRadius="5" Padding="8,5" Margin="0,0,0,8">
+                                    <StackPanel>
+                                        <TextBlock Text="Once Human Map Prompt:" FontSize="8.5" FontWeight="Bold" Foreground="#38BDF8" />
+                                        <TextBlock Text="&quot;Dissonant Resonance: 00:04:28 Time to Start&quot;" FontSize="10" FontWeight="SemiBold" Foreground="#FFFFFF" />
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Input Bar Mockup -->
+                                <Grid Margin="0,0,0,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Border Grid.Column="0" Background="#161F2E" BorderBrush="#00F0FF" BorderThickness="1" CornerRadius="4" Padding="8,4" Margin="0,0,6,0">
+                                        <TextBlock Text="1h 3m 29s  (or 00:04:28)" FontFamily="Consolas, monospace" FontSize="11" Foreground="#00F0FF" VerticalAlignment="Center" />
+                                    </Border>
+                                    <Border Grid.Column="1" Background="#00F0FF" CornerRadius="4" Padding="10,4">
+                                        <TextBlock Text="⚡ Calibrate" FontSize="10" FontWeight="Bold" Foreground="#0B0F17" VerticalAlignment="Center" />
+                                    </Border>
+                                </Grid>
+
+                                <!-- Output result card -->
+                                <Border Background="#0C1D18" BorderBrush="#10B981" BorderThickness="1" CornerRadius="5" Padding="8,6">
+                                    <StackPanel>
+                                        <TextBlock Text="✔ Synchronized with Game Server Time" FontSize="9.5" FontWeight="Bold" Foreground="#10B981" Margin="0,0,0,2" />
+                                        <TextBlock Text="Target Cycle Anchor: XX:15:00 | Skew: +3s compensated" FontSize="8.5" Foreground="#6EE7B7" />
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,8,0,0">
+                                <TextBlock Text="Supported: " FontSize="8.5" Foreground="#64748B" />
+                                <TextBlock Text="1h 3m 29s • 01:03:29 • 1ч 3м 29с • 1 Std 3 Min" FontSize="8.5" FontWeight="SemiBold" Foreground="#94A3B8" />
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- ============================================== -->
+                        <!-- STEP 5 MOCKUP: Hotkeys & System Tray           -->
+                        <!-- ============================================== -->
+                        <Grid Visibility="{Binding CurrentStep, Converter={StaticResource StepToVis}, ConverterParameter=5}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Text="IN-GAME HOTKEYS &amp; BACKGROUND TRAY" FontSize="9" FontWeight="Bold" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,6" />
+
+                            <StackPanel Grid.Row="1" VerticalAlignment="Center">
+                                <!-- Hotkey 1 -->
+                                <Border Background="#111827" BorderBrush="#1E293B" BorderThickness="1" CornerRadius="5" Padding="8,4" Margin="0,0,0,5">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Border Grid.Column="0" Background="#1E293B" CornerRadius="3" Padding="6,2" Margin="0,0,8,0">
+                                            <TextBlock Text="Ctrl + Alt + S" FontFamily="Consolas, monospace" FontSize="9" FontWeight="Bold" Foreground="#00F0FF" />
+                                        </Border>
+                                        <TextBlock Grid.Column="1" Text="Toggle Overlay Visibility (Show/Hide)" FontSize="9.5" Foreground="#E2E8F0" VerticalAlignment="Center" />
+                                    </Grid>
+                                </Border>
+
+                                <!-- Hotkey 2 -->
+                                <Border Background="#111827" BorderBrush="#1E293B" BorderThickness="1" CornerRadius="5" Padding="8,4" Margin="0,0,0,5">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Border Grid.Column="0" Background="#1E293B" CornerRadius="3" Padding="6,2" Margin="0,0,8,0">
+                                            <TextBlock Text="Ctrl + Alt + L" FontFamily="Consolas, monospace" FontSize="9" FontWeight="Bold" Foreground="#38BDF8" />
+                                        </Border>
+                                        <TextBlock Grid.Column="1" Text="Lock Position &amp; Enable Click-Through" FontSize="9.5" Foreground="#E2E8F0" VerticalAlignment="Center" />
+                                    </Grid>
+                                </Border>
+
+                                <!-- Hotkey 3 -->
+                                <Border Background="#111827" BorderBrush="#1E293B" BorderThickness="1" CornerRadius="5" Padding="8,4" Margin="0,0,0,6">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Border Grid.Column="0" Background="#1E293B" CornerRadius="3" Padding="6,2" Margin="0,0,8,0">
+                                            <TextBlock Text="Ctrl + Alt + P" FontFamily="Consolas, monospace" FontSize="9" FontWeight="Bold" Foreground="#EF4444" />
+                                        </Border>
+                                        <TextBlock Grid.Column="1" Text="Pause / Resume Sound Alerts (🔕 Mute)" FontSize="9.5" Foreground="#E2E8F0" VerticalAlignment="Center" />
+                                    </Grid>
+                                </Border>
+
+                                <!-- Tray notification card -->
+                                <Border Background="#101924" BorderBrush="#2563EB" BorderThickness="1" CornerRadius="5" Padding="8,5">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="⏱️" FontSize="14" Margin="0,0,8,0" VerticalAlignment="Center" />
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock Text="Windows System Tray Support" FontSize="9.5" FontWeight="Bold" Foreground="#38BDF8" />
+                                            <TextBlock Text="Right-click tray icon to mute alerts, calibrate or exit." FontSize="8.5" Foreground="#94A3B8" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </StackPanel>
+
+                            <TextBlock Grid.Row="2" Text="Zero NVIDIA conflict: Ctrl+Alt+P avoids GeForce Experience mic mute." FontSize="8" Foreground="#64748B" Margin="0,6,0,0" />
+                        </Grid>
+                    </Grid>
                 </Border>
             </Grid>
 
             <!-- Bottom Navigation Bar -->
-            <Grid Grid.Row="2" Margin="0,6,0,0">
+            <Grid Grid.Row="2" Margin="0,4,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
@@ -119,6 +554,70 @@
                         Style="{StaticResource ModernDarkButtonStyle}"
                         Content="{loc:Loc Onboarding_Skip}"
                         Padding="12,6" FontSize="11" />
+
+                <!-- Step dots indicator in center -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Ellipse Width="6" Height="6" Margin="3,0">
+                        <Ellipse.Style>
+                            <Style TargetType="Ellipse">
+                                <Setter Property="Fill" Value="#334155" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CurrentStep}" Value="1">
+                                        <Setter Property="Fill" Value="#00F0FF" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Ellipse.Style>
+                    </Ellipse>
+                    <Ellipse Width="6" Height="6" Margin="3,0">
+                        <Ellipse.Style>
+                            <Style TargetType="Ellipse">
+                                <Setter Property="Fill" Value="#334155" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CurrentStep}" Value="2">
+                                        <Setter Property="Fill" Value="#00F0FF" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Ellipse.Style>
+                    </Ellipse>
+                    <Ellipse Width="6" Height="6" Margin="3,0">
+                        <Ellipse.Style>
+                            <Style TargetType="Ellipse">
+                                <Setter Property="Fill" Value="#334155" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CurrentStep}" Value="3">
+                                        <Setter Property="Fill" Value="#00F0FF" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Ellipse.Style>
+                    </Ellipse>
+                    <Ellipse Width="6" Height="6" Margin="3,0">
+                        <Ellipse.Style>
+                            <Style TargetType="Ellipse">
+                                <Setter Property="Fill" Value="#334155" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CurrentStep}" Value="4">
+                                        <Setter Property="Fill" Value="#00F0FF" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Ellipse.Style>
+                    </Ellipse>
+                    <Ellipse Width="6" Height="6" Margin="3,0">
+                        <Ellipse.Style>
+                            <Style TargetType="Ellipse">
+                                <Setter Property="Fill" Value="#334155" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CurrentStep}" Value="5">
+                                        <Setter Property="Fill" Value="#00F0FF" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Ellipse.Style>
+                    </Ellipse>
+                </StackPanel>
 
                 <!-- Back -->
                 <Button Grid.Column="2"

@@ -35,27 +35,30 @@ public partial class OverlayViewModel
         if (snapshots == null || snapshots.Count == 0)
         {
             var fallback = _scheduler.CurrentSnapshot;
-            if (fallback != null) snapshots = new List<EventSnapshot> { fallback };
-            else return;
+            if (fallback != null && fallback.Event != null && fallback.Event.IsEnabled)
+            {
+                snapshots = new List<EventSnapshot> { fallback };
+            }
+            else
+            {
+                IsTimerVisible = false;
+                ActiveTimers.Clear();
+                IsMultiTimer = false;
+                return;
+            }
         }
 
         // Filter snapshots: events with ShowOnlyWhenUpcoming are displayed only when active or within threshold
         var visibleSnapshots = snapshots.Where(s =>
         {
-            if (s.Event == null) return true;
+            if (s.Event == null || !s.Event.IsEnabled) return false;
             if (!s.Event.ShowOnlyWhenUpcoming) return true;
             if (s.IsActive) return true;
             int threshold = s.Event.UpcomingThresholdMinutes > 0 ? s.Event.UpcomingThresholdMinutes : 10;
             return s.TimeRemaining <= TimeSpan.FromMinutes(threshold);
         }).ToList();
 
-        // If all enabled events are hidden by upcoming filter, keep the closest one as fallback
-        if (visibleSnapshots.Count == 0 && snapshots.Count > 0)
-        {
-            var closest = snapshots.OrderBy(s => s.TimeRemaining).FirstOrDefault();
-            if (closest != null) visibleSnapshots.Add(closest);
-        }
-
+        IsTimerVisible = visibleSnapshots.Count > 0;
         IsMultiTimer = visibleSnapshots.Count > 1;
 
         // Dynamic ordering: active events first, followed by events closest to starting (shortest remaining time)
@@ -64,9 +67,13 @@ public partial class OverlayViewModel
             .ThenBy(s => s.TimeRemaining)
             .ToList();
 
-        if (!IsMultiTimer && sortedSnapshots.Count > 0)
+        if (sortedSnapshots.Count > 0)
         {
             UpdateFromSnapshot(sortedSnapshots[0]);
+        }
+        else
+        {
+            ActiveTimers.Clear();
         }
 
         var targetIds = new HashSet<string>();

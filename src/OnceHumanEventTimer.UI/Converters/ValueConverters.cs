@@ -30,3 +30,23 @@ public sealed class InverseBooleanToVisibilityConverter : IValueConverter
         return false;
     }
 }
+
+/// <summary>
+/// Converts an integer step value to Visibility based on the target step parameter.
+/// </summary>
+public sealed class StepToVisibilityConverter : IValueConverter
+{
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        if (value is int currentStep && parameter != null)
+        {
+            if (int.TryParse(parameter.ToString(), out int targetStep))
+            {
+                return currentStep == targetStep ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+        return Visibility.Collapsed;
+    }
+
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) => Binding.DoNothing;
+}

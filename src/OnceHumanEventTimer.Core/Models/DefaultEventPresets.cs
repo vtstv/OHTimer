@@ -15,10 +15,23 @@ public static class DefaultEventPresets
     {
         new EventDefinition
         {
+            Id = "cargo-scramble",
+            Name = "Cargo Scramble (Sproutlet Truck)",
+            CycleMinutes = 60,
+            StartMinute = 0,
+            DurationMinutes = 20,
+            TimeOffsetSeconds = 0,
+            ColorHex = "#F59E0B",
+            IsEnabled = false,
+            SoundPreset = SoundPreset.CyberWarning,
+            Description = "PvP cargo truck event in Red Sands / Iron River. Spawns Sproutlets periodically."
+        },
+        new EventDefinition
+        {
             Id = "dissonant-resonance",
             Name = "S5: The Echo",
             CycleMinutes = 60,
-            StartMinute = 16,
+            StartMinute = 15,
             StartSecond = 0,
             DurationMinutes = 30,
             TimeOffsetSeconds = 0,
@@ -29,7 +42,7 @@ public static class DefaultEventPresets
             EnableExtraAlert = true,
             ExtraAlertMinutes = 15,
             CountdownToBoss = false,
-            Description = "Season 5: Dissonant Resonance. Hourly schedule starting at XX:16:00. The Echo War boss portal opens at XX:31:00."
+            Description = "Season 5: Dissonant Resonance. Hourly schedule starting at XX:15:00. The Echo War boss portal opens at XX:30:00."
         },
         new EventDefinition
         {
@@ -46,19 +59,6 @@ public static class DefaultEventPresets
             ShowOnlyWhenUpcoming = true,
             UpcomingThresholdMinutes = 10,
             Description = "Isles of Abyss per-world dynamic spawn (World 1–12). Requires calibration via Sync from in-game map."
-        },
-        new EventDefinition
-        {
-            Id = "cargo-scramble",
-            Name = "Cargo Scramble (Sproutlet Truck)",
-            CycleMinutes = 60,
-            StartMinute = 0,
-            DurationMinutes = 20,
-            TimeOffsetSeconds = 0,
-            ColorHex = "#F59E0B",
-            IsEnabled = false,
-            SoundPreset = SoundPreset.CyberWarning,
-            Description = "PvP cargo truck event in Red Sands / Iron River. Spawns Sproutlets periodically."
         },
         new EventDefinition
         {
@@ -125,20 +125,6 @@ public static class DefaultEventPresets
             IsEnabled = false,
             SoundPreset = SoundPreset.CyberWarning,
             Description = "Refinery and mining rig wave defense extracting Premium Stardust fuel."
-        },
-        new EventDefinition
-        {
-            Id = "gravity-abyss",
-            Name = "Gravity Abyss (Legacy)",
-            CycleMinutes = 60,
-            StartMinute = 22,
-            StartSecond = 29,
-            DurationMinutes = 30,
-            TimeOffsetSeconds = 0,
-            ColorHex = "#00F0FF",
-            IsEnabled = false,
-            SoundPreset = SoundPreset.CelestialBell,
-            Description = "Concluded Season event with low-gravity tide and Stardust Crystals."
         },
         new EventDefinition
         {
@@ -217,6 +203,20 @@ public static class DefaultEventPresets
             IsEnabled = false,
             SoundPreset = SoundPreset.CosmicPulse,
             Description = "User-defined custom cyclic event schedule."
+        },
+        new EventDefinition
+        {
+            Id = "gravity-abyss",
+            Name = "Gravity Abyss (Legacy)",
+            CycleMinutes = 60,
+            StartMinute = 22,
+            StartSecond = 29,
+            DurationMinutes = 30,
+            TimeOffsetSeconds = 0,
+            ColorHex = "#00F0FF",
+            IsEnabled = false,
+            SoundPreset = SoundPreset.CelestialBell,
+            Description = "Concluded Season event with low-gravity tide and Stardust Crystals."
         }
     };
 }

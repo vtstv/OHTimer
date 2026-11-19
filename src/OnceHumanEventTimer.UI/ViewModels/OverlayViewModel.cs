@@ -84,6 +84,9 @@ public partial class OverlayViewModel : ObservableObject
     [ObservableProperty]
     private bool _areAlertsPaused = false;
 
+    [ObservableProperty]
+    private bool _isTimerVisible = true;
+
     public Action? RequestOpenSettings { get; set; }
     public Action? RequestHideOverlay { get; set; }
     public Action? RequestExitApp { get; set; }
@@ -99,12 +102,11 @@ public partial class OverlayViewModel : ObservableObject
         _loc = loc;
 
         ApplySettings(_settingsService.Settings);
+        UpdatePhaseLabels(CurrentPhase);
 
-        _scheduler.SnapshotUpdated += OnSnapshotUpdated;
         _settingsService.SettingsChanged += OnSettingsChanged;
         _loc.LanguageChanged += OnLanguageChanged;
 
-        UpdateFromSnapshot(_scheduler.CurrentSnapshot);
         InitializeMultiTimer();
     }
 
@@ -129,15 +131,7 @@ public partial class OverlayViewModel : ObservableObject
         Application.Current?.Dispatcher.Invoke(() =>
         {
             ApplySettings(settings);
-            UpdatePhaseLabels(CurrentPhase);
-        });
-    }
-
-    private void OnSnapshotUpdated(object? sender, EventSnapshot snapshot)
-    {
-        Application.Current?.Dispatcher.Invoke(() =>
-        {
-            UpdateFromSnapshot(snapshot);
+            UpdateActiveTimers(_scheduler.ActiveSnapshots);
         });
     }
 
@@ -145,7 +139,8 @@ public partial class OverlayViewModel : ObservableObject
     {
         Application.Current?.Dispatcher.Invoke(() =>
         {
-            UpdatePhaseLabels(CurrentPhase);
+            UpdatePhaseLabels(CurrentPhase, _scheduler.CurrentSnapshot?.Event);
+            UpdateActiveTimers(_scheduler.ActiveSnapshots);
         });
     }
 
@@ -157,24 +152,13 @@ public partial class OverlayViewModel : ObservableObject
         IsActive = snapshot.IsActive;
 
         if (!string.IsNullOrWhiteSpace(snapshot.EventName))
-        {
             ActiveEventName = snapshot.EventName.ToUpperInvariant();
-        }
         else if (snapshot.Event != null && !string.IsNullOrWhiteSpace(snapshot.Event.Name))
-        {
             ActiveEventName = snapshot.Event.Name.ToUpperInvariant();
-        }
 
-        if (snapshot.EffectiveOffsetSeconds != 0)
-        {
-            DriftSyncText = snapshot.EffectiveOffsetSeconds > 0
-                ? $"Sync: +{snapshot.EffectiveOffsetSeconds}s"
-                : $"Sync: {snapshot.EffectiveOffsetSeconds}s";
-        }
-        else
-        {
-            DriftSyncText = string.Empty;
-        }
+        DriftSyncText = snapshot.EffectiveOffsetSeconds != 0
+            ? (snapshot.EffectiveOffsetSeconds > 0 ? $"Sync: +{snapshot.EffectiveOffsetSeconds}s" : $"Sync: {snapshot.EffectiveOffsetSeconds}s")
+            : string.Empty;
 
         if (snapshot.IsBossCountdown)
         {
@@ -188,71 +172,41 @@ public partial class OverlayViewModel : ObservableObject
             {
                 string waitingColor = !string.IsNullOrWhiteSpace(snapshot.Event?.ColorHex) ? snapshot.Event.ColorHex : "#00F0FF";
                 string badge = snapshot.Phase == EventPhase.StartingSoon ? _loc.GetString("Status_StartingSoon") : _loc.GetString("Status_Waiting");
-                (PhaseBadgeText, PhaseDescriptionText, StatusColorHex) =
-                    (badge, _loc.GetString("HUD_UntilBoss"), waitingColor);
+                (PhaseBadgeText, PhaseDescriptionText, StatusColorHex) = (badge, _loc.GetString("HUD_UntilBoss"), waitingColor);
                 NextEventTimeText = $"{_loc.GetString("HUD_UntilBoss")}: {snapshot.NextEventStart.ToLocalTime():HH:mm}";
             }
         }
         else
         {
-            UpdatePhaseLabels(snapshot.Phase);
-
+            UpdatePhaseLabels(snapshot.Phase, snapshot.Event);
             NextEventTimeText = snapshot.IsActive
                 ? $"{_loc.GetString("HUD_UntilEnd")}: {snapshot.NextEventEnd.ToLocalTime():HH:mm}"
                 : $"{_loc.GetString("HUD_UntilStart")}: {snapshot.NextEventStart.ToLocalTime():HH:mm}";
         }
+
+        if (!IsMultiTimer)
+        {
+            if (snapshot.Event != null && (!snapshot.Event.IsEnabled || (snapshot.Event.ShowOnlyWhenUpcoming && !snapshot.IsActive)))
+            {
+                int threshold = snapshot.Event.UpcomingThresholdMinutes > 0 ? snapshot.Event.UpcomingThresholdMinutes : 10;
+                IsTimerVisible = snapshot.Event.IsEnabled && snapshot.TimeRemaining <= TimeSpan.FromMinutes(threshold);
+            }
+            else
+            {
+                IsTimerVisible = snapshot.Event?.IsEnabled ?? true;
+            }
+        }
     }
 
-    private void UpdatePhaseLabels(EventPhase phase)
+    private void UpdatePhaseLabels(EventPhase phase, EventDefinition? ev = null)
     {
+        string eventColor = !string.IsNullOrWhiteSpace(ev?.ColorHex) ? ev.ColorHex : "#00F0FF";
         (PhaseBadgeText, PhaseDescriptionText, StatusColorHex) = phase switch
         {
             EventPhase.StartingSoon => (_loc.GetString("Status_StartingSoon"), _loc.GetString("HUD_UntilStart"), "#F59E0B"),
-            EventPhase.Active       => (_loc.GetString("Status_Active"), _loc.GetString("HUD_UntilEnd"), "#A855F7"),
+            EventPhase.Active       => (_loc.GetString("Status_Active"), _loc.GetString("HUD_UntilEnd"), eventColor),
             EventPhase.EndingSoon   => (_loc.GetString("Status_EndingSoon"), _loc.GetString("HUD_UntilEnd"), "#EF4444"),
-            _                       => (_loc.GetString("Status_Waiting"), _loc.GetString("HUD_UntilStart"), "#00E5FF")
+            _                       => (_loc.GetString("Status_Waiting"), _loc.GetString("HUD_UntilStart"), eventColor)
         };
     }
-
-    [RelayCommand]
-    private async Task ToggleLockAsync()
-    {
-        IsLocked = !IsLocked;
-        _settingsService.Settings.IsLocked = IsLocked;
-        await _settingsService.SaveAsync();
-    }
-
-    [RelayCommand]
-    private async Task ToggleClickThroughAsync()
-    {
-        IsClickThrough = !IsClickThrough;
-        _settingsService.Settings.IsClickThrough = IsClickThrough;
-        RequestClickThroughChanged?.Invoke(IsClickThrough);
-        await _settingsService.SaveAsync();
-    }
-
-    [RelayCommand]
-    private async Task ToggleCompactModeAsync()
-    {
-        CompactMode = !CompactMode;
-        _settingsService.Settings.CompactMode = CompactMode;
-        await _settingsService.SaveAsync();
-    }
-
-    [RelayCommand]
-    private async Task TogglePauseAlertsAsync()
-    {
-        AreAlertsPaused = !AreAlertsPaused;
-        _settingsService.Settings.AreAlertsPaused = AreAlertsPaused;
-        await _settingsService.SaveAsync();
-    }
-
-    [RelayCommand]
-    private void OpenSettings() => RequestOpenSettings?.Invoke();
-
-    [RelayCommand]
-    private void HideOverlay() => RequestHideOverlay?.Invoke();
-
-    [RelayCommand]
-    private void ExitApp() => RequestExitApp?.Invoke();
 }

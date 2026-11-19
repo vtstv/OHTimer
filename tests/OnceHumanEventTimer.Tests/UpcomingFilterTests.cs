@@ -133,4 +133,86 @@ public class UpcomingFilterTests
         Assert.Single(visible);
         Assert.Equal("drift-greenhouse", visible[0].Event?.Id);
     }
+
+    [Fact]
+    public void UpcomingFilter_StrictlyHidesAllEvents_WhenNoneUpcoming_WithoutFallbackOverride()
+    {
+        var greenhouse = new EventDefinition
+        {
+            Id = "drift-greenhouse",
+            Name = "Drift Greenhouse",
+            CycleMinutes = 240,
+            StartMinute = 4,
+            StartSecond = 4,
+            DurationMinutes = 30,
+            ShowOnlyWhenUpcoming = true,
+            UpcomingThresholdMinutes = 10,
+            IsEnabled = true
+        };
+
+        var customWheel = new EventDefinition
+        {
+            Id = "custom-wheel",
+            Name = "Custom Wheel",
+            CycleMinutes = 60,
+            StartMinute = 45,
+            DurationMinutes = 15,
+            ShowOnlyWhenUpcoming = true,
+            UpcomingThresholdMinutes = 15,
+            IsEnabled = true
+        };
+
+        // Reference time at 14:00:00:
+        // Greenhouse is > 2h away (> 10m threshold)
+        // Custom Wheel starts at 14:45:00 (45m away > 15m threshold)
+        // Neither event is active or within threshold.
+        var testTime = new DateTimeOffset(2026, 11, 14, 14, 0, 0, TimeSpan.FromHours(1));
+        var snapGreenhouse = EventTimeCalculator.CalculateSnapshot(testTime, greenhouse);
+        var snapCustom = EventTimeCalculator.CalculateSnapshot(testTime, customWheel);
+
+        var list = new List<EventSnapshot> { snapGreenhouse, snapCustom };
+
+        var visible = list.Where(s =>
+        {
+            if (s.Event == null) return true;
+            if (!s.Event.ShowOnlyWhenUpcoming) return true;
+            if (s.IsActive) return true;
+            int threshold = s.Event.UpcomingThresholdMinutes > 0 ? s.Event.UpcomingThresholdMinutes : 10;
+            return s.TimeRemaining <= TimeSpan.FromMinutes(threshold);
+        }).ToList();
+
+        // Must strictly return 0 without any fallback unhiding
+        Assert.Empty(visible);
+    }
+
+    [Fact]
+    public void UpcomingFilter_ExcludesDisabledEvents_EvenWhenNotShowOnlyWhenUpcoming()
+    {
+        var disabledEvent = new EventDefinition
+        {
+            Id = "cargo-scramble",
+            Name = "Cargo Scramble",
+            CycleMinutes = 60,
+            StartMinute = 0,
+            DurationMinutes = 20,
+            ShowOnlyWhenUpcoming = false,
+            IsEnabled = false
+        };
+
+        var testTime = new DateTimeOffset(2026, 11, 14, 14, 0, 0, TimeSpan.FromHours(1));
+        var snap = EventTimeCalculator.CalculateSnapshot(testTime, disabledEvent);
+
+        var list = new List<EventSnapshot> { snap };
+
+        var visible = list.Where(s =>
+        {
+            if (s.Event == null || !s.Event.IsEnabled) return false;
+            if (!s.Event.ShowOnlyWhenUpcoming) return true;
+            if (s.IsActive) return true;
+            int threshold = s.Event.UpcomingThresholdMinutes > 0 ? s.Event.UpcomingThresholdMinutes : 10;
+            return s.TimeRemaining <= TimeSpan.FromMinutes(threshold);
+        }).ToList();
+
+        Assert.Empty(visible);
+    }
 }

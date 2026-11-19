@@ -17,6 +17,12 @@ public partial class OnboardingWindow : Window
         InitializeComponent();
         DataContext = viewModel;
         viewModel.RequestClose = Close;
+        Loaded += (s, e) =>
+        {
+            Topmost = true;
+            Activate();
+            Focus();
+        };
     }
 
     private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

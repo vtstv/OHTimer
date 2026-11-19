@@ -130,10 +130,14 @@ public sealed class FileSettingsService : ISettingsService
                 var loaded = await JsonSerializer.DeserializeAsync<UserSettings>(stream, _jsonOptions);
                 if (loaded != null)
                 {
-                    loaded.EnsureDefaultPresets();
+                    bool wasMigrated = loaded.EnsureDefaultPresets();
                     lock (_lock)
                     {
                         Settings = loaded;
+                    }
+                    if (wasMigrated)
+                    {
+                        await SaveAsync();
                     }
                     SettingsChanged?.Invoke(this, Settings);
                     return;

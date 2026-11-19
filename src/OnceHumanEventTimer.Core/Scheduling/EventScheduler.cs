@@ -43,7 +43,7 @@ public class EventScheduler : IEventScheduler
     {
         _evaluator = new NotificationEvaluator(loc);
         _trackedEvents = DefaultEventPresets.CreateDefaultEvents();
-        _activeEvent = _trackedEvents[0];
+        _activeEvent = _trackedEvents.FirstOrDefault(e => e.Id == "dissonant-resonance") ?? _trackedEvents[0];
 
         var now = DateTimeOffset.Now;
         CurrentSnapshot = CalculateSnapshot(now, _activeEvent, _activeEvent.TimeOffsetSeconds);

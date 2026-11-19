@@ -220,7 +220,7 @@ public class ExtraAlertAndDuplicateTests
         settings.EnsureDefaultPresets();
 
         var resonance = settings.Events.Single(e => e.Id == "dissonant-resonance");
-        Assert.Equal(16, resonance.StartMinute);
+        Assert.Equal(15, resonance.StartMinute);
         Assert.True(resonance.IsEnabled);
 
         var abyss = settings.Events.Single(e => e.Id == "gravity-abyss");

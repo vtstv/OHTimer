@@ -22,7 +22,7 @@ public class MultiTimerTests
 
         Assert.Equal("dissonant-resonance", scheduler.ActiveEvent.Id);
         Assert.Equal("S5: The Echo", scheduler.ActiveEvent.Name);
-        Assert.Equal(16, scheduler.ActiveEvent.StartMinute);
+        Assert.Equal(15, scheduler.ActiveEvent.StartMinute);
         Assert.Equal(0, scheduler.ActiveEvent.StartSecond);
         Assert.Equal(0, scheduler.ActiveEvent.TimeOffsetSeconds);
         Assert.Equal(0, scheduler.TimeOffsetSeconds);
@@ -87,7 +87,7 @@ public class MultiTimerTests
         var resonance = presets.Single(e => e.Id == "dissonant-resonance");
         Assert.Equal("S5: The Echo", resonance.Name);
         Assert.Equal(60, resonance.CycleMinutes);
-        Assert.Equal(16, resonance.StartMinute);
+        Assert.Equal(15, resonance.StartMinute);
         Assert.Equal(30, resonance.DurationMinutes);
         Assert.Equal("#D946EF", resonance.ColorHex);
         Assert.True(resonance.IsEnabled);

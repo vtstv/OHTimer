@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.5.9] - 2026-11-19
+
+### Changed
+- **Presets Priority Reordering**: Moved `Cargo Scramble (Sproutlet Truck)` to index 0 (top meta priority) and `S5: The Echo` (Dissonant Resonance) to index 1. Moved concluded `Gravity Abyss (Legacy)` to the very end of the presets list and disabled it by default.
+- **Automatic Settings Migration for Existing Users**: `EnsureDefaultPresets()` in `UserSettings.Events.cs` now automatically reorders existing preset collections so Sproutlet and S5: The Echo appear at the top, disables legacy Gravity Abyss, moves it to the bottom, and persists the migration to disk via `FileSettingsService`.
+- **Dynamic Event Color Matching in HUD**: Replaced hardcoded cyan `#00E5FF` in `OverlayViewModel` waiting states with each event's configured neon accent (`#F59E0B` for Cargo Scramble, `#D946EF` for S5: The Echo, `#10B981` for Drift Greenhouse), eliminating visual tracking confusion.
+- **Active Event Title in Compact HUD**: Compact Mini-HUD now displays the active event name directly in the header and on badge hover, making the tracked event immediately clear.
+
+### Added
+- **Rich Visual Onboarding Wizard**: Rebuilt the interactive first-run tutorial wizard with a 2-column layout featuring rich visual preview mockups for all 5 core features:
+  1. *Frameless HUD Overlay & Controls*: Drag handle, lock toggle, compact mode, and DirectFlip MPO performance badges.
+  2. *Multi-Timer & Priority Presets*: Visual preset list with checkboxes, reordering buttons, and top Sproutlet/S5 highlights.
+  3. *Season 5: The Echo Boss Portal*: 3-phase timeline (XX:15 start -> XX:30 boss portal siren -> XX:45 end) and countdown-to-boss mode.
+  4. *Fast In-Game Map Calibration*: Server sync preview demonstrating natural countdown string parsing (`1h 3m 29s` -> zero-drift compensation).
+  5. *Global Hotkeys & System Tray*: In-game hotkey cards (`Ctrl+Alt+S`, `Ctrl+Alt+L`, `Ctrl+Alt+P`) and silent background tray.
+- **Topmost & Foreground Reliability for Onboarding**: Ensured `OnboardingWindow` is set to `Topmost="True"`, properly centered, and calls `Activate()` and `Focus()` so it never appears behind Once Human or borderless game windows.
+- **Multilingual Localization Parity**: Updated English, German, and Russian catalogs with complete parity across all 5 visual onboarding steps.
+- **Unit Test Coverage**: Added `PresetMigrationAndOnboardingTests`, bringing the test suite to 134 passing unit tests.
+
+---
+
 ## [1.5.8] - 2026-11-19
 
 ### Added

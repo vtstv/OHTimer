@@ -164,9 +164,9 @@ public class SystemSettingsAndSecondPrecisionTests
         // All 15 presets should now exist
         Assert.Equal(15, legacySettings.Events.Count);
 
-        // Existing events retain their state
+        // Concluded events are disabled by migration
         var gravityAbyss = legacySettings.Events.First(e => e.Id == "gravity-abyss");
-        Assert.True(gravityAbyss.IsEnabled);
+        Assert.False(gravityAbyss.IsEnabled);
 
         // Newly added presets are disabled by default
         var skyripper = legacySettings.Events.First(e => e.Id == "skyripper");
