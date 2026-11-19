@@ -64,6 +64,11 @@ public partial class OverlayViewModel
             .ThenBy(s => s.TimeRemaining)
             .ToList();
 
+        if (!IsMultiTimer && sortedSnapshots.Count > 0)
+        {
+            UpdateFromSnapshot(sortedSnapshots[0]);
+        }
+
         var targetIds = new HashSet<string>();
 
         foreach (var snapshot in sortedSnapshots)

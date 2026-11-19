@@ -213,6 +213,17 @@ public partial class SettingsViewModel : ObservableObject
         _autostartService?.SetAutostart(StartWithWindows);
 
         s.Events = Events.ToList();
+
+        if (SelectedEvent != null && SelectedEvent.IsEnabled)
+        {
+            ActiveEventId = SelectedEvent.Id;
+        }
+        else if (!Events.Any(e => e.Id == ActiveEventId && e.IsEnabled))
+        {
+            var firstEnabled = Events.FirstOrDefault(e => e.IsEnabled);
+            if (firstEnabled != null) ActiveEventId = firstEnabled.Id;
+        }
+
         s.ActiveEventId = ActiveEventId;
         s.GlobalTimeOffsetSeconds = GlobalTimeOffsetSeconds;
 

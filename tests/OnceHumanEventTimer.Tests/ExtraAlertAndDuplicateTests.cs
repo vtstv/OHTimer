@@ -151,4 +151,44 @@ public class ExtraAlertAndDuplicateTests
         Assert.Equal(EventPhase.Active, snap1230.Phase);
         Assert.Equal(TimeSpan.FromMinutes(15), snap1230.TimeRemaining);
     }
+
+    [Fact]
+    public void EnsureDefaultPresets_MigratesDisabledActiveEventToEnabledS5()
+    {
+        var settings = new UserSettings
+        {
+            ActiveEventId = "gravity-abyss",
+            Events = new List<EventDefinition>
+            {
+                new() { Id = "dissonant-resonance", Name = "Dissonant Resonance", IsEnabled = true },
+                new() { Id = "gravity-abyss", Name = "Gravity Abyss", IsEnabled = false }
+            }
+        };
+
+        settings.EnsureDefaultPresets();
+
+        Assert.Equal("dissonant-resonance", settings.ActiveEventId);
+        var active = settings.GetActiveEvent();
+        Assert.Equal("dissonant-resonance", active.Id);
+        Assert.Equal("S5: The Echo", active.Name);
+        Assert.True(active.IsEnabled);
+    }
+
+    [Fact]
+    public void EventScheduler_SetTrackedEvents_PicksEnabledEventOverDisabledActiveEvent()
+    {
+        var loc = new LocalizationService();
+        var scheduler = new EventScheduler(loc);
+
+        var events = new List<EventDefinition>
+        {
+            new() { Id = "dissonant-resonance", Name = "S5: The Echo", IsEnabled = true, StartMinute = 15 },
+            new() { Id = "gravity-abyss", Name = "Gravity Abyss", IsEnabled = false, StartMinute = 22 }
+        };
+
+        scheduler.SetTrackedEvents(events, activeEventId: "gravity-abyss");
+
+        Assert.Equal("dissonant-resonance", scheduler.ActiveEvent.Id);
+        Assert.True(scheduler.ActiveEvent.IsEnabled);
+    }
 }

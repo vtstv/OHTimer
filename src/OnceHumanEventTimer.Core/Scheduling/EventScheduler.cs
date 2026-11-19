@@ -85,12 +85,11 @@ public class EventScheduler : IEventScheduler
             if (!string.IsNullOrEmpty(activeEventId))
             {
                 var match = _trackedEvents.FirstOrDefault(e => string.Equals(e.Id, activeEventId, StringComparison.OrdinalIgnoreCase));
-                if (match != null) _activeEvent = match;
+                _activeEvent = (match != null && match.IsEnabled) ? match : (_trackedEvents.FirstOrDefault(e => e.IsEnabled) ?? match ?? _trackedEvents[0]);
             }
-            else if (!_trackedEvents.Contains(_activeEvent))
+            else
             {
-                var match = _trackedEvents.FirstOrDefault(e => string.Equals(e.Id, _activeEvent.Id, StringComparison.OrdinalIgnoreCase));
-                _activeEvent = match ?? _trackedEvents[0];
+                _activeEvent = _trackedEvents.FirstOrDefault(e => e.IsEnabled) ?? _trackedEvents[0];
             }
 
             UpdateSnapshotsLocked(DateTimeOffset.Now);

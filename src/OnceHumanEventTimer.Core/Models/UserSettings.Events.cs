@@ -29,9 +29,10 @@ public partial class UserSettings
         }
 
         var active = Events.FirstOrDefault(e => string.Equals(e.Id, ActiveEventId, StringComparison.OrdinalIgnoreCase));
-        if (active == null)
+        if (active == null || !active.IsEnabled)
         {
-            active = Events[0];
+            var firstEnabled = Events.FirstOrDefault(e => e.IsEnabled);
+            active = firstEnabled ?? active ?? Events[0];
             ActiveEventId = active.Id;
         }
 
@@ -118,6 +119,15 @@ public partial class UserSettings
             existingEcho.ExtraAlertMinutes = 15;
             existingEcho.CountdownToBoss = false;
             existingEcho.Description = "Season 5: Dissonant Resonance. Hourly schedule starting at XX:15:00. The Echo War boss portal opens at XX:30:00.";
+        }
+
+        // Migrate active event to S5 or first enabled event if active event is disabled or legacy gravity-abyss
+        if (ActiveEventId == "gravity-abyss" || !Events.Any(e => e.Id == ActiveEventId && e.IsEnabled))
+        {
+            var preferred = Events.FirstOrDefault(e => e.Id == "dissonant-resonance" && e.IsEnabled)
+                         ?? Events.FirstOrDefault(e => e.IsEnabled)
+                         ?? Events[0];
+            ActiveEventId = preferred.Id;
         }
     }
 }

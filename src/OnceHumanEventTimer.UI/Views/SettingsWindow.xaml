@@ -192,45 +192,63 @@
                             </Grid>
 
                             <!-- Right: Selected Event Details & Game Sync -->
-                            <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
-                                <StackPanel Margin="6,0,6,0">
-                                    <!-- Active Status / Action -->
-                                    <Grid Margin="0,0,0,8">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="Auto" />
-                                        </Grid.ColumnDefinitions>
+                            <Grid Grid.Column="1" Margin="6,0,6,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
 
-                                        <StackPanel Grid.Column="0" VerticalAlignment="Center">
-                                            <TextBlock Text="{Binding SelectedEventName}"
-                                                       FontSize="13.5"
-                                                       FontWeight="Bold"
-                                                       Foreground="{StaticResource AccentWaitingBrush}" />
-                                            <TextBlock Text="Configure timing rules, colors, audio, and drift offset."
-                                                       FontSize="10"
-                                                       Foreground="{StaticResource TextMutedBrush}" />
-                                        </StackPanel>
+                                <!-- Sticky Top Header: Active Status / Action -->
+                                <Grid Grid.Row="0" Margin="0,0,0,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
 
-                                        <Button Grid.Column="1"
-                                                Command="{Binding SetActiveEventCommand}"
-                                                Style="{StaticResource PrimaryAccentButtonStyle}"
-                                                Content="Set as Active"
-                                                Padding="10,4"
-                                                FontSize="11"
-                                                VerticalAlignment="Center" />
-                                    </Grid>
+                                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding SelectedEventName}"
+                                                   FontSize="13.5"
+                                                   FontWeight="Bold"
+                                                   Foreground="{StaticResource AccentWaitingBrush}" />
+                                        <TextBlock Text="Configure timing rules, colors, audio, and drift offset."
+                                                   FontSize="10"
+                                                   Foreground="{StaticResource TextMutedBrush}" />
+                                    </StackPanel>
 
-                                    <Rectangle Height="1" Fill="{StaticResource BorderDarkBrush}" Margin="0,0,0,8" />
+                                    <!-- If Active: Show green active badge; If not active: Show 'Set as Active' button -->
+                                    <Border Grid.Column="1"
+                                            Background="#2010B981"
+                                            BorderBrush="#10B981"
+                                            BorderThickness="1"
+                                            CornerRadius="4"
+                                            Padding="10,4"
+                                            VerticalAlignment="Center"
+                                            Visibility="{Binding IsSelectedEventActive, Converter={StaticResource BoolToVis}}">
+                                        <TextBlock Text="✔ Active Event" Foreground="#10B981" FontSize="11" FontWeight="Bold" />
+                                    </Border>
+                                    <Button Grid.Column="1"
+                                            Command="{Binding SetActiveEventCommand}"
+                                            Style="{StaticResource PrimaryAccentButtonStyle}"
+                                            Content="Set as Active"
+                                            Padding="10,4"
+                                            FontSize="11"
+                                            VerticalAlignment="Center"
+                                            Visibility="{Binding IsSelectedEventActive, Converter={StaticResource InvBoolToVis}}" />
+                                </Grid>
 
-                                    <!-- Enable in Multi-Timer HUD -->
-                                    <Grid Margin="0,0,0,6">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="Auto" />
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Text="{loc:Loc Settings_EventEnabled}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11" />
-                                        <CheckBox Grid.Column="1" IsChecked="{Binding SelectedEventIsEnabled, Mode=TwoWay}" Style="{StaticResource ModernCheckBoxStyle}" VerticalAlignment="Center" />
-                                    </Grid>
+                                <Rectangle Grid.Row="0" Height="1" Fill="{StaticResource BorderDarkBrush}" VerticalAlignment="Bottom" />
+
+                                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,8,0,0">
+                                    <StackPanel Margin="0,0,6,0">
+                                        <!-- Enable in Multi-Timer HUD -->
+                                        <Grid Margin="0,0,0,6">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{loc:Loc Settings_EventEnabled}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11" />
+                                            <CheckBox Grid.Column="1" IsChecked="{Binding SelectedEventIsEnabled, Mode=TwoWay}" Style="{StaticResource ModernCheckBoxStyle}" VerticalAlignment="Center" />
+                                        </Grid>
 
                                     <!-- Event Configuration Fields -->
                                     <Grid Margin="0,0,0,6">
@@ -460,6 +478,7 @@
 
                                 </StackPanel>
                             </ScrollViewer>
+                            </Grid>
                         </Grid>
                     </TabItem>
 
