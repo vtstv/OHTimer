@@ -86,7 +86,7 @@ public class MultiTimerTests
         var resonance = presets.Single(e => e.Id == "dissonant-resonance");
         Assert.Equal("Visional Wheel: The Echo", resonance.Name);
         Assert.Equal(60, resonance.CycleMinutes);
-        Assert.Equal(0, resonance.StartMinute);
+        Assert.Equal(15, resonance.StartMinute);
         Assert.Equal(30, resonance.DurationMinutes);
         Assert.Equal("#D946EF", resonance.ColorHex);
         Assert.False(resonance.AlertOnEventStart);

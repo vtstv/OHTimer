@@ -52,10 +52,21 @@ public sealed class NotificationEvaluator
         {
             if (snapshot.Event?.EnableExtraAlert == true)
             {
-                TimeSpan elapsed = snapshot.TotalPhaseDuration - snapshot.TimeRemaining;
-                TimeSpan target = TimeSpan.FromMinutes(snapshot.Event.ExtraAlertMinutes);
-                if (elapsed >= target && elapsed <= target + TimeSpan.FromMinutes(3) &&
-                    (!_lastExtraAlert.TryGetValue(eventId, out var lastEx) || lastEx != cycleKey))
+                bool triggerExtra;
+                if (snapshot.IsBossCountdown)
+                {
+                    triggerExtra = snapshot.IsBossOpen &&
+                        (!_lastExtraAlert.TryGetValue(eventId, out var lastEx) || lastEx != cycleKey);
+                }
+                else
+                {
+                    TimeSpan elapsed = snapshot.TotalPhaseDuration - snapshot.TimeRemaining;
+                    TimeSpan target = TimeSpan.FromMinutes(snapshot.Event.ExtraAlertMinutes);
+                    triggerExtra = elapsed >= target && elapsed <= target + TimeSpan.FromMinutes(3) &&
+                        (!_lastExtraAlert.TryGetValue(eventId, out var lastEx) || lastEx != cycleKey);
+                }
+
+                if (triggerExtra)
                 {
                     _lastExtraAlert[eventId] = cycleKey;
                     string title = string.IsNullOrWhiteSpace(eventTitle)
@@ -76,7 +87,7 @@ public sealed class NotificationEvaluator
                 }
             }
 
-            if (!_lastActive.TryGetValue(eventId, out var last) || last != cycleKey)
+            if (!snapshot.IsBossCountdown && (!_lastActive.TryGetValue(eventId, out var last) || last != cycleKey))
             {
                 _lastActive[eventId] = cycleKey;
                 if (snapshot.Event == null || snapshot.Event.AlertOnEventStart)

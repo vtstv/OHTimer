@@ -100,6 +100,12 @@ public class EventDefinition
     public int ExtraAlertMinutes { get; set; } = 15;
 
     /// <summary>
+    /// When true, the HUD overlay timer counts down directly to the boss portal opening (ExtraAlertMinutes)
+    /// rather than to the initial event start.
+    /// </summary>
+    public bool CountdownToBoss { get; set; } = false;
+
+    /// <summary>
     /// Creates an exact clone of the event definition.
     /// </summary>
     public EventDefinition Clone()
@@ -123,7 +129,8 @@ public class EventDefinition
             UpcomingThresholdMinutes = UpcomingThresholdMinutes,
             AlertOnEventStart = AlertOnEventStart,
             EnableExtraAlert = EnableExtraAlert,
-            ExtraAlertMinutes = ExtraAlertMinutes
+            ExtraAlertMinutes = ExtraAlertMinutes,
+            CountdownToBoss = CountdownToBoss
         };
     }
 }

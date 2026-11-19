@@ -111,4 +111,44 @@ public class ExtraAlertAndDuplicateTests
         Assert.Equal(15, clone.ExtraAlertMinutes);
         Assert.Equal("#D946EF", clone.ColorHex);
     }
+
+    [Fact]
+    public void CountdownToBoss_CalculatesCountdownDirectlyToBossPortal()
+    {
+        var eventDef = new EventDefinition
+        {
+            Id = "dissonant-resonance",
+            Name = "Visional Wheel: The Echo",
+            CycleMinutes = 60,
+            StartMinute = 15,
+            DurationMinutes = 30,
+            EnableExtraAlert = true,
+            ExtraAlertMinutes = 15,
+            CountdownToBoss = true
+        };
+
+        var baseTime = new DateTimeOffset(2026, 11, 19, 12, 0, 0, TimeSpan.Zero);
+
+        // At 12:00: Event starts at 12:15, Boss portal opens at 12:30
+        // Countdown to boss should be exactly 30 minutes!
+        var snap1200 = EventTimeCalculator.CalculateSnapshot(baseTime, eventDef);
+        Assert.True(snap1200.IsBossCountdown);
+        Assert.False(snap1200.IsBossOpen);
+        Assert.Equal(EventPhase.Inactive, snap1200.Phase);
+        Assert.Equal(TimeSpan.FromMinutes(30), snap1200.TimeRemaining);
+
+        // At 12:15: Event starts in-game, but Boss is in 15 minutes
+        var snap1215 = EventTimeCalculator.CalculateSnapshot(baseTime.AddMinutes(15), eventDef);
+        Assert.True(snap1215.IsBossCountdown);
+        Assert.False(snap1215.IsBossOpen);
+        Assert.Equal(EventPhase.Inactive, snap1215.Phase);
+        Assert.Equal(TimeSpan.FromMinutes(15), snap1215.TimeRemaining);
+
+        // At 12:30: Boss portal opens!
+        var snap1230 = EventTimeCalculator.CalculateSnapshot(baseTime.AddMinutes(30), eventDef);
+        Assert.True(snap1230.IsBossCountdown);
+        Assert.True(snap1230.IsBossOpen);
+        Assert.Equal(EventPhase.Active, snap1230.Phase);
+        Assert.Equal(TimeSpan.FromMinutes(15), snap1230.TimeRemaining);
+    }
 }

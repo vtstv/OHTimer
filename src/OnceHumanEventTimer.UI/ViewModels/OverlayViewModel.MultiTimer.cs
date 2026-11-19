@@ -87,15 +87,38 @@ public partial class OverlayViewModel
             item.ProgressRatio = snapshot.ProgressRatio;
             item.Phase = snapshot.Phase;
             item.IsActive = snapshot.IsActive;
-            item.StatusColorHex = GetPhaseColor(snapshot.Phase, snapshot.Event?.ColorHex);
-            item.PhaseBadgeText = GetPhaseBadgeText(snapshot.Phase);
-            item.PhaseDescriptionText = snapshot.IsActive
-                ? _loc.GetString("HUD_UntilEnd")
-                : _loc.GetString("HUD_UntilStart");
 
-            item.NextEventTimeText = snapshot.IsActive
-                ? $"{_loc.GetString("HUD_UntilEnd")}: {snapshot.NextEventEnd.ToLocalTime():HH:mm}"
-                : $"{_loc.GetString("HUD_UntilStart")}: {snapshot.NextEventStart.ToLocalTime():HH:mm}";
+            if (snapshot.IsBossCountdown)
+            {
+                if (snapshot.IsBossOpen)
+                {
+                    item.PhaseBadgeText = _loc.GetString("Status_BossOpen");
+                    item.PhaseDescriptionText = _loc.GetString("HUD_UntilPortalCloses");
+                    item.StatusColorHex = "#EC4899";
+                    item.NextEventTimeText = $"{_loc.GetString("HUD_UntilPortalCloses")}: {snapshot.NextEventEnd.ToLocalTime():HH:mm}";
+                }
+                else
+                {
+                    item.PhaseBadgeText = snapshot.Phase == EventPhase.StartingSoon
+                        ? _loc.GetString("Status_StartingSoon")
+                        : _loc.GetString("Status_Waiting");
+                    item.PhaseDescriptionText = _loc.GetString("HUD_UntilBoss");
+                    item.NextEventTimeText = $"{_loc.GetString("HUD_UntilBoss")}: {snapshot.NextEventStart.ToLocalTime():HH:mm}";
+                    item.StatusColorHex = GetPhaseColor(snapshot.Phase, snapshot.Event?.ColorHex);
+                }
+            }
+            else
+            {
+                item.StatusColorHex = GetPhaseColor(snapshot.Phase, snapshot.Event?.ColorHex);
+                item.PhaseBadgeText = GetPhaseBadgeText(snapshot.Phase);
+                item.PhaseDescriptionText = snapshot.IsActive
+                    ? _loc.GetString("HUD_UntilEnd")
+                    : _loc.GetString("HUD_UntilStart");
+
+                item.NextEventTimeText = snapshot.IsActive
+                    ? $"{_loc.GetString("HUD_UntilEnd")}: {snapshot.NextEventEnd.ToLocalTime():HH:mm}"
+                    : $"{_loc.GetString("HUD_UntilStart")}: {snapshot.NextEventStart.ToLocalTime():HH:mm}";
+            }
 
             item.DriftSyncText = snapshot.EffectiveOffsetSeconds != 0
                 ? (snapshot.EffectiveOffsetSeconds > 0 ? $"+{snapshot.EffectiveOffsetSeconds}s" : $"{snapshot.EffectiveOffsetSeconds}s")

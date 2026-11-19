@@ -51,7 +51,56 @@ public static class EventTimeCalculator
         TimeSpan timeRemaining;
         TimeSpan totalPhaseDuration;
 
-        if (effectiveTime < cycleStart)
+        bool isBossMode = eventDefinition.CountdownToBoss && eventDefinition.EnableExtraAlert && eventDefinition.ExtraAlertMinutes > 0;
+        bool isBossOpen = false;
+
+        if (isBossMode)
+        {
+            var bossStart = cycleStart.AddMinutes(eventDefinition.ExtraAlertMinutes);
+            var bossEnd = cycleEnd;
+
+            if (effectiveTime < bossStart)
+            {
+                var prevCycleAnchor = cycleAnchor - cycleDuration;
+                var prevBossEnd = prevCycleAnchor.AddMinutes(startMinute).AddSeconds(startSecond).AddMinutes(durationMinutes);
+                totalPhaseDuration = bossStart - prevBossEnd;
+                timeRemaining = bossStart - effectiveTime;
+                nextStart = bossStart;
+                nextEnd = bossEnd;
+
+                bool isStartingSoon = timeRemaining <= TimeSpan.FromMinutes(alertBeforeStart);
+                phase = isStartingSoon ? EventPhase.StartingSoon : EventPhase.Inactive;
+                isBossOpen = false;
+            }
+            else if (effectiveTime < bossEnd)
+            {
+                totalPhaseDuration = bossEnd - bossStart;
+                timeRemaining = bossEnd - effectiveTime;
+                nextStart = bossStart;
+                nextEnd = bossEnd;
+
+                bool isEndingSoon = timeRemaining <= TimeSpan.FromMinutes(alertBeforeEnd);
+                phase = isEndingSoon ? EventPhase.EndingSoon : EventPhase.Active;
+                isBossOpen = true;
+            }
+            else
+            {
+                var nextCycleAnchor = cycleAnchor + cycleDuration;
+                var nextCycleStart = nextCycleAnchor.AddMinutes(startMinute).AddSeconds(startSecond);
+                var nextBossStart = nextCycleStart.AddMinutes(eventDefinition.ExtraAlertMinutes);
+                var nextBossEnd = nextCycleStart.AddMinutes(durationMinutes);
+
+                totalPhaseDuration = nextBossStart - bossEnd;
+                timeRemaining = nextBossStart - effectiveTime;
+                nextStart = nextBossStart;
+                nextEnd = nextBossEnd;
+
+                bool isStartingSoon = timeRemaining <= TimeSpan.FromMinutes(alertBeforeStart);
+                phase = isStartingSoon ? EventPhase.StartingSoon : EventPhase.Inactive;
+                isBossOpen = false;
+            }
+        }
+        else if (effectiveTime < cycleStart)
         {
             var prevCycleStart = (cycleAnchor - cycleDuration).AddMinutes(startMinute).AddSeconds(startSecond);
             var prevCycleEnd = prevCycleStart.AddMinutes(durationMinutes);
@@ -106,7 +155,9 @@ public static class EventTimeCalculator
             NextEventEnd = nextEnd,
             Event = eventDefinition,
             EventName = eventDefinition.Name,
-            EffectiveOffsetSeconds = offsetSeconds
+            EffectiveOffsetSeconds = offsetSeconds,
+            IsBossCountdown = isBossMode,
+            IsBossOpen = isBossOpen
         };
     }
 

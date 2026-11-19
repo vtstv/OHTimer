@@ -59,6 +59,16 @@ public record EventSnapshot
     public bool IsActive => Phase is EventPhase.Active or EventPhase.EndingSoon;
 
     /// <summary>
+    /// Indicates whether this snapshot is actively tracking a countdown to a boss portal opening.
+    /// </summary>
+    public bool IsBossCountdown { get; init; } = false;
+
+    /// <summary>
+    /// Indicates whether the boss portal is actively open right now.
+    /// </summary>
+    public bool IsBossOpen { get; init; } = false;
+
+    /// <summary>
     /// Formatted countdown string (mm:ss or hh:mm:ss).
     /// </summary>
     public string FormattedRemaining => TimeRemaining.TotalHours >= 1

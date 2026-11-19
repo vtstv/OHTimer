@@ -176,11 +176,31 @@ public partial class OverlayViewModel : ObservableObject
             DriftSyncText = string.Empty;
         }
 
-        UpdatePhaseLabels(snapshot.Phase);
+        if (snapshot.IsBossCountdown)
+        {
+            if (snapshot.IsBossOpen)
+            {
+                (PhaseBadgeText, PhaseDescriptionText, StatusColorHex) =
+                    (_loc.GetString("Status_BossOpen"), _loc.GetString("HUD_UntilPortalCloses"), "#EC4899");
+                NextEventTimeText = $"{_loc.GetString("HUD_UntilPortalCloses")}: {snapshot.NextEventEnd.ToLocalTime():HH:mm}";
+            }
+            else
+            {
+                string waitingColor = !string.IsNullOrWhiteSpace(snapshot.Event?.ColorHex) ? snapshot.Event.ColorHex : "#00F0FF";
+                string badge = snapshot.Phase == EventPhase.StartingSoon ? _loc.GetString("Status_StartingSoon") : _loc.GetString("Status_Waiting");
+                (PhaseBadgeText, PhaseDescriptionText, StatusColorHex) =
+                    (badge, _loc.GetString("HUD_UntilBoss"), waitingColor);
+                NextEventTimeText = $"{_loc.GetString("HUD_UntilBoss")}: {snapshot.NextEventStart.ToLocalTime():HH:mm}";
+            }
+        }
+        else
+        {
+            UpdatePhaseLabels(snapshot.Phase);
 
-        NextEventTimeText = snapshot.IsActive
-            ? $"{_loc.GetString("HUD_UntilEnd")}: {snapshot.NextEventEnd.ToLocalTime():HH:mm}"
-            : $"{_loc.GetString("HUD_UntilStart")}: {snapshot.NextEventStart.ToLocalTime():HH:mm}";
+            NextEventTimeText = snapshot.IsActive
+                ? $"{_loc.GetString("HUD_UntilEnd")}: {snapshot.NextEventEnd.ToLocalTime():HH:mm}"
+                : $"{_loc.GetString("HUD_UntilStart")}: {snapshot.NextEventStart.ToLocalTime():HH:mm}";
+        }
     }
 
     private void UpdatePhaseLabels(EventPhase phase)
@@ -228,20 +248,11 @@ public partial class OverlayViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void OpenSettings()
-    {
-        RequestOpenSettings?.Invoke();
-    }
+    private void OpenSettings() => RequestOpenSettings?.Invoke();
 
     [RelayCommand]
-    private void HideOverlay()
-    {
-        RequestHideOverlay?.Invoke();
-    }
+    private void HideOverlay() => RequestHideOverlay?.Invoke();
 
     [RelayCommand]
-    private void ExitApp()
-    {
-        RequestExitApp?.Invoke();
-    }
+    private void ExitApp() => RequestExitApp?.Invoke();
 }

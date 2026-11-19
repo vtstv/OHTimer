@@ -46,10 +46,24 @@ public partial class SettingsViewModel
         }
     }
 
+    public bool SelectedEventCountdownToBoss
+    {
+        get => SelectedEvent?.CountdownToBoss ?? false;
+        set
+        {
+            if (SelectedEvent != null && SelectedEvent.CountdownToBoss != value)
+            {
+                SelectedEvent.CountdownToBoss = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
     private void NotifyEventAlertProperties()
     {
         OnPropertyChanged(nameof(SelectedEventAlertOnStart));
         OnPropertyChanged(nameof(SelectedEventEnableExtraAlert));
         OnPropertyChanged(nameof(SelectedEventExtraAlertMinutes));
+        OnPropertyChanged(nameof(SelectedEventCountdownToBoss));
     }
 }

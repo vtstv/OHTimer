@@ -447,6 +447,13 @@
                                                          HorizontalContentAlignment="Center"
                                                          FontSize="11" />
                                             </Grid>
+                                            <CheckBox IsChecked="{Binding SelectedEventCountdownToBoss, UpdateSourceTrigger=PropertyChanged}"
+                                                      Content="{loc:Loc Settings_CountdownToBoss}"
+                                                      FontSize="11"
+                                                      Foreground="{StaticResource TextPrimaryBrush}"
+                                                      Cursor="Hand"
+                                                      Margin="22,6,0,0"
+                                                      Visibility="{Binding SelectedEventEnableExtraAlert, Converter={StaticResource BoolToVis}}" />
                                         </StackPanel>
                                     </Border>
 

@@ -179,7 +179,7 @@ public static class DefaultEventPresets
             Id = "dissonant-resonance",
             Name = "Visional Wheel: The Echo",
             CycleMinutes = 60,
-            StartMinute = 0,
+            StartMinute = 15,
             StartSecond = 0,
             DurationMinutes = 30,
             TimeOffsetSeconds = 0,
@@ -189,7 +189,8 @@ public static class DefaultEventPresets
             AlertOnEventStart = false,
             EnableExtraAlert = true,
             ExtraAlertMinutes = 15,
-            Description = "Visional Wheel S5: Dissonant Resonance. The Echo War boss portal opens 15 minutes after the Vision begins."
+            CountdownToBoss = false,
+            Description = "Visional Wheel S5: Dissonant Resonance. Hourly schedule starting at XX:15:00. The Echo War boss portal opens 15 minutes after start (XX:30:00)."
         },
         new EventDefinition
         {
