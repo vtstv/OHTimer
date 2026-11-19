@@ -23,7 +23,14 @@ public partial class OnboardingViewModel : ObservableObject
     private int _currentStep = 1;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CurrentLanguageDisplayName))]
+    [NotifyPropertyChangedFor(nameof(IsEnglish))]
+    [NotifyPropertyChangedFor(nameof(IsGerman))]
+    [NotifyPropertyChangedFor(nameof(IsRussian))]
     private string _currentLanguageCode = "en-US";
+
+    [ObservableProperty]
+    private bool _isLanguageMenuOpen;
 
     [ObservableProperty]
     private string _stepTitle = string.Empty;
@@ -53,6 +60,11 @@ public partial class OnboardingViewModel : ObservableObject
     public bool IsGerman => string.Equals(CurrentLanguageCode, "de-DE", StringComparison.OrdinalIgnoreCase);
     public bool IsRussian => string.Equals(CurrentLanguageCode, "ru-RU", StringComparison.OrdinalIgnoreCase);
 
+    public string CurrentLanguageDisplayName =>
+        IsGerman ? "Deutsch" :
+        IsRussian ? "Русский" :
+        "English";
+
     public Action? RequestClose { get; set; }
 
     public OnboardingViewModel(ISettingsService settingsService, ILocalizationService loc, IEventScheduler? scheduler = null)
@@ -74,10 +86,18 @@ public partial class OnboardingViewModel : ObservableObject
         _settingsService.Settings.Language = langCode;
         await _settingsService.SaveAsync();
         CurrentLanguageCode = _loc.CurrentLanguage;
+        IsLanguageMenuOpen = false;
         UpdateStepContent();
+        OnPropertyChanged(nameof(CurrentLanguageDisplayName));
         OnPropertyChanged(nameof(IsEnglish));
         OnPropertyChanged(nameof(IsGerman));
         OnPropertyChanged(nameof(IsRussian));
+    }
+
+    [RelayCommand]
+    private void ToggleLanguageMenu()
+    {
+        IsLanguageMenuOpen = !IsLanguageMenuOpen;
     }
 
     private void UpdateStepContent()

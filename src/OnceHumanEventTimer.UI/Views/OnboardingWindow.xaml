@@ -17,6 +17,70 @@
         ShowInTaskbar="True"
         MouseLeftButtonDown="Window_MouseLeftButtonDown">
 
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+
+        <Style x:Key="LanguageDropdownToggleStyle" TargetType="ToggleButton">
+            <Setter Property="Background" Value="#161F30" />
+            <Setter Property="BorderBrush" Value="#334155" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Foreground" Value="#F8FAFC" />
+            <Setter Property="Focusable" Value="False" />
+            <Setter Property="Padding" Value="9,4" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="PillBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="12"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="PillBorder" Property="BorderBrush" Value="#00F0FF" />
+                                <Setter TargetName="PillBorder" Property="Background" Value="#1E293B" />
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="PillBorder" Property="BorderBrush" Value="#00F0FF" />
+                                <Setter TargetName="PillBorder" Property="Background" Value="#1E293B" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="LanguageOptionButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="10,6" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="5"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#223249" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
     <Border Background="#F70B0F17"
             BorderBrush="#334155"
             BorderThickness="1"
@@ -47,65 +111,152 @@
                     <TextBlock Text="{loc:Loc Onboarding_Header}" FontWeight="Bold" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" />
                 </StackPanel>
 
-                <!-- Language Selector -->
-                <Border Grid.Column="1" Background="#161F30" BorderBrush="#334155" BorderThickness="1" CornerRadius="12" Padding="2" Margin="0,0,16,0" VerticalAlignment="Center">
-                    <StackPanel Orientation="Horizontal">
-                        <Button Command="{Binding SetLanguageCommand}" CommandParameter="en-US"
-                                Padding="8,3" FontSize="10" Margin="0" BorderThickness="0"
-                                Cursor="Hand" ToolTip="English">
-                            <Button.Style>
-                                <Style TargetType="Button" BasedOn="{StaticResource ModernDarkButtonStyle}">
-                                    <Setter Property="Background" Value="Transparent" />
-                                    <Setter Property="Foreground" Value="#94A3B8" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsEnglish}" Value="True">
-                                            <Setter Property="Background" Value="#00F0FF" />
-                                            <Setter Property="Foreground" Value="#0B0F17" />
-                                            <Setter Property="FontWeight" Value="Bold" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                            <TextBlock Text="🇺🇸 English" />
-                        </Button>
-                        <Button Command="{Binding SetLanguageCommand}" CommandParameter="de-DE"
-                                Padding="8,3" FontSize="10" Margin="2,0,0,0" BorderThickness="0"
-                                Cursor="Hand" ToolTip="Deutsch">
-                            <Button.Style>
-                                <Style TargetType="Button" BasedOn="{StaticResource ModernDarkButtonStyle}">
-                                    <Setter Property="Background" Value="Transparent" />
-                                    <Setter Property="Foreground" Value="#94A3B8" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsGerman}" Value="True">
-                                            <Setter Property="Background" Value="#00F0FF" />
-                                            <Setter Property="Foreground" Value="#0B0F17" />
-                                            <Setter Property="FontWeight" Value="Bold" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                            <TextBlock Text="🇩🇪 Deutsch" />
-                        </Button>
-                        <Button Command="{Binding SetLanguageCommand}" CommandParameter="ru-RU"
-                                Padding="8,3" FontSize="10" Margin="2,0,0,0" BorderThickness="0"
-                                Cursor="Hand" ToolTip="Русский">
-                            <Button.Style>
-                                <Style TargetType="Button" BasedOn="{StaticResource ModernDarkButtonStyle}">
-                                    <Setter Property="Background" Value="Transparent" />
-                                    <Setter Property="Foreground" Value="#94A3B8" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsRussian}" Value="True">
-                                            <Setter Property="Background" Value="#00F0FF" />
-                                            <Setter Property="Foreground" Value="#0B0F17" />
-                                            <Setter Property="FontWeight" Value="Bold" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                            <TextBlock Text="🇷🇺 Русский" />
-                        </Button>
-                    </StackPanel>
-                </Border>
+                <!-- Language Selector Dropdown -->
+                <Grid Grid.Column="1" Margin="0,0,16,0" VerticalAlignment="Center">
+                    <ToggleButton x:Name="LanguageToggle"
+                                  Style="{StaticResource LanguageDropdownToggleStyle}"
+                                  IsChecked="{Binding IsLanguageMenuOpen, Mode=TwoWay}"
+                                  Cursor="Hand"
+                                  ToolTip="Language / Sprache / Язык"
+                                  PreviewMouseLeftButtonDown="LanguageToggle_PreviewMouseLeftButtonDown">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="🌐" FontSize="11" Margin="0,0,6,0" VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding CurrentLanguageDisplayName}" FontSize="10.5" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center" />
+                            <TextBlock Text="▾" FontSize="10" Foreground="{StaticResource TextSecondaryBrush}" Margin="5,0,0,0" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </ToggleButton>
+
+                    <Popup x:Name="LanguagePopup"
+                           PlacementTarget="{Binding ElementName=LanguageToggle}"
+                           Placement="Bottom"
+                           IsOpen="{Binding IsLanguageMenuOpen, Mode=TwoWay}"
+                           StaysOpen="False"
+                           AllowsTransparency="True"
+                           PopupAnimation="Slide"
+                           VerticalOffset="4">
+                        <Grid Margin="0,0,8,8">
+                            <Border Background="#161F30"
+                                    BorderBrush="#334155"
+                                    BorderThickness="1"
+                                    CornerRadius="8"
+                                    Padding="4"
+                                    MinWidth="125">
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#000000" BlurRadius="12" ShadowDepth="3" Opacity="0.65" />
+                                </Border.Effect>
+                                <StackPanel Orientation="Vertical">
+                                    <!-- English -->
+                                <Button Command="{Binding SetLanguageCommand}" CommandParameter="en-US"
+                                        Margin="0,1" HorizontalContentAlignment="Stretch">
+                                    <Button.Style>
+                                        <Style TargetType="Button" BasedOn="{StaticResource LanguageOptionButtonStyle}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsEnglish}" Value="True">
+                                                    <Setter Property="Background" Value="#152E3E" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="English" FontSize="11" VerticalAlignment="Center">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Foreground" Value="#CBD5E1" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsEnglish}" Value="True">
+                                                            <Setter Property="Foreground" Value="#00F0FF" />
+                                                            <Setter Property="FontWeight" Value="SemiBold" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                        <TextBlock Grid.Column="1" Text="✓" FontSize="11" FontWeight="Bold" Foreground="#00F0FF"
+                                                   Margin="12,0,2,0" VerticalAlignment="Center"
+                                                   Visibility="{Binding IsEnglish, Converter={StaticResource BoolToVis}}" />
+                                    </Grid>
+                                </Button>
+
+                                <!-- Deutsch -->
+                                <Button Command="{Binding SetLanguageCommand}" CommandParameter="de-DE"
+                                        Margin="0,1" HorizontalContentAlignment="Stretch">
+                                    <Button.Style>
+                                        <Style TargetType="Button" BasedOn="{StaticResource LanguageOptionButtonStyle}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsGerman}" Value="True">
+                                                    <Setter Property="Background" Value="#152E3E" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="Deutsch" FontSize="11" VerticalAlignment="Center">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Foreground" Value="#CBD5E1" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsGerman}" Value="True">
+                                                            <Setter Property="Foreground" Value="#00F0FF" />
+                                                            <Setter Property="FontWeight" Value="SemiBold" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                        <TextBlock Grid.Column="1" Text="✓" FontSize="11" FontWeight="Bold" Foreground="#00F0FF"
+                                                   Margin="12,0,2,0" VerticalAlignment="Center"
+                                                   Visibility="{Binding IsGerman, Converter={StaticResource BoolToVis}}" />
+                                    </Grid>
+                                </Button>
+
+                                <!-- Русский -->
+                                <Button Command="{Binding SetLanguageCommand}" CommandParameter="ru-RU"
+                                        Margin="0,1" HorizontalContentAlignment="Stretch">
+                                    <Button.Style>
+                                        <Style TargetType="Button" BasedOn="{StaticResource LanguageOptionButtonStyle}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsRussian}" Value="True">
+                                                    <Setter Property="Background" Value="#152E3E" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="Русский" FontSize="11" VerticalAlignment="Center">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Foreground" Value="#CBD5E1" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsRussian}" Value="True">
+                                                            <Setter Property="Foreground" Value="#00F0FF" />
+                                                            <Setter Property="FontWeight" Value="SemiBold" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                        <TextBlock Grid.Column="1" Text="✓" FontSize="11" FontWeight="Bold" Foreground="#00F0FF"
+                                                   Margin="12,0,2,0" VerticalAlignment="Center"
+                                                   Visibility="{Binding IsRussian, Converter={StaticResource BoolToVis}}" />
+                                    </Grid>
+                                </Button>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Popup>
+                </Grid>
 
                 <TextBlock Grid.Column="2"
                            Text="{Binding StepIndicatorText}"
