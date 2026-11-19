@@ -157,24 +157,32 @@
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
 
-                                    <!-- Top row: Add and Delete side-by-side -->
+                                    <!-- Top row: Add, Duplicate and Delete -->
                                     <Button Grid.Row="0" Grid.Column="0"
                                             Command="{Binding AddEventCommand}"
                                             Style="{StaticResource ModernDarkButtonStyle}"
                                             Content="{loc:Loc Settings_AddEvent}"
-                                            Padding="4,6" FontSize="11" Margin="0,0,3,4"
+                                            Padding="2,6" FontSize="10.5" Margin="0,0,2,4"
                                             HorizontalAlignment="Stretch" />
                                     <Button Grid.Row="0" Grid.Column="1"
+                                            Command="{Binding DuplicateEventCommand}"
+                                            IsEnabled="{Binding CanDuplicateEvent}"
+                                            Style="{StaticResource ModernDarkButtonStyle}"
+                                            Content="{loc:Loc Settings_DuplicateEvent}"
+                                            Padding="2,6" FontSize="10.5" Margin="2,0,2,4"
+                                            HorizontalAlignment="Stretch" />
+                                    <Button Grid.Row="0" Grid.Column="2"
                                             Command="{Binding DeleteEventCommand}"
                                             Style="{StaticResource DangerDarkButtonStyle}"
                                             Content="{loc:Loc Settings_DeleteEvent}"
-                                            Padding="4,6" FontSize="11" Margin="3,0,0,4"
+                                            Padding="2,6" FontSize="10.5" Margin="2,0,0,4"
                                             HorizontalAlignment="Stretch" />
 
                                     <!-- Bottom row: Full-width Restore Presets button -->
-                                    <Button Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                    <Button Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
                                             Command="{Binding RestoreDefaultPresetsCommand}"
                                             Style="{StaticResource ModernDarkButtonStyle}"
                                             Content="{loc:Loc Settings_RestorePresets}"
@@ -400,6 +408,42 @@
                                                            FontSize="10" />
                                                 <TextBox Grid.Column="1"
                                                          Text="{Binding SelectedEventUpcomingThresholdMinutes, UpdateSourceTrigger=PropertyChanged}"
+                                                         HorizontalContentAlignment="Center"
+                                                         FontSize="11" />
+                                            </Grid>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!-- Event Notifications Options Card (Start & Mid-Event Boss Portal) -->
+                                    <Border Background="#141D2B"
+                                            BorderBrush="#2A384C"
+                                            BorderThickness="1"
+                                            CornerRadius="6"
+                                            Padding="8,6"
+                                            Margin="0,0,0,8">
+                                        <StackPanel>
+                                            <CheckBox IsChecked="{Binding SelectedEventAlertOnStart, UpdateSourceTrigger=PropertyChanged}"
+                                                      Content="{loc:Loc Settings_AlertOnStart}"
+                                                      FontSize="11"
+                                                      Foreground="{StaticResource TextPrimaryBrush}"
+                                                      Cursor="Hand"
+                                                      Margin="0,0,0,6" />
+                                            <CheckBox IsChecked="{Binding SelectedEventEnableExtraAlert, UpdateSourceTrigger=PropertyChanged}"
+                                                      Content="{loc:Loc Settings_EnableExtraAlert}"
+                                                      FontSize="11"
+                                                      Foreground="{StaticResource TextPrimaryBrush}"
+                                                      Cursor="Hand" />
+                                            <Grid Margin="22,6,0,0" Visibility="{Binding SelectedEventEnableExtraAlert, Converter={StaticResource BoolToVis}}">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="65" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{loc:Loc Settings_ExtraAlertMinutes}"
+                                                           VerticalAlignment="Center"
+                                                           Foreground="{StaticResource TextSecondaryBrush}"
+                                                           FontSize="10" />
+                                                <TextBox Grid.Column="1"
+                                                         Text="{Binding SelectedEventExtraAlertMinutes, UpdateSourceTrigger=PropertyChanged}"
                                                          HorizontalContentAlignment="Center"
                                                          FontSize="11" />
                                             </Grid>

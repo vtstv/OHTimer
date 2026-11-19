@@ -139,6 +139,7 @@ public partial class SettingsViewModel
         OnPropertyChanged(nameof(IsSelectedEventCustomSound));
         OnPropertyChanged(nameof(SelectedEventCustomSoundPath));
         OnPropertyChanged(nameof(IsSelectedEventActive));
+        NotifyEventAlertProperties();
         NotifyReorderState();
     }
 

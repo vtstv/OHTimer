@@ -88,7 +88,14 @@ public partial class App : Application
 
                 if (args.Phase == EventPhase.Active)
                 {
-                    if (settingsService.Settings.PlayOnEventStart)
+                    if (args.IsExtraAlert)
+                    {
+                        if (preset == SoundPreset.Custom && !string.IsNullOrWhiteSpace(soundPath))
+                            audio.PlayPreset(SoundPreset.Custom, settingsService.Settings.Volume, soundPath);
+                        else
+                            audio.PlayPreset(preset, settingsService.Settings.Volume);
+                    }
+                    else if (settingsService.Settings.PlayOnEventStart && (args.Event == null || args.Event.AlertOnEventStart))
                     {
                         if (preset == SoundPreset.Custom && !string.IsNullOrWhiteSpace(soundPath))
                             audio.PlayPreset(SoundPreset.Custom, settingsService.Settings.Volume, soundPath);
@@ -208,14 +215,7 @@ public partial class App : Application
         }
 
         var vm = _serviceProvider!.GetRequiredService<SettingsViewModel>();
-        vm.RequestResetPosition = () =>
-        {
-            if (MainWindow != null)
-            {
-                MainWindow.Left = 40;
-                MainWindow.Top = 40;
-            }
-        };
+        vm.RequestResetPosition = () => { if (MainWindow != null) { MainWindow.Left = 40; MainWindow.Top = 40; } };
 
         _settingsWindow = new SettingsWindow(vm);
         _settingsWindow.Closed += (s, e) => _settingsWindow = null;

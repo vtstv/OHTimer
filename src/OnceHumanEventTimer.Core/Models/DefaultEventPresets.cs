@@ -177,15 +177,19 @@ public static class DefaultEventPresets
         new EventDefinition
         {
             Id = "dissonant-resonance",
-            Name = "Dissonant Resonance",
+            Name = "Visional Wheel: The Echo",
             CycleMinutes = 60,
-            StartMinute = 15,
+            StartMinute = 0,
+            StartSecond = 0,
             DurationMinutes = 30,
             TimeOffsetSeconds = 0,
-            ColorHex = "#EC4899",
+            ColorHex = "#D946EF",
             IsEnabled = false,
-            SoundPreset = SoundPreset.StardustPing,
-            Description = "Dissonant soundwave anomaly requiring acoustic tuning devices."
+            SoundPreset = SoundPreset.EmergencySiren,
+            AlertOnEventStart = false,
+            EnableExtraAlert = true,
+            ExtraAlertMinutes = 15,
+            Description = "Visional Wheel S5: Dissonant Resonance. The Echo War boss portal opens 15 minutes after the Vision begins."
         },
         new EventDefinition
         {

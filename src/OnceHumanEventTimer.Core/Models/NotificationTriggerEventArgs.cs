@@ -16,6 +16,11 @@ public class NotificationTriggerEventArgs : EventArgs
     public required bool ShowToast { get; init; }
 
     /// <summary>
+    /// Whether this notification represents an extra / mid-event alert (e.g. boss portal opening).
+    /// </summary>
+    public bool IsExtraAlert { get; init; } = false;
+
+    /// <summary>
     /// Event definition that triggered the notification.
     /// </summary>
     public EventDefinition? Event { get; init; }

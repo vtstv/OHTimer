@@ -85,6 +85,21 @@ public class EventDefinition
     public int UpcomingThresholdMinutes { get; set; } = 10;
 
     /// <summary>
+    /// Whether to trigger an audio/toast notification when this event becomes active.
+    /// </summary>
+    public bool AlertOnEventStart { get; set; } = true;
+
+    /// <summary>
+    /// Whether an extra alert (e.g. boss portal opening) should trigger during the event window.
+    /// </summary>
+    public bool EnableExtraAlert { get; set; } = false;
+
+    /// <summary>
+    /// The minute offset after event start when the extra alert triggers (default: 15).
+    /// </summary>
+    public int ExtraAlertMinutes { get; set; } = 15;
+
+    /// <summary>
     /// Creates an exact clone of the event definition.
     /// </summary>
     public EventDefinition Clone()
@@ -105,7 +120,10 @@ public class EventDefinition
             SoundPreset = SoundPreset,
             CustomSoundPath = CustomSoundPath,
             ShowOnlyWhenUpcoming = ShowOnlyWhenUpcoming,
-            UpcomingThresholdMinutes = UpcomingThresholdMinutes
+            UpcomingThresholdMinutes = UpcomingThresholdMinutes,
+            AlertOnEventStart = AlertOnEventStart,
+            EnableExtraAlert = EnableExtraAlert,
+            ExtraAlertMinutes = ExtraAlertMinutes
         };
     }
 }

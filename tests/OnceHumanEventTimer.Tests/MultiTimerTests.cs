@@ -84,11 +84,14 @@ public class MultiTimerTests
         Assert.Equal("#10B981", spore.ColorHex);
 
         var resonance = presets.Single(e => e.Id == "dissonant-resonance");
-        Assert.Equal("Dissonant Resonance", resonance.Name);
+        Assert.Equal("Visional Wheel: The Echo", resonance.Name);
         Assert.Equal(60, resonance.CycleMinutes);
-        Assert.Equal(15, resonance.StartMinute);
+        Assert.Equal(0, resonance.StartMinute);
         Assert.Equal(30, resonance.DurationMinutes);
-        Assert.Equal("#EC4899", resonance.ColorHex);
+        Assert.Equal("#D946EF", resonance.ColorHex);
+        Assert.False(resonance.AlertOnEventStart);
+        Assert.True(resonance.EnableExtraAlert);
+        Assert.Equal(15, resonance.ExtraAlertMinutes);
 
         var crateReset = presets.Single(e => e.Id == "crate-loot-reset");
         Assert.Equal("Crate Loot Reset (4-Hour)", crateReset.Name);

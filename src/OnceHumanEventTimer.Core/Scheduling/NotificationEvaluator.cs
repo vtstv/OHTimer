@@ -15,6 +15,7 @@ public sealed class NotificationEvaluator
     private readonly Dictionary<string, long> _lastStartSoon = new();
     private readonly Dictionary<string, long> _lastActive = new();
     private readonly Dictionary<string, long> _lastEndSoon = new();
+    private readonly Dictionary<string, long> _lastExtraAlert = new();
 
     public NotificationEvaluator(ILocalizationService loc) => _loc = loc;
 
@@ -49,21 +50,50 @@ public sealed class NotificationEvaluator
         }
         else if (snapshot.Phase == EventPhase.Active)
         {
+            if (snapshot.Event?.EnableExtraAlert == true)
+            {
+                TimeSpan elapsed = snapshot.TotalPhaseDuration - snapshot.TimeRemaining;
+                TimeSpan target = TimeSpan.FromMinutes(snapshot.Event.ExtraAlertMinutes);
+                if (elapsed >= target && elapsed <= target + TimeSpan.FromMinutes(3) &&
+                    (!_lastExtraAlert.TryGetValue(eventId, out var lastEx) || lastEx != cycleKey))
+                {
+                    _lastExtraAlert[eventId] = cycleKey;
+                    string title = string.IsNullOrWhiteSpace(eventTitle)
+                        ? _loc.GetString("Notification_BossPortal_Title")
+                        : $"{eventTitle} — {_loc.GetString("Notification_BossPortal_Title")}";
+
+                    return new NotificationTriggerEventArgs
+                    {
+                        Title = title,
+                        Message = _loc.Format("Notification_BossPortal_Body", snapshot.Event.ExtraAlertMinutes),
+                        Phase = EventPhase.Active,
+                        TimeRemaining = snapshot.TimeRemaining,
+                        PlaySound = true,
+                        ShowToast = true,
+                        Event = snapshot.Event,
+                        IsExtraAlert = true
+                    };
+                }
+            }
+
             if (!_lastActive.TryGetValue(eventId, out var last) || last != cycleKey)
             {
                 _lastActive[eventId] = cycleKey;
-                string title = string.IsNullOrWhiteSpace(eventTitle) ? _loc.GetString("Notification_Started_Title") : $"{eventTitle} — {_loc.GetString("Notification_Started_Title")}";
-
-                return new NotificationTriggerEventArgs
+                if (snapshot.Event == null || snapshot.Event.AlertOnEventStart)
                 {
-                    Title = title,
-                    Message = _loc.GetString("Notification_Started_Body"),
-                    Phase = EventPhase.Active,
-                    TimeRemaining = snapshot.TimeRemaining,
-                    PlaySound = true,
-                    ShowToast = true,
-                    Event = snapshot.Event
-                };
+                    string title = string.IsNullOrWhiteSpace(eventTitle) ? _loc.GetString("Notification_Started_Title") : $"{eventTitle} — {_loc.GetString("Notification_Started_Title")}";
+
+                    return new NotificationTriggerEventArgs
+                    {
+                        Title = title,
+                        Message = _loc.GetString("Notification_Started_Body"),
+                        Phase = EventPhase.Active,
+                        TimeRemaining = snapshot.TimeRemaining,
+                        PlaySound = true,
+                        ShowToast = true,
+                        Event = snapshot.Event
+                    };
+                }
             }
         }
         else if (snapshot.Phase == EventPhase.EndingSoon)

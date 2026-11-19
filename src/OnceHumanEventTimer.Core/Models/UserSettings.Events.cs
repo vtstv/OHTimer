@@ -100,5 +100,22 @@ public partial class UserSettings
             existingGreenhouse.UpcomingThresholdMinutes = 10;
             existingGreenhouse.Description = "Isles of Abyss per-world dynamic spawn (World 1–12). Requires calibration via Sync from in-game map.";
         }
+
+        // Migrate provisional dissonant-resonance preset to Visional Wheel: The Echo
+        var existingEcho = Events.FirstOrDefault(e => e.Id == "dissonant-resonance");
+        if (existingEcho != null && existingEcho.Name == "Dissonant Resonance")
+        {
+            existingEcho.Name = "Visional Wheel: The Echo";
+            existingEcho.CycleMinutes = 60;
+            existingEcho.StartMinute = 0;
+            existingEcho.StartSecond = 0;
+            existingEcho.DurationMinutes = 30;
+            existingEcho.ColorHex = "#D946EF";
+            existingEcho.SoundPreset = SoundPreset.EmergencySiren;
+            existingEcho.AlertOnEventStart = false;
+            existingEcho.EnableExtraAlert = true;
+            existingEcho.ExtraAlertMinutes = 15;
+            existingEcho.Description = "Visional Wheel S5: Dissonant Resonance. The Echo War boss portal opens 15 minutes after the Vision begins.";
+        }
     }
 }

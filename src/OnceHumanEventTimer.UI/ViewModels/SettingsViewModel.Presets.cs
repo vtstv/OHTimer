@@ -36,6 +36,36 @@ public partial class SettingsViewModel
         SelectedEvent = Events[Math.Min(index, Events.Count - 1)];
     }
 
+    public bool CanDuplicateEvent => SelectedEvent != null;
+
+    [RelayCommand]
+    private void DuplicateEvent()
+    {
+        if (SelectedEvent == null) return;
+
+        var clone = SelectedEvent.Clone();
+        clone.Id = $"custom-{Guid.NewGuid():N}"[..15];
+        string copySuffix = _loc.GetString("Settings_CopySuffix");
+        if (string.IsNullOrWhiteSpace(copySuffix) || copySuffix.StartsWith("["))
+        {
+            copySuffix = "Copy";
+        }
+        clone.Name = $"{SelectedEvent.Name} ({copySuffix})";
+
+        int index = Events.IndexOf(SelectedEvent);
+        if (index >= 0 && index < Events.Count - 1)
+        {
+            Events.Insert(index + 1, clone);
+        }
+        else
+        {
+            Events.Add(clone);
+        }
+
+        SelectedEvent = clone;
+        NotifyReorderState();
+    }
+
     [RelayCommand]
     private void RestoreDefaultPresets()
     {
@@ -103,5 +133,6 @@ public partial class SettingsViewModel
     {
         OnPropertyChanged(nameof(CanMoveSelectedEventUp));
         OnPropertyChanged(nameof(CanMoveSelectedEventDown));
+        OnPropertyChanged(nameof(CanDuplicateEvent));
     }
 }

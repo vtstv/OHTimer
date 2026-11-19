@@ -7,7 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [1.5.4] - 2026-11-14
+## [1.5.8] - 2026-11-19
+
+### Added
+- **Visional Wheel S5 Preset — The Echo (`dissonant-resonance`)**: Added official built-in preset for Season 5 *Visional Wheel: The Echo* (Dissonant Resonance) with a 60-minute cycle, 30-minute duration, electric magenta accent (`#D946EF`), Emergency Siren sound preset, and pre-configured 15-minute mid-event boss portal alert with silenced start alert.
+- **Mid-Event Checkpoint Alert (Boss Portal Opening)**: Added `EnableExtraAlert` and `ExtraAlertMinutes` (default 15 minutes) to `EventDefinition`. In `NotificationEvaluator`, when an event reaches the configured elapsed threshold during its active window (such as the 15-minute mark when The Echo War boss dungeon portal opens), a dedicated audio notification and desktop toast ("Boss Portal Open!") fires once per cycle.
+- **Per-Event Start Alert Suppression (`AlertOnEventStart`)**: Added per-event toggle allowing players to silence audio/toast notifications on initial event start while keeping mid-event boss alerts active, keeping focus on critical dungeon timers without start chime interruptions.
+- **Preset Duplication (`DuplicateEventCommand`)**: Added a dedicated `[ Duplicate ]` button in Settings under the events presets list. Creates an immediate deep clone of the selected event definition with unique ID generation, localized `(Copy)` naming, and automatic selection, making multi-world setup (e.g., World 1–12 calibration) effortless.
+- **Full Multilingual Localization Parity**: Extended `EnglishCatalog`, `GermanCatalog`, and `RussianCatalog` with strict key parity for duplicate presets, start alerts, mid-event boss alerts, and portal opening notifications.
+- **Unit Test Coverage Expansion**: Added `ExtraAlertAndDuplicateTests` validating mid-event threshold evaluation, start alert suppression, deduplication, and cloning consistency, bringing test pass count to 122 tests.
+
+---
+
+## [1.5.7] - 2026-11-14
 
 ### Added
 - **Hour-Precision Cycle Start Timing (HH:MM:SS)**: Added `StartHour` property to `EventDefinition` and updated `EventTimeCalculator` to compute `(StartHour * 60) + StartMinute`, clamped to `cycleMinutes - 1`. Replaced the separate minute/second input rows with a unified `[ Cycle Start Time (HH:MM:SS) ]` editor containing `[ Hour ] : [ Min ] : [ Sec ]` textboxes in `SettingsWindow.xaml`. Players can now configure exact multi-hour start times for events with cycles longer than 60 minutes (such as 4-hour Public Crisis events like Drift Greenhouse, Prime War, or world boss resets).
