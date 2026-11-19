@@ -36,6 +36,7 @@ public sealed class Win32TrayService : IDisposable
     private NativeMethods.NOTIFYICONDATA _nid;
     private nint _hLoadedIcon;
     private bool _isInitialized;
+    private DateTime _lastContextMenuUtc = DateTime.MinValue;
 
     public Win32TrayService(
         Action toggleVisibilityAction,
@@ -134,6 +135,13 @@ public sealed class Win32TrayService : IDisposable
             }
             else if (eventType == NativeMethods.WM_RBUTTONUP || eventType == NativeMethods.WM_CONTEXTMENU)
             {
+                if ((DateTime.UtcNow - _lastContextMenuUtc).TotalMilliseconds < 250)
+                {
+                    handled = true;
+                    return 0;
+                }
+                _lastContextMenuUtc = DateTime.UtcNow;
+
                 if (_showContextMenuAction != null)
                 {
                     _showContextMenuAction.Invoke();
@@ -158,60 +166,37 @@ public sealed class Win32TrayService : IDisposable
 
         NativeMethods.AppendMenu(hMenu, NativeMethods.MF_STRING, (nuint)CMD_TOGGLE, _loc.GetString("Tray_OpenHUD"));
         if (_toggleLockAction != null)
-        {
             NativeMethods.AppendMenu(hMenu, NativeMethods.MF_STRING, (nuint)CMD_LOCK, _loc.GetString("Tray_ToggleLock"));
-        }
 
         if (_togglePauseAlertsAction != null && _areAlertsPausedFunc != null)
         {
-            string pauseText = _areAlertsPausedFunc()
-                ? _loc.GetString("Tray_ResumeAlerts")
-                : _loc.GetString("Tray_PauseAlerts");
+            string pauseText = _areAlertsPausedFunc() ? _loc.GetString("Tray_ResumeAlerts") : _loc.GetString("Tray_PauseAlerts");
             NativeMethods.AppendMenu(hMenu, NativeMethods.MF_STRING, (nuint)CMD_PAUSE_ALERTS, pauseText);
         }
 
         if (_openSettingsAction != null)
-        {
             NativeMethods.AppendMenu(hMenu, NativeMethods.MF_STRING, (nuint)CMD_SETTINGS, _loc.GetString("Tray_Settings"));
-        }
 
         NativeMethods.AppendMenu(hMenu, NativeMethods.MF_SEPARATOR, 0, string.Empty);
         if (_exitAction != null)
-        {
             NativeMethods.AppendMenu(hMenu, NativeMethods.MF_STRING, (nuint)CMD_EXIT, _loc.GetString("Tray_Exit"));
-        }
 
         NativeMethods.GetCursorPos(out var pt);
         NativeMethods.SetForegroundWindow(_hwnd);
 
         int selectedCmd = NativeMethods.TrackPopupMenuEx(
-            hMenu,
-            (uint)(NativeMethods.TPM_RETURNCMD | NativeMethods.TPM_BOTTOMALIGN),
-            pt.X,
-            pt.Y,
-            _hwnd,
-            0);
+            hMenu, (uint)(NativeMethods.TPM_RETURNCMD | NativeMethods.TPM_BOTTOMALIGN), pt.X, pt.Y, _hwnd, 0);
 
         NativeMethods.DestroyMenu(hMenu);
         NativeMethods.PostMessage(_hwnd, NativeMethods.WM_NULL, 0, 0);
 
         switch (selectedCmd)
         {
-            case CMD_TOGGLE:
-                _toggleVisibilityAction.Invoke();
-                break;
-            case CMD_LOCK:
-                _toggleLockAction?.Invoke();
-                break;
-            case CMD_PAUSE_ALERTS:
-                _togglePauseAlertsAction?.Invoke();
-                break;
-            case CMD_SETTINGS:
-                _openSettingsAction?.Invoke();
-                break;
-            case CMD_EXIT:
-                _exitAction?.Invoke();
-                break;
+            case CMD_TOGGLE: _toggleVisibilityAction.Invoke(); break;
+            case CMD_LOCK: _toggleLockAction?.Invoke(); break;
+            case CMD_PAUSE_ALERTS: _togglePauseAlertsAction?.Invoke(); break;
+            case CMD_SETTINGS: _openSettingsAction?.Invoke(); break;
+            case CMD_EXIT: _exitAction?.Invoke(); break;
         }
     }
 

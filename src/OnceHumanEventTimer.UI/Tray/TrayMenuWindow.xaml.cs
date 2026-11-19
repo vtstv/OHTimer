@@ -26,8 +26,10 @@ public partial class TrayMenuWindow : Window
     private readonly Action? _togglePauseAlertsAction;
     private readonly Func<bool>? _areAlertsPausedFunc;
     private readonly Func<bool>? _isOverlayVisibleFunc;
+    private readonly TrayMenuOutsideClickTracker _outsideClickTracker;
 
-    private DateTime _lastDismissedUtc = DateTime.MinValue;
+    private DateTime _openedAtUtc = DateTime.MinValue;
+    private DateTime _lastOutsideClickDismissUtc = DateTime.MinValue;
     private bool _isExplicitShutdown;
 
     public TrayMenuWindow(
@@ -51,6 +53,14 @@ public partial class TrayMenuWindow : Window
 
         InitializeComponent();
 
+        _outsideClickTracker = new TrayMenuOutsideClickTracker(
+            () => new WindowInteropHelper(this).Handle,
+            () =>
+            {
+                _lastOutsideClickDismissUtc = DateTime.UtcNow;
+                Dispatcher.BeginInvoke(HideMenu);
+            });
+
         SourceInitialized += OnSourceInitialized;
         Deactivated += OnDeactivated;
         KeyDown += OnKeyDown;
@@ -64,6 +74,11 @@ public partial class TrayMenuWindow : Window
 
     private void OnDeactivated(object? sender, EventArgs e)
     {
+        if ((DateTime.UtcNow - _openedAtUtc).TotalMilliseconds < 350)
+        {
+            return;
+        }
+
         HideMenu();
     }
 
@@ -78,70 +93,53 @@ public partial class TrayMenuWindow : Window
 
     public void ShowMenu()
     {
-        // 1. Debounce rapid reactivation within 250ms of outside-click dismissal
-        if ((DateTime.UtcNow - _lastDismissedUtc).TotalMilliseconds < 250)
+        if ((DateTime.UtcNow - _lastOutsideClickDismissUtc).TotalMilliseconds < 250)
         {
             return;
         }
 
-        // 2. Toggle dismissal if already open
         if (IsVisible)
         {
+            if ((DateTime.UtcNow - _openedAtUtc).TotalMilliseconds < 350)
+            {
+                return;
+            }
             HideMenu();
             return;
         }
 
-        // 3. Update dynamic localized texts
+        _openedAtUtc = DateTime.UtcNow;
         UpdateMenuLabels();
 
-        // 4. Measure window to get accurate dimensions before positioning
         Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
         double menuWidth = DesiredSize.Width > 0 ? DesiredSize.Width : 200;
         double menuHeight = DesiredSize.Height > 0 ? DesiredSize.Height : 210;
 
-        // 5. Query cursor position and monitor work area
         var (cursorX, cursorY) = WindowStyleManager.GetCursorPosition();
         var (workLeftPx, workTopPx, workRightPx, workBottomPx) = WindowStyleManager.GetMonitorWorkArea(cursorX, cursorY);
 
-        // 6. Convert physical pixels to DIPs based on monitor DPI
         var dpi = VisualTreeHelper.GetDpi(this);
         double dpiX = dpi.DpiScaleX > 0 ? dpi.DpiScaleX : 1.0;
         double dpiY = dpi.DpiScaleY > 0 ? dpi.DpiScaleY : 1.0;
 
         double cursorDipX = cursorX / dpiX;
         double cursorDipY = cursorY / dpiY;
-
         double workLeft = workLeftPx / dpiX;
         double workTop = workTopPx / dpiY;
         double workRight = workRightPx / dpiX;
         double workBottom = workBottomPx / dpiY;
 
-        // 7. Calculate position: default above cursor, clamped to monitor work area
         double targetLeft = cursorDipX - 10;
         double targetTop = cursorDipY - menuHeight;
 
-        if (targetTop < workTop)
-        {
-            targetTop = cursorDipY;
-        }
-
-        if (targetLeft + menuWidth > workRight)
-        {
-            targetLeft = workRight - menuWidth;
-        }
-        if (targetLeft < workLeft)
-        {
-            targetLeft = workLeft;
-        }
-        if (targetTop + menuHeight > workBottom)
-        {
-            targetTop = workBottom - menuHeight;
-        }
+        if (targetTop < workTop) targetTop = cursorDipY;
+        if (targetLeft + menuWidth > workRight) targetLeft = workRight - menuWidth;
+        if (targetLeft < workLeft) targetLeft = workLeft;
+        if (targetTop + menuHeight > workBottom) targetTop = workBottom - menuHeight;
 
         Left = targetLeft;
         Top = targetTop;
 
-        // 8. Display and activate window
         Show();
         Activate();
 
@@ -152,13 +150,14 @@ public partial class TrayMenuWindow : Window
         }
 
         BtnToggleVisibility.Focus();
+        _outsideClickTracker.Start();
     }
 
     public void HideMenu()
     {
         if (IsVisible)
         {
-            _lastDismissedUtc = DateTime.UtcNow;
+            _outsideClickTracker.Stop();
             Hide();
 
             var helper = new WindowInteropHelper(this);
@@ -204,6 +203,7 @@ public partial class TrayMenuWindow : Window
     public void CloseForShutdown()
     {
         _isExplicitShutdown = true;
+        _outsideClickTracker.Dispose();
         Close();
     }
 

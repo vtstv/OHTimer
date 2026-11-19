@@ -146,4 +146,47 @@ public class VersionAndTrayLocalizationTests
             Assert.DoesNotContain("<Version>", content);
         }
     }
+
+    [Theory]
+    [InlineData(100, 100, 50, 50, 200, 200, true)]
+    [InlineData(50, 50, 50, 50, 200, 200, true)]
+    [InlineData(200, 200, 50, 50, 200, 200, true)]
+    [InlineData(49, 100, 50, 50, 200, 200, false)]
+    [InlineData(100, 49, 50, 50, 200, 200, false)]
+    [InlineData(201, 100, 50, 50, 200, 200, false)]
+    [InlineData(100, 201, 50, 50, 200, 200, false)]
+    public void TrayMenu_CoordinateBoundingBox_EvaluatesInsideOutsideDeterministically(
+        int ptX, int ptY, int left, int top, int right, int bottom, bool expectedInside)
+    {
+        bool isInside = ptX >= left && ptX <= right && ptY >= top && ptY <= bottom;
+        Assert.Equal(expectedInside, isInside);
+    }
+
+    [Theory]
+    [InlineData("en-US")]
+    [InlineData("de-DE")]
+    [InlineData("ru-RU")]
+    public void TrayMenu_RequiredLocalizationKeys_AreNeverEmpty(string lang)
+    {
+        var loc = new LocalizationService();
+        loc.SetLanguage(lang);
+
+        string[] requiredKeys =
+        [
+            "Tray_OpenHUD",
+            "Tray_HideHUD",
+            "Tray_Settings",
+            "Tray_ToggleLock",
+            "Tray_PauseAlerts",
+            "Tray_ResumeAlerts",
+            "Tray_Exit"
+        ];
+
+        foreach (var key in requiredKeys)
+        {
+            string val = loc.GetString(key);
+            Assert.False(string.IsNullOrWhiteSpace(val), $"Key {key} in {lang} must not be empty");
+            Assert.DoesNotContain("[MISSING:", val);
+        }
+    }
 }

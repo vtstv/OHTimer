@@ -19,10 +19,20 @@ internal static class NativeMethods
 
     public const int WM_HOTKEY = 0x0312;
     public const int WM_TRAYICON = 0x8001;
+    public const int WM_LBUTTONDOWN = 0x0201;
     public const int WM_LBUTTONDBLCLK = 0x0203;
+    public const int WM_RBUTTONDOWN = 0x0204;
     public const int WM_RBUTTONUP = 0x0205;
+    public const int WM_MBUTTONDOWN = 0x0207;
+    public const int WM_NCLBUTTONDOWN = 0x00A1;
+    public const int WM_NCRBUTTONDOWN = 0x00A4;
+    public const int WM_NCMBUTTONDOWN = 0x00A7;
     public const int WM_CONTEXTMENU = 0x007B;
     public const int WM_NULL = 0x0000;
+
+    public const int WH_MOUSE_LL = 14;
+
+    public delegate nint HookProc(int nCode, nint wParam, nint lParam);
 
     public const uint MOD_ALT = 0x0001;
     public const uint MOD_CONTROL = 0x0002;
@@ -76,21 +86,21 @@ internal static class NativeMethods
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct POINT
-    {
-        public int X;
-        public int Y;
-    }
+    public struct POINT { public int X; public int Y; }
 
     public const uint MONITOR_DEFAULTTONEAREST = 0x00000002;
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct RECT
+    public struct RECT { public int Left; public int Top; public int Right; public int Bottom; }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct MSLLHOOKSTRUCT
     {
-        public int Left;
-        public int Top;
-        public int Right;
-        public int Bottom;
+        public POINT pt;
+        public uint mouseData;
+        public uint flags;
+        public uint time;
+        public nuint dwExtraInfo;
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
@@ -145,6 +155,20 @@ internal static class NativeMethods
     [DllImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
     public static extern bool PostMessage(nint hWnd, uint msg, nint wParam, nint lParam);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    public static extern nint SetWindowsHookEx(int idHook, HookProc lpfn, nint hMod, uint dwThreadId);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool UnhookWindowsHookEx(nint hhk);
+
+    [DllImport("user32.dll")]
+    public static extern nint CallNextHookEx(nint hhk, int nCode, nint wParam, nint lParam);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool GetWindowRect(nint hWnd, out RECT lpRect);
 
     [DllImport("user32.dll")]
     public static extern nint MonitorFromPoint(POINT pt, uint dwFlags);
