@@ -21,19 +21,29 @@ public sealed class Win32TrayService : IDisposable
     private const int CMD_EXIT = 104;
     private const int CMD_PAUSE_ALERTS = 105;
 
-    private readonly ILocalizationService _loc;
+    private readonly ILocalizationService? _loc;
     private readonly Action _toggleVisibilityAction;
-    private readonly Action _toggleLockAction;
-    private readonly Action _openSettingsAction;
-    private readonly Action _exitAction;
+    private readonly Action? _toggleLockAction;
+    private readonly Action? _openSettingsAction;
+    private readonly Action? _exitAction;
     private readonly Action? _togglePauseAlertsAction;
     private readonly Func<bool>? _areAlertsPausedFunc;
+    private readonly Action? _showContextMenuAction;
 
     private nint _hwnd;
     private HwndSource? _hwndSource;
+    private HwndSource? _dedicatedHostSource;
     private NativeMethods.NOTIFYICONDATA _nid;
     private nint _hLoadedIcon;
     private bool _isInitialized;
+
+    public Win32TrayService(
+        Action toggleVisibilityAction,
+        Action? showContextMenuAction = null)
+    {
+        _toggleVisibilityAction = toggleVisibilityAction;
+        _showContextMenuAction = showContextMenuAction;
+    }
 
     public Win32TrayService(
         ILocalizationService loc,
@@ -42,10 +52,11 @@ public sealed class Win32TrayService : IDisposable
         Action openSettingsAction,
         Action exitAction,
         Action? togglePauseAlertsAction = null,
-        Func<bool>? areAlertsPausedFunc = null)
+        Func<bool>? areAlertsPausedFunc = null,
+        Action? showContextMenuAction = null)
+        : this(toggleVisibilityAction, showContextMenuAction)
     {
         _loc = loc;
-        _toggleVisibilityAction = toggleVisibilityAction;
         _toggleLockAction = toggleLockAction;
         _openSettingsAction = openSettingsAction;
         _exitAction = exitAction;
@@ -53,16 +64,33 @@ public sealed class Win32TrayService : IDisposable
         _areAlertsPausedFunc = areAlertsPausedFunc;
     }
 
-    public void Initialize(nint hwnd)
+    public void Initialize(nint hwnd = 0)
     {
         if (_isInitialized) return;
-        _hwnd = hwnd;
 
-        _hwndSource = HwndSource.FromHwnd(hwnd);
-        _hwndSource?.AddHook(HwndHook);
+        if (hwnd != 0)
+        {
+            _hwnd = hwnd;
+            _hwndSource = HwndSource.FromHwnd(hwnd);
+            _hwndSource?.AddHook(HwndHook);
+        }
+        else
+        {
+            var parameters = new HwndSourceParameters("OnceHumanTrayHost")
+            {
+                Width = 0,
+                Height = 0,
+                PositionX = 0,
+                PositionY = 0,
+                WindowStyle = 0
+            };
+            _dedicatedHostSource = new HwndSource(parameters);
+            _hwnd = _dedicatedHostSource.Handle;
+            _dedicatedHostSource.AddHook(HwndHook);
+        }
 
         // Load application icon (app.ico / process icon with Once Human diamond)
-        _hLoadedIcon = LoadApplicationIcon();
+        _hLoadedIcon = TrayIconLoader.LoadApplicationIcon();
 
         _nid = new NativeMethods.NOTIFYICONDATA
         {
@@ -79,51 +107,6 @@ public sealed class Win32TrayService : IDisposable
 
         NativeMethods.Shell_NotifyIcon(NativeMethods.NIM_ADD, ref _nid);
         _isInitialized = true;
-    }
-
-    private static nint LoadApplicationIcon()
-    {
-        // 1. Look for app.ico next to executable or in Assets directory
-        string baseDir = AppContext.BaseDirectory;
-        string[] candidatePaths =
-        [
-            Path.Combine(baseDir, "app.ico"),
-            Path.Combine(baseDir, "Assets", "app.ico")
-        ];
-
-        foreach (var path in candidatePaths)
-        {
-            if (File.Exists(path))
-            {
-                nint hLoaded = NativeMethods.LoadImage(0, path, NativeMethods.IMAGE_ICON, 16, 16, NativeMethods.LR_LOADFROMFILE);
-                if (hLoaded != 0) return hLoaded;
-
-                hLoaded = NativeMethods.LoadImage(0, path, NativeMethods.IMAGE_ICON, 0, 0, NativeMethods.LR_LOADFROMFILE | NativeMethods.LR_DEFAULTSIZE);
-                if (hLoaded != 0) return hLoaded;
-            }
-        }
-
-        // 2. Extract embedded icon from process executable if available
-        try
-        {
-            string? procPath = Environment.ProcessPath;
-            if (!string.IsNullOrEmpty(procPath) && File.Exists(procPath))
-            {
-                int count = NativeMethods.ExtractIconEx(procPath, 0, out nint hLarge, out nint hSmall, 1);
-                if (count > 0)
-                {
-                    if (hLarge != 0) NativeMethods.DestroyIcon(hLarge);
-                    if (hSmall != 0) return hSmall;
-                }
-            }
-        }
-        catch
-        {
-            // Fallback to standard icon
-        }
-
-        // 3. Fallback to standard system application icon
-        return NativeMethods.LoadIcon(0, (nint)32512);
     }
 
     public void ShowNotification(string title, string message)
@@ -149,9 +132,16 @@ public sealed class Win32TrayService : IDisposable
                 _toggleVisibilityAction.Invoke();
                 handled = true;
             }
-            else if (eventType == NativeMethods.WM_RBUTTONUP)
+            else if (eventType == NativeMethods.WM_RBUTTONUP || eventType == NativeMethods.WM_CONTEXTMENU)
             {
-                ShowContextMenu();
+                if (_showContextMenuAction != null)
+                {
+                    _showContextMenuAction.Invoke();
+                }
+                else
+                {
+                    ShowFallbackContextMenu();
+                }
                 handled = true;
             }
         }
@@ -159,13 +149,19 @@ public sealed class Win32TrayService : IDisposable
         return 0;
     }
 
-    private void ShowContextMenu()
+    private void ShowFallbackContextMenu()
     {
+        if (_loc == null) return;
+
         nint hMenu = NativeMethods.CreatePopupMenu();
         if (hMenu == 0) return;
 
         NativeMethods.AppendMenu(hMenu, NativeMethods.MF_STRING, (nuint)CMD_TOGGLE, _loc.GetString("Tray_OpenHUD"));
-        NativeMethods.AppendMenu(hMenu, NativeMethods.MF_STRING, (nuint)CMD_LOCK, _loc.GetString("Tray_ToggleLock"));
+        if (_toggleLockAction != null)
+        {
+            NativeMethods.AppendMenu(hMenu, NativeMethods.MF_STRING, (nuint)CMD_LOCK, _loc.GetString("Tray_ToggleLock"));
+        }
+
         if (_togglePauseAlertsAction != null && _areAlertsPausedFunc != null)
         {
             string pauseText = _areAlertsPausedFunc()
@@ -173,9 +169,17 @@ public sealed class Win32TrayService : IDisposable
                 : _loc.GetString("Tray_PauseAlerts");
             NativeMethods.AppendMenu(hMenu, NativeMethods.MF_STRING, (nuint)CMD_PAUSE_ALERTS, pauseText);
         }
-        NativeMethods.AppendMenu(hMenu, NativeMethods.MF_STRING, (nuint)CMD_SETTINGS, _loc.GetString("Tray_Settings"));
+
+        if (_openSettingsAction != null)
+        {
+            NativeMethods.AppendMenu(hMenu, NativeMethods.MF_STRING, (nuint)CMD_SETTINGS, _loc.GetString("Tray_Settings"));
+        }
+
         NativeMethods.AppendMenu(hMenu, NativeMethods.MF_SEPARATOR, 0, string.Empty);
-        NativeMethods.AppendMenu(hMenu, NativeMethods.MF_STRING, (nuint)CMD_EXIT, _loc.GetString("Tray_Exit"));
+        if (_exitAction != null)
+        {
+            NativeMethods.AppendMenu(hMenu, NativeMethods.MF_STRING, (nuint)CMD_EXIT, _loc.GetString("Tray_Exit"));
+        }
 
         NativeMethods.GetCursorPos(out var pt);
         NativeMethods.SetForegroundWindow(_hwnd);
@@ -197,16 +201,16 @@ public sealed class Win32TrayService : IDisposable
                 _toggleVisibilityAction.Invoke();
                 break;
             case CMD_LOCK:
-                _toggleLockAction.Invoke();
+                _toggleLockAction?.Invoke();
                 break;
             case CMD_PAUSE_ALERTS:
                 _togglePauseAlertsAction?.Invoke();
                 break;
             case CMD_SETTINGS:
-                _openSettingsAction.Invoke();
+                _openSettingsAction?.Invoke();
                 break;
             case CMD_EXIT:
-                _exitAction.Invoke();
+                _exitAction?.Invoke();
                 break;
         }
     }
@@ -220,6 +224,13 @@ public sealed class Win32TrayService : IDisposable
             {
                 _hwndSource.RemoveHook(HwndHook);
                 _hwndSource = null;
+            }
+
+            if (_dedicatedHostSource != null)
+            {
+                _dedicatedHostSource.RemoveHook(HwndHook);
+                _dedicatedHostSource.Dispose();
+                _dedicatedHostSource = null;
             }
 
             if (_hLoadedIcon != 0)

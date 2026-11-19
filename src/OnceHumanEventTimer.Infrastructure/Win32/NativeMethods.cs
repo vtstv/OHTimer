@@ -21,6 +21,7 @@ internal static class NativeMethods
     public const int WM_TRAYICON = 0x8001;
     public const int WM_LBUTTONDBLCLK = 0x0203;
     public const int WM_RBUTTONUP = 0x0205;
+    public const int WM_CONTEXTMENU = 0x007B;
     public const int WM_NULL = 0x0000;
 
     public const uint MOD_ALT = 0x0001;
@@ -81,6 +82,26 @@ internal static class NativeMethods
         public int Y;
     }
 
+    public const uint MONITOR_DEFAULTTONEAREST = 0x00000002;
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct RECT
+    {
+        public int Left;
+        public int Top;
+        public int Right;
+        public int Bottom;
+    }
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+    public struct MONITORINFO
+    {
+        public int cbSize;
+        public RECT rcMonitor;
+        public RECT rcWork;
+        public uint dwFlags;
+    }
+
     [DllImport("user32.dll", EntryPoint = "GetWindowLongPtr", SetLastError = true)]
     public static extern nint GetWindowLongPtr(nint hWnd, int nIndex);
 
@@ -124,6 +145,13 @@ internal static class NativeMethods
     [DllImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
     public static extern bool PostMessage(nint hWnd, uint msg, nint wParam, nint lParam);
+
+    [DllImport("user32.dll")]
+    public static extern nint MonitorFromPoint(POINT pt, uint dwFlags);
+
+    [DllImport("user32.dll", CharSet = CharSet.Auto)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool GetMonitorInfo(nint hMonitor, ref MONITORINFO lpmi);
 
     [DllImport("user32.dll", SetLastError = true)]
     public static extern nint LoadIcon(nint hInstance, nint lpIconName);

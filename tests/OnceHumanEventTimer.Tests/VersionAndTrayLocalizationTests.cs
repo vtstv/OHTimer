@@ -64,6 +64,28 @@ public class VersionAndTrayLocalizationTests
         }
     }
 
+    [Theory]
+    [InlineData("en-US")]
+    [InlineData("de-DE")]
+    [InlineData("ru-RU")]
+    public void TrayMenuStrings_DynamicToggleKeysAreDistinct(string language)
+    {
+        var loc = new LocalizationService();
+        loc.SetLanguage(language);
+
+        string open = loc.GetString("Tray_OpenHUD");
+        string hide = loc.GetString("Tray_HideHUD");
+        string pauseAlerts = loc.GetString("Tray_PauseAlerts");
+        string resumeAlerts = loc.GetString("Tray_ResumeAlerts");
+
+        Assert.NotEqual(open, hide);
+        Assert.NotEqual(pauseAlerts, resumeAlerts);
+        Assert.False(string.IsNullOrWhiteSpace(open));
+        Assert.False(string.IsNullOrWhiteSpace(hide));
+        Assert.False(string.IsNullOrWhiteSpace(pauseAlerts));
+        Assert.False(string.IsNullOrWhiteSpace(resumeAlerts));
+    }
+
     private static string? FindRepoRoot()
     {
         string? current = AppContext.BaseDirectory;

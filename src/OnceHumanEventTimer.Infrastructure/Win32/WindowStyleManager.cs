@@ -39,4 +39,64 @@ public static class WindowStyleManager
 
         NativeMethods.SetWindowLongPtr(hwnd, NativeMethods.GWL_EXSTYLE, newStyle);
     }
+
+    /// <summary>
+    /// Sets WS_EX_TOOLWINDOW to hide the window from the Alt+Tab switcher while preserving activation capability.
+    /// </summary>
+    public static void SetToolWindowOnly(nint hwnd, bool isToolWindow)
+    {
+        if (hwnd == 0) return;
+
+        nint currentStyle = NativeMethods.GetWindowLongPtr(hwnd, NativeMethods.GWL_EXSTYLE);
+        nint flags = NativeMethods.WS_EX_TOOLWINDOW;
+        nint newStyle = isToolWindow
+            ? (currentStyle | flags)
+            : (currentStyle & ~flags);
+
+        NativeMethods.SetWindowLongPtr(hwnd, NativeMethods.GWL_EXSTYLE, newStyle);
+    }
+
+    /// <summary>
+    /// Brings the specified window to the foreground.
+    /// </summary>
+    public static bool BringToForeground(nint hwnd)
+    {
+        return hwnd != 0 && NativeMethods.SetForegroundWindow(hwnd);
+    }
+
+    /// <summary>
+    /// Posts a WM_NULL message to the specified window to flush task switch queues.
+    /// </summary>
+    public static void PostNullMessage(nint hwnd)
+    {
+        if (hwnd != 0)
+        {
+            NativeMethods.PostMessage(hwnd, NativeMethods.WM_NULL, 0, 0);
+        }
+    }
+
+    /// <summary>
+    /// Gets the current cursor position in physical screen coordinates.
+    /// </summary>
+    public static (int X, int Y) GetCursorPosition()
+    {
+        NativeMethods.GetCursorPos(out var pt);
+        return (pt.X, pt.Y);
+    }
+
+    /// <summary>
+    /// Gets the work area rectangle in physical screen coordinates for the monitor containing the specified point.
+    /// </summary>
+    public static (int Left, int Top, int Right, int Bottom) GetMonitorWorkArea(int x, int y)
+    {
+        var pt = new NativeMethods.POINT { X = x, Y = y };
+        nint hMonitor = NativeMethods.MonitorFromPoint(pt, NativeMethods.MONITOR_DEFAULTTONEAREST);
+        var mi = new NativeMethods.MONITORINFO { cbSize = System.Runtime.InteropServices.Marshal.SizeOf<NativeMethods.MONITORINFO>() };
+        if (hMonitor != 0 && NativeMethods.GetMonitorInfo(hMonitor, ref mi))
+        {
+            return (mi.rcWork.Left, mi.rcWork.Top, mi.rcWork.Right, mi.rcWork.Bottom);
+        }
+
+        return (0, 0, 1920, 1080);
+    }
 }

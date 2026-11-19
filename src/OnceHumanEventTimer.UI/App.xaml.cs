@@ -28,6 +28,7 @@ public partial class App : Application
     private static Mutex? _singleInstanceMutex;
     private ServiceProvider? _serviceProvider;
     private Win32TrayService? _trayService;
+    private Tray.TrayMenuWindow? _trayMenuWindow;
 
     protected override async void OnStartup(StartupEventArgs e)
     {
@@ -142,16 +143,21 @@ public partial class App : Application
         }
 
         // 7. Setup System Tray
-        _trayService = new Win32TrayService(
+        _trayMenuWindow = new Tray.TrayMenuWindow(
             loc,
             toggleVisibilityAction: () => ToggleOverlayVisibility(overlayWindow),
             toggleLockAction: () => Dispatcher.Invoke(() => overlayVm.ToggleLockCommand.Execute(null)),
             openSettingsAction: OpenSettingsWindow,
             exitAction: ShutdownApp,
             togglePauseAlertsAction: () => Dispatcher.Invoke(() => overlayVm.TogglePauseAlertsCommand.Execute(null)),
-            areAlertsPausedFunc: () => settingsService.Settings.AreAlertsPaused);
+            areAlertsPausedFunc: () => settingsService.Settings.AreAlertsPaused,
+            isOverlayVisibleFunc: () => overlayWindow.IsVisible);
 
-        _trayService.Initialize(overlayWindow.Handle);
+        _trayService = new Win32TrayService(
+            toggleVisibilityAction: () => ToggleOverlayVisibility(overlayWindow),
+            showContextMenuAction: () => Dispatcher.Invoke(_trayMenuWindow.ShowMenu));
+
+        _trayService.Initialize();
         if (notifications is WindowsNotificationService winNotif)
             winNotif.OnShowNotification = (title, msg) => _trayService.ShowNotification(title, msg);
 
@@ -212,6 +218,7 @@ public partial class App : Application
 
     private void ShutdownApp()
     {
+        _trayMenuWindow?.CloseForShutdown();
         _trayService?.Dispose();
         _singleInstanceMutex?.ReleaseMutex();
         _singleInstanceMutex?.Dispose();
@@ -220,6 +227,7 @@ public partial class App : Application
 
     protected override void OnExit(ExitEventArgs e)
     {
+        _trayMenuWindow?.CloseForShutdown();
         _trayService?.Dispose();
         _serviceProvider?.Dispose();
         _singleInstanceMutex?.Dispose();
