@@ -11,7 +11,7 @@ public partial class UserSettings
     /// <summary>
     /// Identifier of the currently active event definition.
     /// </summary>
-    public string ActiveEventId { get; set; } = "gravity-abyss";
+    public string ActiveEventId { get; set; } = "dissonant-resonance";
 
     /// <summary>
     /// List of configured event schedules and presets.
@@ -101,22 +101,23 @@ public partial class UserSettings
             existingGreenhouse.Description = "Isles of Abyss per-world dynamic spawn (World 1–12). Requires calibration via Sync from in-game map.";
         }
 
-        // Migrate provisional dissonant-resonance preset to Visional Wheel: The Echo
+        // Migrate provisional dissonant-resonance preset to S5: The Echo
         var existingEcho = Events.FirstOrDefault(e => e.Id == "dissonant-resonance");
-        if (existingEcho != null && (existingEcho.Name == "Dissonant Resonance" || existingEcho.StartMinute == 0))
+        if (existingEcho != null && (existingEcho.Name == "Dissonant Resonance" || existingEcho.Name == "Visional Wheel: The Echo" || existingEcho.StartMinute == 0))
         {
-            existingEcho.Name = "Visional Wheel: The Echo";
+            existingEcho.Name = "S5: The Echo";
             existingEcho.CycleMinutes = 60;
             existingEcho.StartMinute = 15;
             existingEcho.StartSecond = 0;
             existingEcho.DurationMinutes = 30;
             existingEcho.ColorHex = "#D946EF";
+            existingEcho.IsEnabled = true;
             existingEcho.SoundPreset = SoundPreset.EmergencySiren;
             existingEcho.AlertOnEventStart = false;
             existingEcho.EnableExtraAlert = true;
             existingEcho.ExtraAlertMinutes = 15;
             existingEcho.CountdownToBoss = false;
-            existingEcho.Description = "Visional Wheel S5: Dissonant Resonance. Hourly schedule starting at XX:15:00. The Echo War boss portal opens 15 minutes after start (XX:30:00).";
+            existingEcho.Description = "Season 5: Dissonant Resonance. Hourly schedule starting at XX:15:00. The Echo War boss portal opens at XX:30:00.";
         }
     }
 }

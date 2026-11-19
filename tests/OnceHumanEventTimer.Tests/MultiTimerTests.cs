@@ -16,16 +16,17 @@ public class MultiTimerTests
     private readonly LocalizationService _loc = new();
 
     [Fact]
-    public void GravityAbyss_DefaultSchedule_HasStartSecond29AndZeroOffset()
+    public void S5TheEcho_DefaultSchedule_HasStartMinute15AndZeroOffset()
     {
         var scheduler = new EventScheduler(_loc);
 
-        Assert.Equal("gravity-abyss", scheduler.ActiveEvent.Id);
-        Assert.Equal(22, scheduler.ActiveEvent.StartMinute);
-        Assert.Equal(29, scheduler.ActiveEvent.StartSecond);
+        Assert.Equal("dissonant-resonance", scheduler.ActiveEvent.Id);
+        Assert.Equal("S5: The Echo", scheduler.ActiveEvent.Name);
+        Assert.Equal(15, scheduler.ActiveEvent.StartMinute);
+        Assert.Equal(0, scheduler.ActiveEvent.StartSecond);
         Assert.Equal(0, scheduler.ActiveEvent.TimeOffsetSeconds);
         Assert.Equal(0, scheduler.TimeOffsetSeconds);
-        Assert.Equal("#00F0FF", scheduler.ActiveEvent.ColorHex);
+        Assert.Equal("#D946EF", scheduler.ActiveEvent.ColorHex);
         Assert.True(scheduler.ActiveEvent.IsEnabled);
     }
 
@@ -43,7 +44,7 @@ public class MultiTimerTests
         Assert.Equal(30, abyss.DurationMinutes);
         Assert.Equal(0, abyss.TimeOffsetSeconds);
         Assert.Equal("#00F0FF", abyss.ColorHex);
-        Assert.True(abyss.IsEnabled);
+        Assert.False(abyss.IsEnabled);
 
         var skyripper = presets.Single(e => e.Id == "skyripper");
         Assert.Equal("Skyripper Anomaly", skyripper.Name);
@@ -84,11 +85,12 @@ public class MultiTimerTests
         Assert.Equal("#10B981", spore.ColorHex);
 
         var resonance = presets.Single(e => e.Id == "dissonant-resonance");
-        Assert.Equal("Visional Wheel: The Echo", resonance.Name);
+        Assert.Equal("S5: The Echo", resonance.Name);
         Assert.Equal(60, resonance.CycleMinutes);
         Assert.Equal(15, resonance.StartMinute);
         Assert.Equal(30, resonance.DurationMinutes);
         Assert.Equal("#D946EF", resonance.ColorHex);
+        Assert.True(resonance.IsEnabled);
         Assert.False(resonance.AlertOnEventStart);
         Assert.True(resonance.EnableExtraAlert);
         Assert.Equal(15, resonance.ExtraAlertMinutes);
@@ -114,7 +116,8 @@ public class MultiTimerTests
         var scheduler = new EventScheduler(_loc);
         var presets = DefaultEventPresets.CreateDefaultEvents();
 
-        // Enable Gravity Abyss and Cargo Scramble
+        // Disable all by default then enable Gravity Abyss and Cargo Scramble
+        foreach (var p in presets) p.IsEnabled = false;
         presets.Single(e => e.Id == "gravity-abyss").IsEnabled = true;
         presets.Single(e => e.Id == "cargo-scramble").IsEnabled = true;
 

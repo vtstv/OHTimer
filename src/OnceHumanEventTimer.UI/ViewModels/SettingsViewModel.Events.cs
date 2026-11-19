@@ -21,7 +21,7 @@ public partial class SettingsViewModel
     private EventDefinition? _selectedEvent;
 
     [ObservableProperty]
-    private string _activeEventId = "gravity-abyss";
+    private string _activeEventId = "dissonant-resonance";
 
     [ObservableProperty]
     private int _globalTimeOffsetSeconds;

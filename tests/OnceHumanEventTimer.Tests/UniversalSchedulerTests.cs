@@ -25,21 +25,22 @@ public class UniversalSchedulerTests
 
         Assert.NotNull(settings.Events);
         Assert.Equal(15, settings.Events.Count);
-        Assert.Equal("gravity-abyss", settings.ActiveEventId);
+        Assert.Equal("dissonant-resonance", settings.ActiveEventId);
 
         var active = settings.GetActiveEvent();
-        Assert.Equal("gravity-abyss", active.Id);
+        Assert.Equal("dissonant-resonance", active.Id);
+        Assert.Equal("S5: The Echo", active.Name);
         Assert.Equal(60, active.CycleMinutes);
-        Assert.Equal(22, active.StartMinute);
-        Assert.Equal(29, active.StartSecond);
+        Assert.Equal(15, active.StartMinute);
+        Assert.Equal(0, active.StartSecond);
         Assert.Equal(30, active.DurationMinutes);
         Assert.Equal(0, active.TimeOffsetSeconds);
-        Assert.Equal("#00F0FF", active.ColorHex);
+        Assert.Equal("#D946EF", active.ColorHex);
         Assert.True(active.IsEnabled);
 
         var enabled = settings.GetEnabledEvents();
         Assert.Single(enabled);
-        Assert.Equal("gravity-abyss", enabled[0].Id);
+        Assert.Equal("dissonant-resonance", enabled[0].Id);
     }
 
     [Fact]

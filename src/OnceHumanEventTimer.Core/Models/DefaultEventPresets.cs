@@ -9,10 +9,44 @@ namespace OnceHumanEventTimer.Core.Models;
 public static class DefaultEventPresets
 {
     /// <summary>
-    /// Creates the complete list of default Visional Wheel event presets.
+    /// Creates the complete list of default Visional Wheel event presets sorted by current meta and recency.
     /// </summary>
     public static List<EventDefinition> CreateDefaultEvents() => new()
     {
+        new EventDefinition
+        {
+            Id = "dissonant-resonance",
+            Name = "S5: The Echo",
+            CycleMinutes = 60,
+            StartMinute = 15,
+            StartSecond = 0,
+            DurationMinutes = 30,
+            TimeOffsetSeconds = 0,
+            ColorHex = "#D946EF",
+            IsEnabled = true,
+            SoundPreset = SoundPreset.EmergencySiren,
+            AlertOnEventStart = false,
+            EnableExtraAlert = true,
+            ExtraAlertMinutes = 15,
+            CountdownToBoss = false,
+            Description = "Season 5: Dissonant Resonance. Hourly schedule starting at XX:15:00. The Echo War boss portal opens at XX:30:00."
+        },
+        new EventDefinition
+        {
+            Id = "drift-greenhouse",
+            Name = "Drift Greenhouse [Manual Sync]",
+            CycleMinutes = 240,
+            StartMinute = 4,
+            StartSecond = 4,
+            DurationMinutes = 30,
+            TimeOffsetSeconds = 0,
+            ColorHex = "#10B981",
+            IsEnabled = false,
+            SoundPreset = SoundPreset.CelestialBell,
+            ShowOnlyWhenUpcoming = true,
+            UpcomingThresholdMinutes = 10,
+            Description = "Isles of Abyss per-world dynamic spawn (World 1–12). Requires calibration via Sync from in-game map."
+        },
         new EventDefinition
         {
             Id = "gravity-abyss",
@@ -23,7 +57,7 @@ public static class DefaultEventPresets
             DurationMinutes = 30,
             TimeOffsetSeconds = 0,
             ColorHex = "#00F0FF",
-            IsEnabled = true,
+            IsEnabled = false,
             SoundPreset = SoundPreset.CelestialBell,
             Description = "Once Human hourly event with low-gravity tide and Stardust Crystals."
         },
@@ -42,6 +76,19 @@ public static class DefaultEventPresets
         },
         new EventDefinition
         {
+            Id = "prime-war",
+            Name = "Prime War (Nightmare Defense)",
+            CycleMinutes = 120,
+            StartMinute = 0,
+            DurationMinutes = 30,
+            TimeOffsetSeconds = 0,
+            ColorHex = "#DC2626",
+            IsEnabled = false,
+            SoundPreset = SoundPreset.DeepResonance,
+            Description = "Massive cooperative battlefield defending the Staroid Restraint device against Manibus."
+        },
+        new EventDefinition
+        {
             Id = "skyripper",
             Name = "Skyripper Anomaly",
             CycleMinutes = 60,
@@ -56,19 +103,6 @@ public static class DefaultEventPresets
         },
         new EventDefinition
         {
-            Id = "prime-war",
-            Name = "Prime War (Nightmare Defense)",
-            CycleMinutes = 120,
-            StartMinute = 0,
-            DurationMinutes = 30,
-            TimeOffsetSeconds = 0,
-            ColorHex = "#DC2626",
-            IsEnabled = false,
-            SoundPreset = SoundPreset.DeepResonance,
-            Description = "Massive cooperative battlefield defending the Staroid Restraint device against Manibus."
-        },
-        new EventDefinition
-        {
             Id = "public-crisis",
             Name = "Public Crisis (Harrowing)",
             CycleMinutes = 30,
@@ -79,22 +113,6 @@ public static class DefaultEventPresets
             IsEnabled = false,
             SoundPreset = SoundPreset.StardustPing,
             Description = "Rapid dynamic open-world public crisis event rewarding weapon mods and Stardust Source."
-        },
-        new EventDefinition
-        {
-            Id = "drift-greenhouse",
-            Name = "Drift Greenhouse [Manual Sync]",
-            CycleMinutes = 240,
-            StartMinute = 4,
-            StartSecond = 4,
-            DurationMinutes = 30,
-            TimeOffsetSeconds = 0,
-            ColorHex = "#10B981",
-            IsEnabled = false,
-            SoundPreset = SoundPreset.CelestialBell,
-            ShowOnlyWhenUpcoming = true,
-            UpcomingThresholdMinutes = 10,
-            Description = "Isles of Abyss per-world dynamic spawn (World 1–12). Requires calibration via Sync from in-game map."
         },
         new EventDefinition
         {
@@ -124,16 +142,16 @@ public static class DefaultEventPresets
         },
         new EventDefinition
         {
-            Id = "blackfell-loot-run",
-            Name = "Blackfell Stronghold Loot Run",
-            CycleMinutes = 240,
-            StartMinute = 0,
-            DurationMinutes = 15,
+            Id = "lunar-revelry",
+            Name = "Lunar Revelry (Lord of Moonlight)",
+            CycleMinutes = 60,
+            StartMinute = 40,
+            DurationMinutes = 20,
             TimeOffsetSeconds = 0,
-            ColorHex = "#6366F1",
+            ColorHex = "#A855F7",
             IsEnabled = false,
-            SoundPreset = SoundPreset.CelestialBell,
-            Description = "4-hour optimal high-yield weapon/gear crate looting route in Blackfell Fallen Zone."
+            SoundPreset = SoundPreset.QuantumChord,
+            Description = "Lord of Moonlight gathering festival with exclusive cosmic loot drops."
         },
         new EventDefinition
         {
@@ -150,19 +168,6 @@ public static class DefaultEventPresets
         },
         new EventDefinition
         {
-            Id = "lunar-revelry",
-            Name = "Lunar Revelry (Lord of Moonlight)",
-            CycleMinutes = 60,
-            StartMinute = 40,
-            DurationMinutes = 20,
-            TimeOffsetSeconds = 0,
-            ColorHex = "#A855F7",
-            IsEnabled = false,
-            SoundPreset = SoundPreset.QuantumChord,
-            Description = "Lord of Moonlight gathering festival with exclusive cosmic loot drops."
-        },
-        new EventDefinition
-        {
             Id = "aberrant-progeny",
             Name = "Aberrant Progeny (Spore Tide)",
             CycleMinutes = 60,
@@ -176,21 +181,16 @@ public static class DefaultEventPresets
         },
         new EventDefinition
         {
-            Id = "dissonant-resonance",
-            Name = "Visional Wheel: The Echo",
-            CycleMinutes = 60,
-            StartMinute = 15,
-            StartSecond = 0,
-            DurationMinutes = 30,
+            Id = "blackfell-loot-run",
+            Name = "Blackfell Stronghold Loot Run",
+            CycleMinutes = 240,
+            StartMinute = 0,
+            DurationMinutes = 15,
             TimeOffsetSeconds = 0,
-            ColorHex = "#D946EF",
+            ColorHex = "#6366F1",
             IsEnabled = false,
-            SoundPreset = SoundPreset.EmergencySiren,
-            AlertOnEventStart = false,
-            EnableExtraAlert = true,
-            ExtraAlertMinutes = 15,
-            CountdownToBoss = false,
-            Description = "Visional Wheel S5: Dissonant Resonance. Hourly schedule starting at XX:15:00. The Echo War boss portal opens 15 minutes after start (XX:30:00)."
+            SoundPreset = SoundPreset.CelestialBell,
+            Description = "4-hour optimal high-yield weapon/gear crate looting route in Blackfell Fallen Zone."
         },
         new EventDefinition
         {
