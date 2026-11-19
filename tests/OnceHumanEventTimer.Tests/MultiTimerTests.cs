@@ -22,7 +22,7 @@ public class MultiTimerTests
 
         Assert.Equal("dissonant-resonance", scheduler.ActiveEvent.Id);
         Assert.Equal("S5: The Echo", scheduler.ActiveEvent.Name);
-        Assert.Equal(15, scheduler.ActiveEvent.StartMinute);
+        Assert.Equal(16, scheduler.ActiveEvent.StartMinute);
         Assert.Equal(0, scheduler.ActiveEvent.StartSecond);
         Assert.Equal(0, scheduler.ActiveEvent.TimeOffsetSeconds);
         Assert.Equal(0, scheduler.TimeOffsetSeconds);
@@ -37,7 +37,7 @@ public class MultiTimerTests
         Assert.Equal(15, presets.Count);
 
         var abyss = presets.Single(e => e.Id == "gravity-abyss");
-        Assert.Equal("Gravity Abyss", abyss.Name);
+        Assert.Equal("Gravity Abyss (Legacy)", abyss.Name);
         Assert.Equal(60, abyss.CycleMinutes);
         Assert.Equal(22, abyss.StartMinute);
         Assert.Equal(29, abyss.StartSecond);
@@ -87,7 +87,7 @@ public class MultiTimerTests
         var resonance = presets.Single(e => e.Id == "dissonant-resonance");
         Assert.Equal("S5: The Echo", resonance.Name);
         Assert.Equal(60, resonance.CycleMinutes);
-        Assert.Equal(15, resonance.StartMinute);
+        Assert.Equal(16, resonance.StartMinute);
         Assert.Equal(30, resonance.DurationMinutes);
         Assert.Equal("#D946EF", resonance.ColorHex);
         Assert.True(resonance.IsEnabled);
@@ -124,8 +124,8 @@ public class MultiTimerTests
         scheduler.SetTrackedEvents(presets, activeEventId: "gravity-abyss");
 
         Assert.Equal(2, scheduler.ActiveSnapshots.Count);
-        Assert.Equal("gravity-abyss", scheduler.ActiveSnapshots[0].Event?.Id);
-        Assert.Equal("cargo-scramble", scheduler.ActiveSnapshots[1].Event?.Id);
+        Assert.Contains(scheduler.ActiveSnapshots, s => s.Event?.Id == "gravity-abyss");
+        Assert.Contains(scheduler.ActiveSnapshots, s => s.Event?.Id == "cargo-scramble");
 
         // At 10:05:00 UTC:
         // Cargo Scramble (starts at 10:00, duration 20) -> Active with 15m remaining

@@ -79,7 +79,7 @@ public class SettingsAndPresetsTests
 
         var gravityAbyss = events.FirstOrDefault(e => e.Id == "gravity-abyss");
         Assert.NotNull(gravityAbyss);
-        Assert.Equal("Gravity Abyss", gravityAbyss.Name);
+        Assert.Equal("Gravity Abyss (Legacy)", gravityAbyss.Name);
         Assert.Equal(SoundPreset.CelestialBell, gravityAbyss.SoundPreset);
 
         var skyripper = events.FirstOrDefault(e => e.Id == "skyripper");

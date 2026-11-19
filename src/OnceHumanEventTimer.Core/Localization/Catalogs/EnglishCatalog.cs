@@ -203,6 +203,43 @@ internal static class EnglishCatalog
         ["Update_Error"] = "Unable to check for updates.",
         ["Update_DownloadAndApply"] = "Update & Restart",
         ["Update_Downloading"] = "Downloading update... ({0}%)",
-        ["Update_ReleaseNotes"] = "Release Notes:"
+        ["Update_ReleaseNotes"] = "Release Notes:",
+
+        ["Onboarding_WindowTitle"] = "Quick Start Guide — Once Human: Event Timer",
+        ["Onboarding_Header"] = "INTERACTIVE ONBOARDING GUIDE",
+        ["Onboarding_StepIndicator"] = "Step {0} of {1}",
+        ["Onboarding_Skip"] = "Skip Tutorial",
+        ["Onboarding_Back"] = "Back",
+        ["Onboarding_Next"] = "Next Step",
+        ["Onboarding_Finish"] = "Finish & Start Playing",
+
+        ["Onboarding_Step1_Title"] = "Welcome to Event Timer",
+        ["Onboarding_Step1_Subtitle"] = "Real-time in-game HUD for Once Human cyclic events",
+        ["Onboarding_Step1_Desc"] = "Once Human: Event Timer runs directly on top of the game with zero frame drops, tracking cyclic events and boss dungeon spawns in real-time without Alt-Tabbing.",
+        ["Onboarding_Step1_Tip"] = "The overlay uses Windows DirectFlip/MPO and never steals keyboard or mouse focus from the game.",
+
+        ["Onboarding_Step2_Title"] = "Overlay Modes & Positioning",
+        ["Onboarding_Step2_Subtitle"] = "Full HUD with progress ring or sleek compact Mini-HUD",
+        ["Onboarding_Step2_Desc"] = "When unlocked, you can drag the overlay to any position on your screen. Use the 🗖 button in the HUD or in Settings to toggle between the rich Full HUD and the minimalist Mini-HUD.",
+        ["Onboarding_Step2_Tip"] = "Enable Multi-Timer in Settings to track multiple events simultaneously on screen.",
+
+        ["Onboarding_Step3_Title"] = "Global Hotkeys",
+        ["Onboarding_Step3_Subtitle"] = "Instantly control the overlay during intense gameplay",
+        ["Onboarding_Step3_Desc"] = "Control your timer hands-free with global hotkeys:\n• Ctrl+Alt+S — Toggle overlay visibility (hide/show).\n• Ctrl+Alt+L — Lock position & toggle click-through (mouse clicks pass directly to the game).\n• Ctrl+Alt+P — Temporarily pause/resume sound alerts (indicated by 🔕).",
+        ["Onboarding_Step3_Tip"] = "You can customize any hotkey combinations in the 'Hotkeys' settings tab.",
+
+        ["Onboarding_Step4_Title"] = "Season 5: The Echo & Boss Portal",
+        ["Onboarding_Step4_Subtitle"] = "Hourly cycle starting at XX:16:00 with mid-event boss portal",
+        ["Onboarding_Step4_Desc"] = "The Echo event descends hourly at XX:16:00. At 15 minutes elapsed (XX:31:00), the 4-player 'Echo War' boss dungeon portal opens!\nTurn on 'Countdown to Boss Portal only' in event settings to track time directly until the boss opens.",
+        ["Onboarding_Step4_Tip"] = "You can silence the event start chime and only receive the boss portal alert on the 15th minute.",
+
+        ["Onboarding_Step5_Title"] = "Zero-Drift Clock Calibration",
+        ["Onboarding_Step5_Subtitle"] = "Perfect synchronization with your Once Human server",
+        ["Onboarding_Step5_Desc"] = "Server clocks may drift by a few seconds against PC system time. Simply open your in-game map or event prompt, type the countdown you see (e.g. '26m 58s' or '01:03:29') into 'Calibrate Start from In-Game Timer', and press Calibrate.",
+        ["Onboarding_Step5_Tip"] = "You can re-open this tutorial anytime from the 'About' tab in Settings.",
+
+        ["Settings_TutorialTitle"] = "Interactive Quick Start Guide",
+        ["Settings_TutorialDesc"] = "Re-launch the step-by-step tutorial explaining overlay controls, hotkeys, Season 5 boss timer, and server calibration.",
+        ["Settings_LaunchTutorial"] = "Launch Guide"
     };
 }

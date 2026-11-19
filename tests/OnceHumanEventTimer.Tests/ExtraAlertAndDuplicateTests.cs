@@ -191,4 +191,39 @@ public class ExtraAlertAndDuplicateTests
         Assert.Equal("dissonant-resonance", scheduler.ActiveEvent.Id);
         Assert.True(scheduler.ActiveEvent.IsEnabled);
     }
+
+    [Fact]
+    public void UserSettings_OnboardingFlag_DefaultsToFalseAndPersists()
+    {
+        var settings = new UserSettings();
+        Assert.False(settings.HasCompletedOnboarding);
+
+        settings.HasCompletedOnboarding = true;
+        string json = System.Text.Json.JsonSerializer.Serialize(settings);
+        var restored = System.Text.Json.JsonSerializer.Deserialize<UserSettings>(json);
+        Assert.NotNull(restored);
+        Assert.True(restored.HasCompletedOnboarding);
+    }
+
+    [Fact]
+    public void EnsureDefaultPresets_DisablesGravityAbyssAndMigratesToMinute16()
+    {
+        var settings = new UserSettings
+        {
+            Events = new List<EventDefinition>
+            {
+                new() { Id = "dissonant-resonance", Name = "Dissonant Resonance", StartMinute = 22, IsEnabled = true },
+                new() { Id = "gravity-abyss", Name = "Gravity Abyss", IsEnabled = true }
+            }
+        };
+
+        settings.EnsureDefaultPresets();
+
+        var resonance = settings.Events.Single(e => e.Id == "dissonant-resonance");
+        Assert.Equal(16, resonance.StartMinute);
+        Assert.True(resonance.IsEnabled);
+
+        var abyss = settings.Events.Single(e => e.Id == "gravity-abyss");
+        Assert.False(abyss.IsEnabled);
+    }
 }

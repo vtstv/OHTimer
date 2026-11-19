@@ -203,6 +203,43 @@ internal static class GermanCatalog
         ["Update_Error"] = "Updates konnten nicht geprüft werden.",
         ["Update_DownloadAndApply"] = "Aktualisieren & Neustarten",
         ["Update_Downloading"] = "Update wird heruntergeladen... ({0}%)",
-        ["Update_ReleaseNotes"] = "Versionshinweise:"
+        ["Update_ReleaseNotes"] = "Versionshinweise:",
+
+        ["Onboarding_WindowTitle"] = "Schnellstart-Anleitung — Once Human: Event Timer",
+        ["Onboarding_Header"] = "INTERAKTIVE ANLEITUNG",
+        ["Onboarding_StepIndicator"] = "Schritt {0} von {1}",
+        ["Onboarding_Skip"] = "Überspringen",
+        ["Onboarding_Back"] = "Zurück",
+        ["Onboarding_Next"] = "Weiter",
+        ["Onboarding_Finish"] = "Fertigstellen & Loslegen",
+
+        ["Onboarding_Step1_Title"] = "Willkommen beim Event Timer",
+        ["Onboarding_Step1_Subtitle"] = "Echtzeit-In-Game-HUD für zyklische Once Human Events",
+        ["Onboarding_Step1_Desc"] = "Once Human: Event Timer läuft direkt über dem Spiel ohne FPS-Verlust und verfolgt zyklische Events und Boss-Dungeons in Echtzeit ohne Alt-Tab.",
+        ["Onboarding_Step1_Tip"] = "Das Overlay nutzt DirectFlip/MPO und stiehlt dem Spiel niemals Tastatur- oder Mausfokus.",
+
+        ["Onboarding_Step2_Title"] = "HUD-Modi & Positionierung",
+        ["Onboarding_Step2_Subtitle"] = "Vollständiges HUD mit Fortschrittsring oder kompaktes Mini-HUD",
+        ["Onboarding_Step2_Desc"] = "Im entsperrten Zustand können Sie das Overlay an jede beliebige Stelle ziehen. Über die 🗖-Schaltfläche oder in den Einstellungen wechseln Sie zwischen Voll-HUD und kompaktem Mini-HUD.",
+        ["Onboarding_Step2_Tip"] = "Aktivieren Sie Multi-Timer in den Einstellungen, um mehrere Events gleichzeitig zu verfolgen.",
+
+        ["Onboarding_Step3_Title"] = "Globale Tastenkombinationen",
+        ["Onboarding_Step3_Subtitle"] = "Schnelle Steuerung während des Spiels",
+        ["Onboarding_Step3_Desc"] = "Steuern Sie Ihren Timer mit globalen Hotkeys:\n• Strg+Alt+S — Overlay ein-/ausblenden.\n• Strg+Alt+L — Position sperren & Durchklicken umschalten (Klicks gehen ins Spiel).\n• Strg+Alt+P — Audio-Warnungen pausieren/fortsetzen (Anzeige: 🔕).",
+        ["Onboarding_Step3_Tip"] = "Alle Tastenkombinationen können im Reiter 'Hotkeys' angepasst werden.",
+
+        ["Onboarding_Step4_Title"] = "Saison 5: Das Echo & Boss-Portal",
+        ["Onboarding_Step4_Subtitle"] = "Stündlicher Zyklus ab XX:16:00 mit Boss-Portal nach 15 Minuten",
+        ["Onboarding_Step4_Desc"] = "Das Echo-Event startet stündlich um XX:16:00. Nach 15 Minuten (XX:31:00) öffnet sich das 4-Spieler-Portal zu 'The Echo War'!\nAktivieren Sie 'Nur Countdown zum Boss-Portal', um direkt die Zeit bis zum Boss zu sehen.",
+        ["Onboarding_Step4_Tip"] = "Der Start-Gong kann stummgeschaltet werden, sodass nur der Boss-Alarm auf Minute 15 ertönt.",
+
+        ["Onboarding_Step5_Title"] = "Null-Drift-Uhr-Kalibrierung",
+        ["Onboarding_Step5_Subtitle"] = "Perfekte Synchronisation mit dem Once Human Server",
+        ["Onboarding_Step5_Desc"] = "Server-Uhren können leicht von der PC-Systemzeit abweichen. Geben Sie einfach den In-Game-Countdown (z. B. '26m 58s') in 'Startzeit aus In-Game-Timer kalibrieren' ein und klicken Sie auf Kalibrieren.",
+        ["Onboarding_Step5_Tip"] = "Sie können diese Anleitung jederzeit über den Reiter 'Über' in den Einstellungen erneut öffnen.",
+
+        ["Settings_TutorialTitle"] = "Interaktive Schnellstart-Anleitung",
+        ["Settings_TutorialDesc"] = "Schritt-für-Schritt-Anleitung zu Overlay-Steuerung, Hotkeys, S5-Boss-Timer und Server-Kalibrierung erneut starten.",
+        ["Settings_LaunchTutorial"] = "Anleitung starten"
     };
 }

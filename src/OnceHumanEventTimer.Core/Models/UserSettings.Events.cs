@@ -104,11 +104,11 @@ public partial class UserSettings
 
         // Migrate provisional dissonant-resonance preset to S5: The Echo
         var existingEcho = Events.FirstOrDefault(e => e.Id == "dissonant-resonance");
-        if (existingEcho != null && (existingEcho.Name == "Dissonant Resonance" || existingEcho.Name == "Visional Wheel: The Echo" || existingEcho.StartMinute == 0))
+        if (existingEcho != null && (existingEcho.Name == "Dissonant Resonance" || existingEcho.Name == "Visional Wheel: The Echo" || existingEcho.StartMinute == 0 || existingEcho.StartMinute == 15 || existingEcho.StartMinute == 22))
         {
             existingEcho.Name = "S5: The Echo";
             existingEcho.CycleMinutes = 60;
-            existingEcho.StartMinute = 15;
+            existingEcho.StartMinute = 16;
             existingEcho.StartSecond = 0;
             existingEcho.DurationMinutes = 30;
             existingEcho.ColorHex = "#D946EF";
@@ -118,7 +118,14 @@ public partial class UserSettings
             existingEcho.EnableExtraAlert = true;
             existingEcho.ExtraAlertMinutes = 15;
             existingEcho.CountdownToBoss = false;
-            existingEcho.Description = "Season 5: Dissonant Resonance. Hourly schedule starting at XX:15:00. The Echo War boss portal opens at XX:30:00.";
+            existingEcho.Description = "Season 5: Dissonant Resonance. Hourly schedule starting at XX:16:00. The Echo War boss portal opens at XX:31:00.";
+        }
+
+        // Disable concluded Gravity Abyss preset so it does not crowd HUD
+        var existingAbyss = Events.FirstOrDefault(e => e.Id == "gravity-abyss");
+        if (existingAbyss != null && existingEcho != null && existingEcho.IsEnabled)
+        {
+            existingAbyss.IsEnabled = false;
         }
 
         // Migrate active event to S5 or first enabled event if active event is disabled or legacy gravity-abyss

@@ -31,7 +31,7 @@ public class UniversalSchedulerTests
         Assert.Equal("dissonant-resonance", active.Id);
         Assert.Equal("S5: The Echo", active.Name);
         Assert.Equal(60, active.CycleMinutes);
-        Assert.Equal(15, active.StartMinute);
+        Assert.Equal(16, active.StartMinute);
         Assert.Equal(0, active.StartSecond);
         Assert.Equal(30, active.DurationMinutes);
         Assert.Equal(0, active.TimeOffsetSeconds);

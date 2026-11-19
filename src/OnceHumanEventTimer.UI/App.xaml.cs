@@ -28,7 +28,6 @@ public partial class App : Application
     private static Mutex? _singleInstanceMutex;
     private ServiceProvider? _serviceProvider;
     private Win32TrayService? _trayService;
-    private SettingsWindow? _settingsWindow;
 
     protected override async void OnStartup(StartupEventArgs e)
     {
@@ -63,14 +62,15 @@ public partial class App : Application
         var audio = _serviceProvider.GetRequiredService<IAudioService>();
         var notifications = _serviceProvider.GetRequiredService<INotificationService>();
 
+        var activeEvent = settingsService.Settings.GetActiveEvent();
         scheduler.SetTrackedEvents(settingsService.Settings.Events, settingsService.Settings.ActiveEventId, settingsService.Settings.GlobalTimeOffsetSeconds);
-        scheduler.SetActiveEvent(settingsService.Settings.GetActiveEvent(), settingsService.Settings.GlobalTimeOffsetSeconds);
+        scheduler.SetActiveEvent(activeEvent, settingsService.Settings.GlobalTimeOffsetSeconds);
         scheduler.ConfigureSchedule(
-            settingsService.Settings.StartMinute,
-            settingsService.Settings.DurationMinutes,
+            activeEvent.StartMinute,
+            activeEvent.DurationMinutes,
             settingsService.Settings.AlertMinutesBefore,
             settingsService.Settings.AlertMinutesBeforeEnd,
-            settingsService.Settings.StartSecond);
+            activeEvent.StartSecond);
 
         scheduler.NotificationTriggered += (s, args) =>
         {
@@ -204,22 +204,10 @@ public partial class App : Application
         {
             _ = HandleScreenshotGenerationAsync(cmdArgs);
         }
-    }
-
-    private void OpenSettingsWindow()
-    {
-        if (_settingsWindow != null && _settingsWindow.IsLoaded)
+        else if (!settingsService.Settings.HasCompletedOnboarding)
         {
-            _settingsWindow.Activate();
-            return;
+            OpenOnboardingWizard();
         }
-
-        var vm = _serviceProvider!.GetRequiredService<SettingsViewModel>();
-        vm.RequestResetPosition = () => { if (MainWindow != null) { MainWindow.Left = 40; MainWindow.Top = 40; } };
-
-        _settingsWindow = new SettingsWindow(vm);
-        _settingsWindow.Closed += (s, e) => _settingsWindow = null;
-        _settingsWindow.Show();
     }
 
     private void ShutdownApp()

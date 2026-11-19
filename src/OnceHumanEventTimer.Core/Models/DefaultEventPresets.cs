@@ -18,7 +18,7 @@ public static class DefaultEventPresets
             Id = "dissonant-resonance",
             Name = "S5: The Echo",
             CycleMinutes = 60,
-            StartMinute = 15,
+            StartMinute = 16,
             StartSecond = 0,
             DurationMinutes = 30,
             TimeOffsetSeconds = 0,
@@ -29,7 +29,7 @@ public static class DefaultEventPresets
             EnableExtraAlert = true,
             ExtraAlertMinutes = 15,
             CountdownToBoss = false,
-            Description = "Season 5: Dissonant Resonance. Hourly schedule starting at XX:15:00. The Echo War boss portal opens at XX:30:00."
+            Description = "Season 5: Dissonant Resonance. Hourly schedule starting at XX:16:00. The Echo War boss portal opens at XX:31:00."
         },
         new EventDefinition
         {
@@ -49,20 +49,6 @@ public static class DefaultEventPresets
         },
         new EventDefinition
         {
-            Id = "gravity-abyss",
-            Name = "Gravity Abyss",
-            CycleMinutes = 60,
-            StartMinute = 22,
-            StartSecond = 29,
-            DurationMinutes = 30,
-            TimeOffsetSeconds = 0,
-            ColorHex = "#00F0FF",
-            IsEnabled = false,
-            SoundPreset = SoundPreset.CelestialBell,
-            Description = "Once Human hourly event with low-gravity tide and Stardust Crystals."
-        },
-        new EventDefinition
-        {
             Id = "cargo-scramble",
             Name = "Cargo Scramble (Sproutlet Truck)",
             CycleMinutes = 60,
@@ -72,7 +58,7 @@ public static class DefaultEventPresets
             ColorHex = "#F59E0B",
             IsEnabled = false,
             SoundPreset = SoundPreset.CyberWarning,
-            Description = "Cargo Scramble PvP sproutlet truck dynamic encounter."
+            Description = "PvP cargo truck event in Red Sands / Iron River. Spawns Sproutlets periodically."
         },
         new EventDefinition
         {
@@ -139,6 +125,20 @@ public static class DefaultEventPresets
             IsEnabled = false,
             SoundPreset = SoundPreset.CyberWarning,
             Description = "Refinery and mining rig wave defense extracting Premium Stardust fuel."
+        },
+        new EventDefinition
+        {
+            Id = "gravity-abyss",
+            Name = "Gravity Abyss (Legacy)",
+            CycleMinutes = 60,
+            StartMinute = 22,
+            StartSecond = 29,
+            DurationMinutes = 30,
+            TimeOffsetSeconds = 0,
+            ColorHex = "#00F0FF",
+            IsEnabled = false,
+            SoundPreset = SoundPreset.CelestialBell,
+            Description = "Concluded Season event with low-gravity tide and Stardust Crystals."
         },
         new EventDefinition
         {

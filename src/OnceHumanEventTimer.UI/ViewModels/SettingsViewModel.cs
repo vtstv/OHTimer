@@ -102,6 +102,10 @@ public partial class SettingsViewModel : ObservableObject
 
     public Action? RequestResetPosition { get; set; }
     public Action? RequestCloseSettings { get; set; }
+    public Action? RequestRestartOnboarding { get; set; }
+
+    [RelayCommand]
+    private void RestartOnboarding() => RequestRestartOnboarding?.Invoke();
 
     public SettingsViewModel(
         ISettingsService settingsService,
@@ -181,8 +185,6 @@ public partial class SettingsViewModel : ObservableObject
     private async Task SaveAsync()
     {
         var s = _settingsService.Settings;
-        s.StartMinute = StartMinute;
-        s.DurationMinutes = DurationMinutes;
         s.AlertMinutesBefore = AlertMinutesBefore;
         s.AlertMinutesBeforeEnd = AlertMinutesBeforeEnd;
         s.Volume = Volume;

@@ -159,4 +159,7 @@ public partial class UserSettings
 
     /// <summary>Whether all audio alerts and toast notifications are temporarily paused/muted.</summary>
     public bool AreAlertsPaused { get; set; } = false;
+
+    /// <summary>Whether the user has completed or dismissed the first-run interactive onboarding wizard.</summary>
+    public bool HasCompletedOnboarding { get; set; } = false;
 }

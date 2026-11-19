@@ -31,5 +31,6 @@ public partial class App
 
         services.AddSingleton<OverlayViewModel>();
         services.AddTransient<SettingsViewModel>();
+        services.AddTransient<OnboardingViewModel>();
     }
 }
