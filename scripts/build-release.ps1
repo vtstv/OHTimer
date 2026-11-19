@@ -60,10 +60,27 @@ Write-Host "==========================================================" -Foregro
 # 1. Resolve Version
 $projectPath = Join-Path $repoRoot "src\OnceHumanEventTimer.UI\OnceHumanEventTimer.UI.csproj"
 if ([string]::IsNullOrWhiteSpace($Version)) {
-    [xml]$projXml = Get-Content $projectPath
-    $Version = $projXml.Project.PropertyGroup.Version
+    $propsPath = Join-Path $repoRoot "Directory.Build.props"
+    if (Test-Path $propsPath) {
+        [xml]$propsXml = Get-Content $propsPath
+        $node = $propsXml.SelectSingleNode("//Version")
+        if ($node -and -not [string]::IsNullOrWhiteSpace($node.InnerText)) {
+            $Version = $node.InnerText.Trim()
+        } elseif ($propsXml.Project.PropertyGroup.Version) {
+            $Version = "$($propsXml.Project.PropertyGroup.Version)".Trim()
+        }
+    }
     if ([string]::IsNullOrWhiteSpace($Version)) {
-        $Version = "1.5.4"
+        if (Test-Path $projectPath) {
+            [xml]$projXml = Get-Content $projectPath
+            $node = $projXml.SelectSingleNode("//Version")
+            if ($node -and -not [string]::IsNullOrWhiteSpace($node.InnerText)) {
+                $Version = $node.InnerText.Trim()
+            }
+        }
+    }
+    if ([string]::IsNullOrWhiteSpace($Version)) {
+        $Version = "1.5.9"
     }
 }
 

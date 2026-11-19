@@ -26,9 +26,6 @@
     <UseWPF>true</UseWPF>
     <ApplicationIcon>Assets\app.ico</ApplicationIcon>
     <AssemblyName>OnceHumanEventTimer</AssemblyName>
-    <Version>1.5.9</Version>
-    <AssemblyVersion>1.5.9.0</AssemblyVersion>
-    <FileVersion>1.5.9.0</FileVersion>
     <Authors>Murr</Authors>
     <Company>Murr</Company>
     <Product>Once Human: Event Timer</Product>
