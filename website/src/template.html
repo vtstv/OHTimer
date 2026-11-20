@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  
+  <title>Once Human: Event Timer — In-Game Event HUD &amp; Boss Respawn Tracker</title>
+  <meta name="description" content="A modern, lightweight Windows desktop HUD overlay for Once Human. Live event schedule, dedicated boss respawn timers, smart kill counter, procedural audio alerts, zero FPS drop, and anti-cheat safe.">
+  <meta name="keywords" content="Once Human, Once Human timer, event timer, overlay, boss timer, kill counter, Cargo Scramble, The Echo, Drift Greenhouse, Manibus, gaming HUD">
+  <meta name="author" content="Murr">
+  <link rel="canonical" href="https://ohtimer.murr.li/">
+  <meta name="theme-color" content="#070a0f">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="assets/images/app-logo.svg">
+  
+  <!-- Open Graph / Social Meta -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://ohtimer.murr.li/">
+  <meta property="og:title" content="Once Human: Event Timer — In-Game Event HUD &amp; Boss Tracker">
+  <meta property="og:description" content="High-performance desktop HUD overlay tracking recurring Once Human in-game events in real-time with boss timers and zero FPS drop.">
+  <meta property="og:image" content="https://ohtimer.murr.li/assets/images/hud-multitimer.png">
+  <meta property="og:image:width" content="1280">
+  <meta property="og:image:height" content="720">
+  <meta property="og:image:alt" content="Once Human: Event Timer — In-Game HUD Interface">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Once Human: Event Timer — In-Game Event HUD &amp; Boss Tracker">
+  <meta name="twitter:description" content="In-game event schedules, dedicated boss respawn timers, smart kill counters, and zero FPS drop for Once Human.">
+  <meta name="twitter:image" content="https://ohtimer.murr.li/assets/images/hud-multitimer.png">
+  
+  <!-- Prevent theme flicker before DOM load -->
+  <script>
+    (function () {
+      try {
+        var theme = localStorage.getItem('ohtimer-theme');
+        if (theme === 'light') {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      } catch (e) {}
+    })();
+  </script>
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  {{header}}
+
+  <main>
+    {{hero}}
+    {{metrics}}
+    {{features}}
+    {{screenshots}}
+    {{download}}
+    {{faq}}
+  </main>
+
+  {{footer}}
+
+  <!-- Scripts -->
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

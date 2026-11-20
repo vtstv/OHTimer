@@ -198,4 +198,30 @@ public class HotkeyAndPriorityTests
         var pw = settings.Events.Single(e => e.Id == "prime-war");
         Assert.Equal("Manibus (Prime War)", pw.Name);
     }
+
+    [Fact]
+    public void DefaultHotkeys_AllParseSuccessfully()
+    {
+        var settings = new UserSettings();
+        Assert.True(HotkeyParser.TryParse(settings.BossTimer.Hotkey, out _, out uint bossVk));
+        Assert.Equal(HotkeyParser.VK_NUMPAD1, bossVk);
+
+        Assert.True(HotkeyParser.TryParse(settings.KillCounter.IncrementHotkey, out _, out uint incVk));
+        Assert.Equal(HotkeyParser.VK_ADD, incVk);
+
+        Assert.True(HotkeyParser.TryParse(settings.KillCounter.DecrementHotkey, out _, out uint decVk));
+        Assert.Equal(HotkeyParser.VK_SUBTRACT, decVk);
+
+        Assert.True(HotkeyParser.TryParse(settings.ToggleSettingsHotkey, out uint setMod, out uint setVk));
+        Assert.Equal(HotkeyParser.MOD_CONTROL | HotkeyParser.MOD_ALT, setMod);
+        Assert.Equal((uint)'O', setVk);
+
+        Assert.True(HotkeyParser.TryParse(settings.ToggleVisibilityHotkey, out uint visMod, out uint visVk));
+        Assert.Equal(HotkeyParser.MOD_CONTROL | HotkeyParser.MOD_ALT, visMod);
+        Assert.Equal((uint)'S', visVk);
+
+        Assert.True(HotkeyParser.TryParse(settings.TogglePauseAlertsHotkey, out uint pauseMod, out uint pauseVk));
+        Assert.Equal(HotkeyParser.MOD_CONTROL | HotkeyParser.MOD_ALT, pauseMod);
+        Assert.Equal((uint)'P', pauseVk);
+    }
 }

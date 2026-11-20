@@ -75,6 +75,14 @@ public partial class UserSettings
     {
         bool wasMigrated = false;
 
+        if (KillCounter != null && KillCounter.CurrentCount == 14 && KillCounter.BossName == "Shadow Hound" && KillCounter.TotalAllTimeCount == 0)
+        {
+            KillCounter.IsEnabled = false;
+            KillCounter.CurrentCount = 0;
+            KillCounter.EnableGoal = false;
+            wasMigrated = true;
+        }
+
         if (Events == null || Events.Count == 0)
         {
             Events = GetDefaultEvents();

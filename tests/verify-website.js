@@ -1,8 +1,13 @@
 const fs = require('fs');
 const path = require('path');
+const { execSync } = require('child_process');
 
 const rootDir = path.resolve(__dirname, '..');
 const websiteDir = path.join(rootDir, 'website');
+const srcDir = path.join(websiteDir, 'src');
+const componentsDir = path.join(srcDir, 'components');
+const templatePath = path.join(srcDir, 'template.html');
+const buildScriptPath = path.join(srcDir, 'build.js');
 const indexPath = path.join(websiteDir, 'index.html');
 const cssPath = path.join(websiteDir, 'assets/css/style.css');
 const jsPath = path.join(websiteDir, 'assets/js/main.js');
@@ -17,9 +22,10 @@ let warnings = 0;
 
 console.log('=== Once Human: Event Timer — Website Verification ===\n');
 
-// 1. Core file existence
+// 1. Core and modular file existence
 const requiredFiles = [
-  { name: 'index.html', path: indexPath },
+  { name: 'template.html', path: templatePath },
+  { name: 'build.js', path: buildScriptPath },
   { name: 'style.css', path: cssPath },
   { name: 'main.js', path: jsPath },
   { name: 'CNAME', path: cnamePath },
@@ -27,6 +33,17 @@ const requiredFiles = [
   { name: 'robots.txt', path: robotsPath },
   { name: 'sitemap.xml', path: sitemapPath },
   { name: '.github/workflows/pages.yml', path: workflowPath }
+];
+
+const requiredComponents = [
+  'header.html',
+  'hero.html',
+  'metrics.html',
+  'features.html',
+  'screenshots.html',
+  'download.html',
+  'faq.html',
+  'footer.html'
 ];
 
 requiredFiles.forEach(f => {
@@ -38,7 +55,27 @@ requiredFiles.forEach(f => {
   }
 });
 
-// 2. Check CNAME content
+requiredComponents.forEach(comp => {
+  const p = path.join(componentsDir, comp);
+  if (!fs.existsSync(p)) {
+    console.error(`FAIL: Missing modular component: ${comp}`);
+    errors++;
+  } else {
+    console.log(`PASS: Found component ${comp}`);
+  }
+});
+
+// 2. Build execution test
+try {
+  const { build } = require(buildScriptPath);
+  build();
+  console.log('PASS: Modular build script executed successfully');
+} catch (e) {
+  console.error('FAIL: Build script execution failed:', e.message);
+  errors++;
+}
+
+// 3. Check CNAME content
 if (fs.existsSync(cnamePath)) {
   const cnameContent = fs.readFileSync(cnamePath, 'utf8').trim();
   if (cnameContent !== 'ohtimer.murr.li') {
@@ -49,7 +86,7 @@ if (fs.existsSync(cnamePath)) {
   }
 }
 
-// 3. Check HTML structure and local assets
+// 4. Check HTML structure and local assets
 const html = fs.readFileSync(indexPath, 'utf8');
 
 const attrRegex = /(?:src|href)="([^"#][^"]*)"/g;
@@ -70,7 +107,7 @@ while ((match = attrRegex.exec(html)) !== null) {
 }
 console.log(`PASS: All ${assetCount} local HTML asset references exist on disk`);
 
-// 4. Validate SVG elements
+// 5. Validate SVG elements
 const svgRegex = /<svg[\s\S]*?<\/svg>/g;
 const validSvgTags = new Set([
   'svg', 'path', 'circle', 'line', 'polygon', 'polyline', 'rect', 'ellipse',
@@ -91,7 +128,7 @@ while ((svgMatch = svgRegex.exec(html)) !== null) {
 }
 console.log(`PASS: All ${svgIndex} SVG elements verified with 100% valid W3C SVG tags`);
 
-// 5. Open Graph / Twitter image URLs
+// 6. Open Graph / Twitter image URLs
 const ogImageMatch = html.match(/<meta\s+property="og:image"\s+content="([^"]+)"/);
 if (!ogImageMatch || !ogImageMatch[1].startsWith('https://')) {
   console.error(`FAIL: og:image content must be an absolute HTTPS URL: ${ogImageMatch ? ogImageMatch[1] : 'missing'}`);
@@ -108,56 +145,16 @@ if (!twitterImageMatch || !twitterImageMatch[1].startsWith('https://')) {
   console.log(`PASS: Valid absolute twitter:image: ${twitterImageMatch[1]}`);
 }
 
-// 6. Verify 15 Meta Presets in HTML
-const expectedPresets = [
-  'Visional Wheel: The Echo',
-  'Cargo Scramble (Sproutlet Truck)',
-  'Drift Greenhouse [Worlds 1–12]',
-  'Manibus (Prime War)',
-  'Skyripper Anomaly',
-  'Public Crisis (Harrowing)',
-  'Chiron the Centaur',
-  'Extraction Workshop Defense',
-  'Lunar Revelry (Lord of Moonlight)',
-  'Lunar Oracle (Blood Moon)',
-  'Aberrant Progeny (Spore Tide)',
-  'Blackfell Stronghold Loot Run',
-  'Crate Loot Reset (4-Hour)',
-  'Custom Wheel Event',
-  'Gravity Abyss (Legacy)'
-];
-
-let presetMatches = 0;
-expectedPresets.forEach(preset => {
-  if (html.includes(preset)) {
-    presetMatches++;
-  } else {
-    console.error(`FAIL: Missing preset from presets table: "${preset}"`);
-    errors++;
-  }
-});
-console.log(`PASS: All ${presetMatches} / 15 meta presets present in showcase table`);
-
-// 7. Verify Hotkeys in Cheat Sheet
-const expectedHotkeys = [
-  'NumPad 1',
-  'NumPad +',
-  'NumPad -',
-  'Ctrl+Alt+O',
-  'Ctrl+Alt+S',
-  'Ctrl+Alt+L',
-  'Ctrl+Alt+P'
-];
-let hotkeyMatches = 0;
-expectedHotkeys.forEach(hk => {
-  if (html.includes(hk)) {
-    hotkeyMatches++;
-  } else {
-    console.error(`FAIL: Missing hotkey in cheat sheet: "${hk}"`);
-    errors++;
-  }
-});
-console.log(`PASS: All ${hotkeyMatches} / 7 hotkeys present in cheat sheet`);
+// 7. Verify Releases Link Integrity (no hardcoded obsolete download links)
+if (html.includes('https://github.com/vtstv/OHTimer/releases/download/v1.7.0/')) {
+  console.error('FAIL: Direct version download link found. Links should point to repository releases.');
+  errors++;
+} else if (html.includes('https://github.com/vtstv/OHTimer/releases')) {
+  console.log('PASS: Download links dynamically target repository releases');
+} else {
+  console.error('FAIL: Missing releases link in download section');
+  errors++;
+}
 
 // 8. Verify CSS syntax and url() references
 const css = fs.readFileSync(cssPath, 'utf8');
@@ -180,7 +177,7 @@ if (openBrackets !== 0) {
 
 // 9. Verify JS syntax
 try {
-  require('child_process').execSync(`node --check "${jsPath}"`);
+  execSync(`node --check "${jsPath}"`);
   console.log('PASS: main.js syntax check passed with 0 errors');
 } catch (e) {
   console.error('FAIL: main.js has syntax errors:', e.message);

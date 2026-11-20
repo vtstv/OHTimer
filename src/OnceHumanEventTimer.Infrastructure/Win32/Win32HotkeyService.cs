@@ -8,20 +8,47 @@ namespace OnceHumanEventTimer.Infrastructure.Win32;
 
 /// <summary>
 /// Registers and handles system-wide hotkeys using Win32 RegisterHotKey API and WPF HwndSource.
+/// Uses a dedicated persistent message-only host window (HWND_MESSAGE) ensuring hotkeys remain functional
+/// regardless of whether game or overlay windows are focused, visible, hidden, or minimized.
 /// </summary>
 public sealed class Win32HotkeyService : IHotkeyService
 {
     private readonly Dictionary<int, Action> _hotkeyActions = new();
     private nint _windowHandle = 0;
     private HwndSource? _hwndSource;
+    private HwndSource? _dedicatedHostSource;
     private int _currentId = 1000;
+    private bool _isInitialized;
 
     /// <summary>
-    /// Initializes the hotkey hook on an existing window handle.
+    /// Initializes the hotkey hook. If hwnd is 0 or omitted, a dedicated persistent message-only host window is created.
     /// </summary>
-    public void Initialize(nint hwnd)
+    public void Initialize(nint hwnd = 0)
     {
-        _windowHandle = hwnd;
+        if (_isInitialized) return;
+
+        if (hwnd != 0)
+        {
+            _windowHandle = hwnd;
+            _hwndSource = HwndSource.FromHwnd(hwnd);
+            _hwndSource?.AddHook(HwndHook);
+        }
+        else
+        {
+            var parameters = new HwndSourceParameters("OnceHumanHotkeyHost")
+            {
+                ParentWindow = new nint(-3), // HWND_MESSAGE
+                Width = 0,
+                Height = 0,
+                PositionX = 0,
+                PositionY = 0,
+                WindowStyle = 0
+            };
+            _dedicatedHostSource = new HwndSource(parameters);
+            _windowHandle = _dedicatedHostSource.Handle;
+            _dedicatedHostSource.AddHook(HwndHook);
+        }
+
         try
         {
             NativeMethods.ChangeWindowMessageFilter(NativeMethods.WM_HOTKEY, NativeMethods.MSGFLT_ADD);
@@ -36,12 +63,17 @@ public sealed class Win32HotkeyService : IHotkeyService
             }
             catch { }
         }
-        _hwndSource = HwndSource.FromHwnd(hwnd);
-        _hwndSource?.AddHook(HwndHook);
+
+        _isInitialized = true;
     }
 
     public bool RegisterHotkey(string hotkeyString, Action callback)
     {
+        if (!_isInitialized)
+        {
+            Initialize(0);
+        }
+
         if (_windowHandle == 0 || string.IsNullOrWhiteSpace(hotkeyString))
         {
             return false;
@@ -105,5 +137,15 @@ public sealed class Win32HotkeyService : IHotkeyService
             _hwndSource.RemoveHook(HwndHook);
             _hwndSource = null;
         }
+
+        if (_dedicatedHostSource != null)
+        {
+            _dedicatedHostSource.RemoveHook(HwndHook);
+            _dedicatedHostSource.Dispose();
+            _dedicatedHostSource = null;
+        }
+
+        _windowHandle = 0;
+        _isInitialized = false;
     }
 }

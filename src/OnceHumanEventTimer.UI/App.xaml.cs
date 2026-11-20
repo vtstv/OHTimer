@@ -45,8 +45,14 @@ public partial class App : Application
 
         base.OnStartup(e);
 
+        string? captureFolder = null;
+        if (isCapture)
+        {
+            captureFolder = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "OHTimer_Capture_" + Guid.NewGuid().ToString("N"));
+        }
+
         var services = new ServiceCollection();
-        ConfigureServices(services);
+        ConfigureServices(services, captureFolder);
         _serviceProvider = services.BuildServiceProvider();
 
         // 1. Load Settings
@@ -144,7 +150,7 @@ public partial class App : Application
         var hotkeyService = _serviceProvider.GetRequiredService<IHotkeyService>();
         if (hotkeyService is Win32HotkeyService winHotkey)
         {
-            winHotkey.Initialize(overlayWindow.Handle);
+            winHotkey.Initialize();
             RegisterHotkeys(winHotkey, settingsService.Settings, overlayWindow, overlayVm, loc, notifications, bossTimer, killCounter);
         }
 

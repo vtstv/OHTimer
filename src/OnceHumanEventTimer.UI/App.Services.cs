@@ -17,10 +17,17 @@ namespace OnceHumanEventTimer.UI;
 
 public partial class App
 {
-    private static void ConfigureServices(IServiceCollection services)
+    private static void ConfigureServices(IServiceCollection services, string? customSettingsFolder = null)
     {
         services.AddSingleton<ILocalizationService, LocalizationService>();
-        services.AddSingleton<ISettingsService, FileSettingsService>();
+        if (!string.IsNullOrWhiteSpace(customSettingsFolder))
+        {
+            services.AddSingleton<ISettingsService>(new FileSettingsService(customSettingsFolder));
+        }
+        else
+        {
+            services.AddSingleton<ISettingsService, FileSettingsService>();
+        }
         services.AddSingleton<IAudioService, SynthesizerAudioService>();
         services.AddSingleton<INotificationService, WindowsNotificationService>();
         services.AddSingleton<IEventScheduler, EventScheduler>();
