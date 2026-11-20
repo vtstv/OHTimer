@@ -73,6 +73,23 @@ public class HotkeyAndPriorityTests
         Assert.True(HotkeyParser.TryParse("Ctrl+-", out uint mod5, out uint vk5));
         Assert.Equal(HotkeyParser.MOD_CONTROL, mod5);
         Assert.Equal(HotkeyParser.VK_OEM_MINUS, vk5);
+
+        // Numpad with modifiers
+        Assert.True(HotkeyParser.TryParse("Ctrl+NumPad 1", out uint mod6, out uint vk6));
+        Assert.Equal(HotkeyParser.MOD_CONTROL, mod6);
+        Assert.Equal(HotkeyParser.VK_NUMPAD1, vk6);
+
+        Assert.True(HotkeyParser.TryParse("Alt+NumPad 1", out uint mod7, out uint vk7));
+        Assert.Equal(HotkeyParser.MOD_ALT, mod7);
+        Assert.Equal(HotkeyParser.VK_NUMPAD1, vk7);
+
+        Assert.True(HotkeyParser.TryParse("Ctrl+Alt+NumPad +", out uint mod8, out uint vk8));
+        Assert.Equal(HotkeyParser.MOD_CONTROL | HotkeyParser.MOD_ALT, mod8);
+        Assert.Equal(HotkeyParser.VK_ADD, vk8);
+
+        Assert.True(HotkeyParser.TryParse("Shift+NumPad -", out uint mod9, out uint vk9));
+        Assert.Equal(HotkeyParser.MOD_SHIFT, mod9);
+        Assert.Equal(HotkeyParser.VK_SUBTRACT, vk9);
     }
 
     [Fact]
