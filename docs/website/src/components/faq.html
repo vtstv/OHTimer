@@ -7,11 +7,11 @@
           <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
           <line x1="12" y1="17" x2="12.01" y2="17"></line>
         </svg>
-        Got Questions?
+        <span data-i18n="faq.pill">Got Questions?</span>
       </div>
-      <h2 class="section-title">Frequently Asked Questions</h2>
-      <p class="section-subtitle">
-        Clear technical answers regarding anti-cheat safety, game compatibility, and overlay behavior.
+      <h2 class="section-title" data-i18n="faq.title">Frequently Asked Questions</h2>
+      <p class="section-subtitle" data-i18n="faq.subtitle">
+        Clear technical answers regarding application architecture, game compatibility, and overlay behavior.
       </p>
     </div>
 
@@ -19,21 +19,21 @@
       <!-- Question 1 -->
       <div class="faq-item">
         <button type="button" class="faq-question" aria-expanded="false">
-          <span>Is Once Human: Event Timer safe from anti-cheat bans?</span>
+          <span data-i18n="faq.q1">Does the overlay inject into or modify the Once Human game process?</span>
           <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
         </button>
-        <div class="faq-answer">
-          <strong>Yes, 100% safe.</strong> The timer operates strictly as an out-of-process Windows desktop HUD using standard Win32 APIs (DWM composition, <code>WS_EX_LAYERED</code>, <code>WS_EX_TRANSPARENT</code>). It <strong>never</strong> attaches a debugger, reads, writes, hooks, or injects into Once Human process memory. Furthermore, it utilizes <code>ChangeWindowMessageFilterEx</code> to receive global keyboard shortcuts through Windows UIPI boundaries without requiring administrator privileges or interfering with Anti-Cheat Expert (ACE).
+        <div class="faq-answer" data-i18n="faq.a1">
+          <strong>No. The software is strictly out-of-process.</strong> The timer operates as an independent Windows desktop HUD using standard Win32 APIs (DWM composition, <code>WS_EX_LAYERED</code>, <code>WS_EX_TRANSPARENT</code>). It <strong>never</strong> attaches a debugger, reads, writes, hooks, or injects into Once Human process memory. Furthermore, it utilizes standard <code>ChangeWindowMessageFilterEx</code> to receive global keyboard shortcuts through Windows UIPI boundaries without modifying game files or interfering with game execution.
         </div>
       </div>
 
       <!-- Question 2 -->
       <div class="faq-item">
         <button type="button" class="faq-question" aria-expanded="false">
-          <span>How does the Dedicated Boss Respawn Timer work?</span>
+          <span data-i18n="faq.q2">How does the Dedicated Boss Respawn Timer work?</span>
           <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
         </button>
-        <div class="faq-answer">
+        <div class="faq-answer" data-i18n="faq.a2">
           Press your boss timer hotkey (<kbd>Alt+NumPad 1</kbd> by default) the moment a boss or elite dies. The HUD immediately shows an active cooldown bar with dynamic badges (<code>[🎯 RESPAWN]</code>, <code>[⚠️ APPROACHING]</code>, <code>[✨ SPAWNED!]</code>). You will hear an approaching warning chime before the spawn and an alarm when the boss appears. If you use the Kill Counter, you can also enable auto-starting the boss timer on each recorded kill.
         </div>
       </div>
@@ -41,10 +41,10 @@
       <!-- Question 3 -->
       <div class="faq-item">
         <button type="button" class="faq-question" aria-expanded="false">
-          <span>Will this cause FPS drops, stuttering, or input lag?</span>
+          <span data-i18n="faq.q3">Will this cause FPS drops, stuttering, or input lag?</span>
           <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
         </button>
-        <div class="faq-answer">
+        <div class="faq-answer" data-i18n="faq.a3">
           <strong>Zero FPS impact.</strong> The overlay uses Windows DWM hardware acceleration with the <code>WS_EX_NOACTIVATE</code> extended window style. This informs Windows GPU drivers that the overlay never steals input focus, preserving hardware DirectFlip and Multi-Plane Overlay (MPO) presentations in *Once Human*. CPU usage remains below 0.1% during gameplay.
         </div>
       </div>
@@ -52,10 +52,10 @@
       <!-- Question 4 -->
       <div class="faq-item">
         <button type="button" class="faq-question" aria-expanded="false">
-          <span>How do I make mouse clicks pass through the overlay?</span>
+          <span data-i18n="faq.q4">How do I make mouse clicks pass through the overlay?</span>
           <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
         </button>
-        <div class="faq-answer">
+        <div class="faq-answer" data-i18n="faq.a4">
           Press <kbd>Ctrl+Alt+L</kbd> or click the lock icon in the overlay header. This applies the Windows <code>WS_EX_TRANSPARENT</code> extended style, allowing all mouse clicks, aiming, and firing actions to pass directly through the timer into Once Human without losing focus or responsiveness.
         </div>
       </div>
@@ -63,10 +63,10 @@
       <!-- Question 5 -->
       <div class="faq-item">
         <button type="button" class="faq-question" aria-expanded="false">
-          <span>How does in-game clock synchronization work?</span>
+          <span data-i18n="faq.q5">How does in-game clock synchronization work?</span>
           <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
         </button>
-        <div class="faq-answer">
+        <div class="faq-answer" data-i18n="faq.a5">
           Every Once Human server can have slight time drift relative to your PC's local clock. Instead of guessing, press <kbd>Ctrl+Alt+O</kbd> to open Settings, type what you see on your in-game map or HUD (e.g., <code>1h 3m 29s</code> or <code>08:23</code>), and hit <strong>Sync</strong>. The built-in <code>GameTimeParser</code> supports English, German, and Russian formats and automatically synchronizes all timers.
         </div>
       </div>
@@ -74,10 +74,10 @@
       <!-- Question 6 -->
       <div class="faq-item">
         <button type="button" class="faq-question" aria-expanded="false">
-          <span>Where are my settings stored? Can I use it portably on a USB drive?</span>
+          <span data-i18n="faq.q6">Where are my settings stored? Can I use it portably on a USB drive?</span>
           <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
         </button>
-        <div class="faq-answer">
+        <div class="faq-answer" data-i18n="faq.a6">
           Yes! By default, settings are stored in <code>%APPDATA%\OnceHumanEventTimer</code>. If you create an empty file named <code>portable</code> or <code>portable.txt</code> in the application folder (or place <code>settings.json</code> next to the executable), the app automatically enters <strong>True Portable mode</strong>, keeping all configuration and presets contained in that folder.
         </div>
       </div>

@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   
   <title>Once Human: Event Timer — In-Game Event HUD &amp; Boss Respawn Tracker</title>
-  <meta name="description" content="A modern, lightweight Windows desktop HUD overlay for Once Human. Live event schedule, dedicated boss respawn timers, smart kill counter, procedural audio alerts, zero FPS drop, and anti-cheat safe.">
+  <meta name="description" content="A modern, lightweight Windows desktop HUD overlay for Once Human. Live event schedule, dedicated boss respawn timers, smart kill counter, procedural audio alerts, zero FPS drop, and out-of-process Win32 architecture.">
   <meta name="keywords" content="Once Human, Once Human timer, event timer, overlay, boss timer, kill counter, Cargo Scramble, The Echo, Drift Greenhouse, Manibus, gaming HUD">
   <meta name="author" content="Murr">
   <link rel="canonical" href="https://ohtimer.murr.li/">
@@ -32,13 +32,23 @@
   <meta name="twitter:description" content="In-game event schedules, dedicated boss respawn timers, smart kill counters, and zero FPS drop for Once Human.">
   <meta name="twitter:image" content="https://ohtimer.murr.li/assets/images/hud-multitimer.png">
   
-  <!-- Prevent theme flicker before DOM load -->
+  <!-- Prevent theme and language flicker before DOM load -->
   <script>
     (function () {
       try {
         var theme = localStorage.getItem('ohtimer-theme');
         if (theme === 'light') {
           document.documentElement.setAttribute('data-theme', 'light');
+        }
+        var lang = localStorage.getItem('ohtimer-lang');
+        if (!lang) {
+          var nLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
+          if (nLang.startsWith('de')) lang = 'de';
+          else if (nLang.startsWith('ru')) lang = 'ru';
+          else lang = 'en';
+        }
+        if (lang) {
+          document.documentElement.setAttribute('lang', lang);
         }
       } catch (e) {}
     })();
@@ -63,6 +73,7 @@
   {{footer}}
 
   <!-- Scripts -->
+  <script src="assets/js/translations.js"></script>
   <script src="assets/js/main.js"></script>
 </body>
 </html>

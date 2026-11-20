@@ -7,14 +7,34 @@
 
     <nav aria-label="Main Navigation">
       <ul class="nav-links" id="nav-links">
-        <li><a href="#features" class="nav-link">Features</a></li>
-        <li><a href="#screenshots" class="nav-link">Screenshots</a></li>
-        <li><a href="#download" class="nav-link">Download</a></li>
-        <li><a href="#faq" class="nav-link">FAQ</a></li>
+        <li><a href="#features" class="nav-link" data-i18n="nav.features">Features</a></li>
+        <li><a href="#screenshots" class="nav-link" data-i18n="nav.screenshots">Screenshots</a></li>
+        <li><a href="#download" class="nav-link" data-i18n="nav.download">Download</a></li>
+        <li><a href="#faq" class="nav-link" data-i18n="nav.faq">FAQ</a></li>
       </ul>
     </nav>
 
     <div class="nav-actions">
+      <!-- Language Selector Dropdown -->
+      <div class="lang-selector" id="lang-selector">
+        <button type="button" class="lang-btn" id="lang-btn" aria-haspopup="true" aria-expanded="false" aria-label="Select language" title="Select Language">
+          <svg class="icon-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          <span class="lang-current" id="lang-current">English</span>
+          <svg class="icon-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+        <div class="lang-dropdown" id="lang-dropdown" role="menu">
+          <button type="button" class="lang-option active" data-lang="en" role="menuitem">English</button>
+          <button type="button" class="lang-option" data-lang="de" role="menuitem">Deutsch</button>
+          <button type="button" class="lang-option" data-lang="ru" role="menuitem">Русский</button>
+        </div>
+      </div>
+
       <!-- Theme Toggle Button -->
       <button type="button" class="theme-toggle-btn" id="theme-toggle-btn" aria-label="Switch to light theme" title="Toggle Theme">
         <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -47,7 +67,7 @@
           <polyline points="7 10 12 15 17 10"></polyline>
           <line x1="12" y1="15" x2="12" y2="3"></line>
         </svg>
-        Download
+        <span data-i18n="header.download">Download</span>
       </a>
 
       <!-- Mobile Toggle Button -->

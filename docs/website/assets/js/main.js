@@ -51,7 +51,108 @@
   }
 
   // ========================================================================
-  // 2. Mobile Navigation Menu
+  // 2. Multilingual Language Management (EN default, DE, RU)
+  // ========================================================================
+  const LANG_STORAGE_KEY = 'ohtimer-lang';
+  const langSelector = document.getElementById('lang-selector');
+  const langBtn = document.getElementById('lang-btn');
+  const langCurrent = document.getElementById('lang-current');
+  const langOptions = document.querySelectorAll('.lang-option');
+
+  const LANG_NAMES = {
+    en: 'English',
+    de: 'Deutsch',
+    ru: 'Русский'
+  };
+
+  let currentLang = 'en';
+
+  function getPreferredLanguage() {
+    const savedLang = localStorage.getItem(LANG_STORAGE_KEY);
+    if (savedLang === 'en' || savedLang === 'de' || savedLang === 'ru') {
+      return savedLang;
+    }
+    const navLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
+    if (navLang.startsWith('de')) return 'de';
+    if (navLang.startsWith('ru')) return 'ru';
+    return 'en';
+  }
+
+  function applyLanguage(lang) {
+    if (!LANG_NAMES[lang]) {
+      lang = 'en';
+    }
+    currentLang = lang;
+    localStorage.setItem(LANG_STORAGE_KEY, lang);
+    document.documentElement.setAttribute('lang', lang);
+
+    if (langCurrent) {
+      langCurrent.textContent = LANG_NAMES[lang];
+    }
+
+    langOptions.forEach(opt => {
+      if (opt.getAttribute('data-lang') === lang) {
+        opt.classList.add('active');
+      } else {
+        opt.classList.remove('active');
+      }
+    });
+
+    const dict = (window.OH_TRANSLATIONS && window.OH_TRANSLATIONS[lang]) || (window.OH_TRANSLATIONS && window.OH_TRANSLATIONS.en);
+    if (!dict) return;
+
+    // Apply translations to all [data-i18n] elements
+    const translatableElements = document.querySelectorAll('[data-i18n]');
+    translatableElements.forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (dict[key]) {
+        el.innerHTML = dict[key];
+      }
+    });
+  }
+
+  // Initialize Language
+  currentLang = getPreferredLanguage();
+  applyLanguage(currentLang);
+
+  // Dropdown UI Interaction
+  if (langBtn && langSelector) {
+    langBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = langSelector.classList.toggle('open');
+      langBtn.setAttribute('aria-expanded', isOpen);
+    });
+
+    langOptions.forEach(opt => {
+      opt.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const selectedLang = opt.getAttribute('data-lang');
+        applyLanguage(selectedLang);
+        langSelector.classList.remove('open');
+        langBtn.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    // Close on outside click
+    document.addEventListener('click', (e) => {
+      if (!langSelector.contains(e.target)) {
+        langSelector.classList.remove('open');
+        langBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && langSelector.classList.contains('open')) {
+        langSelector.classList.remove('open');
+        langBtn.setAttribute('aria-expanded', 'false');
+        langBtn.focus();
+      }
+    });
+  }
+
+  // ========================================================================
+  // 3. Mobile Navigation Menu
   // ========================================================================
   const mobileToggleBtn = document.getElementById('nav-mobile-toggle');
   const navLinksList = document.getElementById('nav-links');
@@ -81,7 +182,7 @@
   }
 
   // ========================================================================
-  // 3. Hero Mockup Preview Switcher
+  // 4. Hero Mockup Preview Switcher
   // ========================================================================
   const mockupTabs = document.querySelectorAll('.mockup-tab-btn');
   const mockupImage = document.getElementById('hero-mockup-img');
@@ -117,7 +218,12 @@
         setTimeout(() => {
           mockupImage.src = data.src;
           mockupImage.alt = data.alt;
-          if (mockupCaption) mockupCaption.textContent = data.caption;
+          const dict = (window.OH_TRANSLATIONS && window.OH_TRANSLATIONS[currentLang]) || (window.OH_TRANSLATIONS && window.OH_TRANSLATIONS.en);
+          const captionKey = 'hero.mockup.caption.' + view;
+          if (mockupCaption) {
+            mockupCaption.textContent = (dict && dict[captionKey]) || data.caption;
+            mockupCaption.setAttribute('data-i18n', captionKey);
+          }
           mockupImage.style.opacity = '1';
         }, 150);
       }
@@ -125,7 +231,7 @@
   });
 
   // ========================================================================
-  // 4. Interactive Screenshots Lightbox & Filter Bar
+  // 5. Interactive Screenshots Lightbox & Filter Bar
   // ========================================================================
   const galleryCards = document.querySelectorAll('.gallery-card');
   const filterBtns = document.querySelectorAll('.filter-btn');
@@ -289,7 +395,7 @@
   });
 
   // ========================================================================
-  // 5. Hotkey Copy Helper (with modern navigator.clipboard and fallback)
+  // 6. Hotkey Copy Helper (with modern navigator.clipboard and fallback)
   // ========================================================================
   function copyTextToClipboard(text) {
     if (navigator.clipboard && window.isSecureContext) {
@@ -342,7 +448,7 @@
   });
 
   // ========================================================================
-  // 6. FAQ Accordion
+  // 7. FAQ Accordion
   // ========================================================================
   const faqItems = document.querySelectorAll('.faq-item');
 
@@ -374,7 +480,7 @@
   });
 
   // ========================================================================
-  // 7. Active Navigation Link on Scroll
+  // 8. Active Navigation Link on Scroll
   // ========================================================================
   const sections = document.querySelectorAll('section[id]');
   const navLinks = document.querySelectorAll('.nav-link[href^="#"]');

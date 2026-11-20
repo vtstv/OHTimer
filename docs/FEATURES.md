@@ -1,6 +1,6 @@
 # Once Human: Event Timer — Feature Guide
 
-A modern, lightweight Windows desktop HUD overlay designed specifically for *Once Human*. Tracks cyclic world events, elite boss respawns, and farming milestones with zero frame drops, zero-drift game time synchronization, and complete anti-cheat safety.
+A modern, lightweight Windows desktop HUD overlay designed specifically for *Once Human*. Tracks cyclic world events, elite boss respawns, and farming milestones with zero frame drops, zero-drift game time synchronization, and out-of-process architecture.
 
 ---
 
@@ -85,10 +85,10 @@ Click any hotkey field in Settings to record a new key combination. Supports mod
 
 ---
 
-## 5. Anti-Cheat Safety & Performance
+## 5. Out-of-Process Windows Architecture & Performance
 
 Once Human is protected by kernel-level anti-cheat (ACE / Anti-Cheat Expert) running with elevated Administrator privileges. This application is engineered with strict adherence to Windows security boundaries:
-- **Zero Game Process Memory Touching**: Never reads, writes, hooks, or injects into Once Human process memory. Safe from anti-cheat bans.
+- **Zero Game Process Memory Touching**: Never reads, writes, hooks, or injects into Once Human process memory. Zero game process modification.
 - **Windows UIPI Message Filter Bypass (`ChangeWindowMessageFilterEx`)**: Standard Windows OS API allows `WM_HOTKEY` messages to pass from elevated game windows to the non-elevated timer overlay without requiring the timer to run as Administrator.
 - **Hardware DirectFlip & MPO Presentation (`WS_EX_NOACTIVATE`)**: Prevents the overlay from stealing keyboard or mouse focus from the game, preserving GPU Multi-Plane Overlay (MPO) and DirectFlip hardware presentation in Once Human for zero frame drops or input stutter.
 - **Smart Game Focus Monitor**: Caches process IDs and queries process names via lightweight `PROCESS_QUERY_LIMITED_INFORMATION`. Fully compatible with Steam (`ONCE_HUMAN.exe`) and Loading Bay / NetEase (`AF_AP.exe`). Automatically hides overlay when Alt-Tabbing to desktop apps (with 400ms hysteresis debounce to prevent DirectX swapchain presentation stalls).

@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   
   <title>Once Human: Event Timer — In-Game Event HUD &amp; Boss Respawn Tracker</title>
-  <meta name="description" content="A modern, lightweight Windows desktop HUD overlay for Once Human. Live event schedule, dedicated boss respawn timers, smart kill counter, procedural audio alerts, zero FPS drop, and anti-cheat safe.">
+  <meta name="description" content="A modern, lightweight Windows desktop HUD overlay for Once Human. Live event schedule, dedicated boss respawn timers, smart kill counter, procedural audio alerts, zero FPS drop, and out-of-process Win32 architecture.">
   <meta name="keywords" content="Once Human, Once Human timer, event timer, overlay, boss timer, kill counter, Cargo Scramble, The Echo, Drift Greenhouse, Manibus, gaming HUD">
   <meta name="author" content="Murr">
   <link rel="canonical" href="https://ohtimer.murr.li/">
@@ -32,13 +32,23 @@
   <meta name="twitter:description" content="In-game event schedules, dedicated boss respawn timers, smart kill counters, and zero FPS drop for Once Human.">
   <meta name="twitter:image" content="https://ohtimer.murr.li/assets/images/hud-multitimer.png">
   
-  <!-- Prevent theme flicker before DOM load -->
+  <!-- Prevent theme and language flicker before DOM load -->
   <script>
     (function () {
       try {
         var theme = localStorage.getItem('ohtimer-theme');
         if (theme === 'light') {
           document.documentElement.setAttribute('data-theme', 'light');
+        }
+        var lang = localStorage.getItem('ohtimer-lang');
+        if (!lang) {
+          var nLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
+          if (nLang.startsWith('de')) lang = 'de';
+          else if (nLang.startsWith('ru')) lang = 'ru';
+          else lang = 'en';
+        }
+        if (lang) {
+          document.documentElement.setAttribute('lang', lang);
         }
       } catch (e) {}
     })();
@@ -58,14 +68,34 @@
 
     <nav aria-label="Main Navigation">
       <ul class="nav-links" id="nav-links">
-        <li><a href="#features" class="nav-link">Features</a></li>
-        <li><a href="#screenshots" class="nav-link">Screenshots</a></li>
-        <li><a href="#download" class="nav-link">Download</a></li>
-        <li><a href="#faq" class="nav-link">FAQ</a></li>
+        <li><a href="#features" class="nav-link" data-i18n="nav.features">Features</a></li>
+        <li><a href="#screenshots" class="nav-link" data-i18n="nav.screenshots">Screenshots</a></li>
+        <li><a href="#download" class="nav-link" data-i18n="nav.download">Download</a></li>
+        <li><a href="#faq" class="nav-link" data-i18n="nav.faq">FAQ</a></li>
       </ul>
     </nav>
 
     <div class="nav-actions">
+      <!-- Language Selector Dropdown -->
+      <div class="lang-selector" id="lang-selector">
+        <button type="button" class="lang-btn" id="lang-btn" aria-haspopup="true" aria-expanded="false" aria-label="Select language" title="Select Language">
+          <svg class="icon-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          <span class="lang-current" id="lang-current">English</span>
+          <svg class="icon-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+        <div class="lang-dropdown" id="lang-dropdown" role="menu">
+          <button type="button" class="lang-option active" data-lang="en" role="menuitem">English</button>
+          <button type="button" class="lang-option" data-lang="de" role="menuitem">Deutsch</button>
+          <button type="button" class="lang-option" data-lang="ru" role="menuitem">Русский</button>
+        </div>
+      </div>
+
       <!-- Theme Toggle Button -->
       <button type="button" class="theme-toggle-btn" id="theme-toggle-btn" aria-label="Switch to light theme" title="Toggle Theme">
         <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -98,7 +128,7 @@
           <polyline points="7 10 12 15 17 10"></polyline>
           <line x1="12" y1="15" x2="12" y2="3"></line>
         </svg>
-        Download
+        <span data-i18n="header.download">Download</span>
       </a>
 
       <!-- Mobile Toggle Button -->
@@ -120,17 +150,17 @@
       <div class="hero-badge-wrap">
         <span class="hero-pill">
           <span class="hero-pill-pulse"></span>
-          Live Event HUD
+          <span data-i18n="hero.pill.events">Live Event HUD</span>
         </span>
-        <span class="hero-pill">Dedicated Boss Timer</span>
-        <span class="hero-pill">Anti-Cheat Safe</span>
+        <span class="hero-pill" data-i18n="hero.pill.boss">Dedicated Boss Timer</span>
+        <span class="hero-pill" data-i18n="hero.pill.arch">Out-of-Process DWM</span>
       </div>
 
-      <h1 class="hero-title">
+      <h1 class="hero-title" data-i18n="hero.title">
         Never Miss an Event in <span class="gradient-text">Once&nbsp;Human</span>
       </h1>
 
-      <p class="hero-description">
+      <p class="hero-description" data-i18n="hero.description">
         A modern, lightweight Windows desktop HUD overlay engineered specifically for <strong>Once Human</strong>. Track recurring world events, dedicated boss respawns, and dungeon farming runs with procedural audio alarms and zero FPS drop.
       </p>
 
@@ -141,21 +171,21 @@
             <polyline points="7 10 12 15 17 10"></polyline>
             <line x1="12" y1="15" x2="12" y2="3"></line>
           </svg>
-          Download Latest Release
+          <span data-i18n="hero.btn.download">Download Latest Release</span>
         </a>
 
         <a href="https://github.com/vtstv/OHTimer" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
           <svg viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
           </svg>
-          GitHub Repository
+          <span data-i18n="hero.btn.github">GitHub Repository</span>
         </a>
 
         <a href="#features" class="btn btn-outline">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="6 9 12 15 18 9"></polyline>
           </svg>
-          Explore Features
+          <span data-i18n="hero.btn.features">Explore Features</span>
         </a>
       </div>
 
@@ -164,25 +194,25 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="20 6 9 17 4 12"></polyline>
           </svg>
-          Windows 10 / 11 (64-bit)
+          <span data-i18n="hero.trust.os">Windows 10 / 11 (64-bit)</span>
         </div>
         <div class="trust-item">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="20 6 9 17 4 12"></polyline>
           </svg>
-          DirectFlip & MPO Safe
+          <span data-i18n="hero.trust.directflip">DirectFlip &amp; MPO Safe</span>
         </div>
         <div class="trust-item">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="20 6 9 17 4 12"></polyline>
           </svg>
-          Zero Memory Injection
+          <span data-i18n="hero.trust.memory">Zero Memory Injection</span>
         </div>
         <div class="trust-item">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="20 6 9 17 4 12"></polyline>
           </svg>
-          Open Source (MIT)
+          <span data-i18n="hero.trust.license">Open Source (MIT)</span>
         </div>
       </div>
     </div>
@@ -191,18 +221,18 @@
     <div class="hero-visual-card">
       <div class="mockup-header">
         <div class="mockup-tabs">
-          <button type="button" class="mockup-tab-btn active" data-view="multitimer">Full HUD</button>
-          <button type="button" class="mockup-tab-btn" data-view="mini">Mini-HUD</button>
-          <button type="button" class="mockup-tab-btn" data-view="settings">Settings & Sync</button>
+          <button type="button" class="mockup-tab-btn active" data-view="multitimer" data-i18n="hero.mockup.tab.multitimer">Full HUD</button>
+          <button type="button" class="mockup-tab-btn" data-view="mini" data-i18n="hero.mockup.tab.mini">Mini-HUD</button>
+          <button type="button" class="mockup-tab-btn" data-view="settings" data-i18n="hero.mockup.tab.settings">Settings &amp; Sync</button>
         </div>
-        <div class="mockup-status-dot">ACTIVE OVERLAY</div>
+        <div class="mockup-status-dot" data-i18n="hero.mockup.status">ACTIVE OVERLAY</div>
       </div>
 
       <div class="mockup-screen">
         <img id="hero-mockup-img" src="assets/images/hud-multitimer.png" alt="Once Human Multi-Timer HUD Overlay">
       </div>
-      <p class="mockup-caption" id="hero-mockup-caption">
-        Full HUD tracking multiple concurrent events with circular countdown rings & progress bars
+      <p class="mockup-caption" id="hero-mockup-caption" data-i18n="hero.mockup.caption.multitimer">
+        Full HUD tracking multiple concurrent events with circular countdown rings &amp; progress bars
       </p>
     </div>
   </div>
@@ -211,20 +241,20 @@
   <div class="container">
     <div class="metrics-grid">
       <div class="metric-item">
-        <div class="metric-value gradient-text">15+</div>
-        <div class="metric-label">Built-in Event Presets</div>
+        <div class="metric-value gradient-text" data-i18n="metrics.presets.val">15+</div>
+        <div class="metric-label" data-i18n="metrics.presets.label">Built-in Event Presets</div>
       </div>
       <div class="metric-item">
-        <div class="metric-value" style="color: var(--cyan-primary);">0 Latency</div>
-        <div class="metric-label">Sub-Second Precision</div>
+        <div class="metric-value" style="color: var(--cyan-primary);" data-i18n="metrics.latency.val">0 Latency</div>
+        <div class="metric-label" data-i18n="metrics.latency.label">Sub-Second Precision</div>
       </div>
       <div class="metric-item">
-        <div class="metric-value" style="color: var(--emerald-primary);">0 FPS</div>
-        <div class="metric-label">DirectFlip Hardware Impact</div>
+        <div class="metric-value" style="color: var(--emerald-primary);" data-i18n="metrics.fps.val">0 FPS</div>
+        <div class="metric-label" data-i18n="metrics.fps.label">DirectFlip Hardware Impact</div>
       </div>
       <div class="metric-item">
-        <div class="metric-value" style="color: var(--purple-primary);">100%</div>
-        <div class="metric-label">Anti-Cheat Safe Win32</div>
+        <div class="metric-value" style="color: var(--purple-primary);" data-i18n="metrics.arch.val">0 Hooks</div>
+        <div class="metric-label" data-i18n="metrics.arch.label">Out-of-Process Win32</div>
       </div>
     </div>
   </div>
@@ -236,11 +266,11 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
         </svg>
-        Engineered For Excellence
+        <span data-i18n="features.pill">Engineered For Excellence</span>
       </div>
-      <h2 class="section-title">Essential Features for Every Meta Player</h2>
-      <p class="section-subtitle">
-        Engineered specifically for active Once Human players: zero input latency, anti-cheat compliance, and microsecond-level scheduling accuracy.
+      <h2 class="section-title" data-i18n="features.title">Essential Features for Every Meta Player</h2>
+      <p class="section-subtitle" data-i18n="features.subtitle">
+        Engineered specifically for active Once Human players: zero input latency, zero memory injection, and microsecond-level scheduling accuracy.
       </p>
     </div>
 
@@ -253,14 +283,14 @@
             <polyline points="12 6 12 12 16 14"></polyline>
           </svg>
         </div>
-        <h3 class="feature-title">Live Event Schedule &amp; Mid-Event Alerts</h3>
-        <p class="feature-text">
+        <h3 class="feature-title" data-i18n="features.f1.title">Live Event Schedule &amp; Mid-Event Alerts</h3>
+        <p class="feature-text" data-i18n="features.f1.desc">
           Track fixed world events like Cargo Scramble and Visional Wheel (S5 The Echo) in real time with mid-event boss alerts. For dynamic spawns like Drift Greenhouse, quickly calibrate per-world cooldowns directly from in-game countdowns.
         </p>
         <div class="feature-tags">
-          <span class="feature-tag">15 Meta Presets</span>
-          <span class="feature-tag">Mid-Event Boss Alerts</span>
-          <span class="feature-tag">In-Game Countdown Sync</span>
+          <span class="feature-tag" data-i18n="features.f1.tag1">15 Meta Presets</span>
+          <span class="feature-tag" data-i18n="features.f1.tag2">Mid-Event Boss Alerts</span>
+          <span class="feature-tag" data-i18n="features.f1.tag3">In-Game Countdown Sync</span>
         </div>
       </div>
 
@@ -276,14 +306,14 @@
             <line x1="18" y1="12" x2="22" y2="12"></line>
           </svg>
         </div>
-        <h3 class="feature-title">Dedicated Boss Respawn Timer</h3>
-        <p class="feature-text">
+        <h3 class="feature-title" data-i18n="features.f2.title">Dedicated Boss Respawn Timer</h3>
+        <p class="feature-text" data-i18n="features.f2.desc">
           Trigger elite and world boss respawn countdowns instantly with <kbd>Alt+NumPad 1</kbd>. Includes early warning chimes before spawn, celebratory 00:00 alarms, dynamic HUD badges, and Windows toast notifications.
         </p>
         <div class="feature-tags">
-          <span class="feature-tag">Alt+NumPad 1 Hotkey</span>
-          <span class="feature-tag">Approaching Chimes</span>
-          <span class="feature-tag">Repeat Alarms</span>
+          <span class="feature-tag" data-i18n="features.f2.tag1">Alt+NumPad 1 Hotkey</span>
+          <span class="feature-tag" data-i18n="features.f2.tag2">Approaching Chimes</span>
+          <span class="feature-tag" data-i18n="features.f2.tag3">Repeat Alarms</span>
         </div>
       </div>
 
@@ -295,14 +325,14 @@
             <line x1="5" y1="12" x2="19" y2="12"></line>
           </svg>
         </div>
-        <h3 class="feature-title">Smart Farm & Kill Counter</h3>
-        <p class="feature-text">
+        <h3 class="feature-title" data-i18n="features.f3.title">Smart Farm &amp; Kill Counter</h3>
+        <p class="feature-text" data-i18n="features.f3.desc">
           Effortlessly count dungeon runs and boss farming sessions with <kbd>Alt+NumPad +</kbd> and <kbd>Alt+NumPad -</kbd>. Set run goals with animated progress bars, goal celebration chimes, and optional chained Boss Timer auto-start on kill.
         </p>
         <div class="feature-tags">
-          <span class="feature-tag">Target Run Goals</span>
-          <span class="feature-tag">Chained Auto-Start</span>
-          <span class="feature-tag">Treant / Silo Presets</span>
+          <span class="feature-tag" data-i18n="features.f3.tag1">Target Run Goals</span>
+          <span class="feature-tag" data-i18n="features.f3.tag2">Chained Auto-Start</span>
+          <span class="feature-tag" data-i18n="features.f3.tag3">Treant / Silo Presets</span>
         </div>
       </div>
 
@@ -315,32 +345,32 @@
             <line x1="12" y1="17" x2="12" y2="21"></line>
           </svg>
         </div>
-        <h3 class="feature-title">DirectFlip & Zero FPS Drop</h3>
-        <p class="feature-text">
+        <h3 class="feature-title" data-i18n="features.f4.title">DirectFlip &amp; Zero FPS Drop</h3>
+        <p class="feature-text" data-i18n="features.f4.desc">
           Engineered with <code>WS_EX_NOACTIVATE</code> and <code>WS_EX_TRANSPARENT</code> to guarantee mouse clicks pass directly into Once Human. Informs Windows DWM never to steal focus, preserving GPU Multi-Plane Overlay (MPO) and DirectFlip.
         </p>
         <div class="feature-tags">
-          <span class="feature-tag">Zero FPS Drop</span>
-          <span class="feature-tag">Click-Through</span>
-          <span class="feature-tag">Hardware DirectFlip</span>
+          <span class="feature-tag" data-i18n="features.f4.tag1">Zero FPS Drop</span>
+          <span class="feature-tag" data-i18n="features.f4.tag2">Click-Through</span>
+          <span class="feature-tag" data-i18n="features.f4.tag3">Hardware DirectFlip</span>
         </div>
       </div>
 
-      <!-- Feature 5: Anti-Cheat Safe Architecture -->
+      <!-- Feature 5: Out-of-Process Architecture -->
       <div class="feature-card">
         <div class="feature-icon-wrap emerald">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
           </svg>
         </div>
-        <h3 class="feature-title">100% Anti-Cheat Safe</h3>
-        <p class="feature-text">
-          Operates strictly out-of-process. Zero memory reading, zero memory writing, zero DLL injection, and zero code tampering. Global hotkeys are delivered cleanly via native Windows message filtering without touching Once Human.
+        <h3 class="feature-title" data-i18n="features.f5.title">Out-of-Process Architecture</h3>
+        <p class="feature-text" data-i18n="features.f5.desc">
+          Operates strictly out-of-process. Zero memory reading, zero memory writing, zero DLL injection, and zero game process modification. Global hotkeys are delivered cleanly via native Windows message filtering without hooking Once Human.
         </p>
         <div class="feature-tags">
-          <span class="feature-tag">Zero Memory Injection</span>
-          <span class="feature-tag">Out-of-Process DWM</span>
-          <span class="feature-tag">100% Ban Proof</span>
+          <span class="feature-tag" data-i18n="features.f5.tag1">Zero Memory Injection</span>
+          <span class="feature-tag" data-i18n="features.f5.tag2">Out-of-Process DWM</span>
+          <span class="feature-tag" data-i18n="features.f5.tag3">Standard Win32 APIs</span>
         </div>
       </div>
 
@@ -352,14 +382,14 @@
             <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
           </svg>
         </div>
-        <h3 class="feature-title">Procedural Synthesizer Audio</h3>
-        <p class="feature-text">
+        <h3 class="feature-title" data-i18n="features.f6.title">Procedural Synthesizer Audio</h3>
+        <p class="feature-text" data-i18n="features.f6.desc">
           Equipped with a built-in algorithmic sound synthesizer featuring 7 procedural audio alerts (Celestial Bell, Cosmic Pulse, Stardust Ping, etc.). Works completely out of the box with zero external media files, plus support for custom WAVs.
         </p>
         <div class="feature-tags">
-          <span class="feature-tag">7 Synthesizer Presets</span>
-          <span class="feature-tag">Custom WAV Support</span>
-          <span class="feature-tag">Global Mute Hotkey</span>
+          <span class="feature-tag" data-i18n="features.f6.tag1">7 Synthesizer Presets</span>
+          <span class="feature-tag" data-i18n="features.f6.tag2">Custom WAV Support</span>
+          <span class="feature-tag" data-i18n="features.f6.tag3">Global Mute Hotkey</span>
         </div>
       </div>
     </div>
@@ -374,21 +404,21 @@
           <circle cx="8.5" cy="8.5" r="1.5"></circle>
           <polyline points="21 15 16 10 5 21"></polyline>
         </svg>
-        Visual Interface
+        <span data-i18n="screenshots.pill">Visual Interface</span>
       </div>
-      <h2 class="section-title">Designed for Immersion</h2>
-      <p class="section-subtitle">
+      <h2 class="section-title" data-i18n="screenshots.title">Designed for Immersion</h2>
+      <p class="section-subtitle" data-i18n="screenshots.subtitle">
         Explore the high-contrast Stardust aesthetic across HUD modes, audio synthesizer, hotkey mapping, and granular settings.
       </p>
     </div>
 
     <!-- Filter bar -->
     <div class="gallery-filter-bar">
-      <button type="button" class="filter-btn active" data-filter="all">All Views</button>
-      <button type="button" class="filter-btn" data-filter="hud">HUD Overlays</button>
-      <button type="button" class="filter-btn" data-filter="events">Events & Sync</button>
-      <button type="button" class="filter-btn" data-filter="combat">Boss & Kill Tracker</button>
-      <button type="button" class="filter-btn" data-filter="settings">System & Audio</button>
+      <button type="button" class="filter-btn active" data-filter="all" data-i18n="screenshots.filter.all">All Views</button>
+      <button type="button" class="filter-btn" data-filter="hud" data-i18n="screenshots.filter.hud">HUD Overlays</button>
+      <button type="button" class="filter-btn" data-filter="events" data-i18n="screenshots.filter.events">Events &amp; Sync</button>
+      <button type="button" class="filter-btn" data-filter="combat" data-i18n="screenshots.filter.combat">Boss &amp; Kill Tracker</button>
+      <button type="button" class="filter-btn" data-filter="settings" data-i18n="screenshots.filter.settings">System &amp; Audio</button>
     </div>
 
     <!-- Gallery Grid -->
@@ -399,12 +429,12 @@
           <img src="assets/images/hud-multitimer.png" alt="Multi-Timer HUD Overlay" loading="lazy">
           <span class="gallery-overlay-badge">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            Zoom
+            <span data-i18n="gallery.zoom">Zoom</span>
           </span>
         </div>
         <div class="gallery-info">
-          <h3 class="gallery-title">Multi-Timer Full HUD</h3>
-          <p class="gallery-desc">Concurrent multi-event tracking with neon circular countdown rings, active progress bars, and phase badges.</p>
+          <h3 class="gallery-title" data-i18n="gallery.item1.title">Multi-Timer Full HUD</h3>
+          <p class="gallery-desc" data-i18n="gallery.item1.desc">Concurrent multi-event tracking with neon circular countdown rings, active progress bars, and phase badges.</p>
         </div>
       </div>
 
@@ -414,12 +444,12 @@
           <img src="assets/images/hud-mini.png" alt="Minimal Floating Mini-HUD" loading="lazy">
           <span class="gallery-overlay-badge">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            Zoom
+            <span data-i18n="gallery.zoom">Zoom</span>
           </span>
         </div>
         <div class="gallery-info">
-          <h3 class="gallery-title">Minimal Floating Mini-HUD</h3>
-          <p class="gallery-desc">Ultra-compact floating badge showing the next upcoming event, remaining time, and active mute status.</p>
+          <h3 class="gallery-title" data-i18n="gallery.item2.title">Minimal Floating Mini-HUD</h3>
+          <p class="gallery-desc" data-i18n="gallery.item2.desc">Ultra-compact floating badge showing the next upcoming event, remaining time, and active mute status.</p>
         </div>
       </div>
 
@@ -429,12 +459,12 @@
           <img src="assets/images/settings-events.jpg" alt="Event Presets and Calibration" loading="lazy">
           <span class="gallery-overlay-badge">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            Zoom
+            <span data-i18n="gallery.zoom">Zoom</span>
           </span>
         </div>
         <div class="gallery-info">
-          <h3 class="gallery-title">Event Presets & Server Sync</h3>
-          <p class="gallery-desc">Universal scheduling engine with 15 built-in presets, custom dark scrollbar, and sub-second game clock calibration.</p>
+          <h3 class="gallery-title" data-i18n="gallery.item3.title">Event Presets &amp; Server Sync</h3>
+          <p class="gallery-desc" data-i18n="gallery.item3.desc">Universal scheduling engine with 15 built-in presets, custom dark scrollbar, and sub-second game clock calibration.</p>
         </div>
       </div>
 
@@ -444,12 +474,12 @@
           <img src="assets/images/settings-bosstimer.png" alt="Dedicated Boss Respawn Timer" loading="lazy">
           <span class="gallery-overlay-badge">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            Zoom
+            <span data-i18n="gallery.zoom">Zoom</span>
           </span>
         </div>
         <div class="gallery-info">
-          <h3 class="gallery-title">Dedicated Boss Respawn Timer</h3>
-          <p class="gallery-desc">On-demand boss and elite respawn countdown triggered via Alt+NumPad 1, warning chimes, and spawn alarms.</p>
+          <h3 class="gallery-title" data-i18n="gallery.item4.title">Dedicated Boss Respawn Timer</h3>
+          <p class="gallery-desc" data-i18n="gallery.item4.desc">On-demand boss and elite respawn countdown triggered via Alt+NumPad 1, warning chimes, and spawn alarms.</p>
         </div>
       </div>
 
@@ -459,12 +489,12 @@
           <img src="assets/images/settings-killcounter.png" alt="Smart Farm & Kill Tracker" loading="lazy">
           <span class="gallery-overlay-badge">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            Zoom
+            <span data-i18n="gallery.zoom">Zoom</span>
           </span>
         </div>
         <div class="gallery-info">
-          <h3 class="gallery-title">Smart Farm & Kill Tracker</h3>
-          <p class="gallery-desc">Session run and kill tracker with target goals, quick boss presets, hotkey controls, and chained boss timer triggers.</p>
+          <h3 class="gallery-title" data-i18n="gallery.item5.title">Smart Farm &amp; Kill Tracker</h3>
+          <p class="gallery-desc" data-i18n="gallery.item5.desc">Session run and kill tracker with target goals, quick boss presets, hotkey controls, and chained boss timer triggers.</p>
         </div>
       </div>
 
@@ -474,12 +504,12 @@
           <img src="assets/images/settings-audio.png" alt="Procedural Synthesizer Audio" loading="lazy">
           <span class="gallery-overlay-badge">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            Zoom
+            <span data-i18n="gallery.zoom">Zoom</span>
           </span>
         </div>
         <div class="gallery-info">
-          <h3 class="gallery-title">Procedural Audio Synthesizer</h3>
-          <p class="gallery-desc">Algorithmic audio presets with volume controls, skew calibration, and instant audio preview playback.</p>
+          <h3 class="gallery-title" data-i18n="gallery.item6.title">Procedural Audio Synthesizer</h3>
+          <p class="gallery-desc" data-i18n="gallery.item6.desc">Algorithmic audio presets with volume controls, skew calibration, and instant audio preview playback.</p>
         </div>
       </div>
 
@@ -489,12 +519,12 @@
           <img src="assets/images/hud-appearance.jpg" alt="Appearance and HUD Customization" loading="lazy">
           <span class="gallery-overlay-badge">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            Zoom
+            <span data-i18n="gallery.zoom">Zoom</span>
           </span>
         </div>
         <div class="gallery-info">
-          <h3 class="gallery-title">Appearance & Scale Controls</h3>
-          <p class="gallery-desc">Granular customization for overlay opacity, scale, borders, progress ring styles, and Mini-HUD elements.</p>
+          <h3 class="gallery-title" data-i18n="gallery.item7.title">Appearance &amp; Scale Controls</h3>
+          <p class="gallery-desc" data-i18n="gallery.item7.desc">Granular customization for overlay opacity, scale, borders, progress ring styles, and Mini-HUD elements.</p>
         </div>
       </div>
 
@@ -504,12 +534,12 @@
           <img src="assets/images/settings-hotkeys.png" alt="Global Hotkeys Configuration" loading="lazy">
           <span class="gallery-overlay-badge">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            Zoom
+            <span data-i18n="gallery.zoom">Zoom</span>
           </span>
         </div>
         <div class="gallery-info">
-          <h3 class="gallery-title">Global Hotkeys & Live Recording</h3>
-          <p class="gallery-desc">Interactive key recording with anti-cheat safe UIPI message filters and single-click default restore buttons.</p>
+          <h3 class="gallery-title" data-i18n="gallery.item8.title">Global Hotkeys &amp; Live Recording</h3>
+          <p class="gallery-desc" data-i18n="gallery.item8.desc">Interactive key recording with native Win32 UIPI message filters and single-click default restore buttons.</p>
         </div>
       </div>
 
@@ -519,12 +549,12 @@
           <img src="assets/images/settings-system.png" alt="System Settings and Foreground Focus" loading="lazy">
           <span class="gallery-overlay-badge">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            Zoom
+            <span data-i18n="gallery.zoom">Zoom</span>
           </span>
         </div>
         <div class="gallery-info">
-          <h3 class="gallery-title">System & Game Focus Detection</h3>
-          <p class="gallery-desc">Windows Autostart integration, update checking, and automatic foreground game window focus monitoring.</p>
+          <h3 class="gallery-title" data-i18n="gallery.item9.title">System &amp; Game Focus Detection</h3>
+          <p class="gallery-desc" data-i18n="gallery.item9.desc">Windows Autostart integration, update checking, and automatic foreground game window focus monitoring.</p>
         </div>
       </div>
     </div>
@@ -563,10 +593,10 @@
           <polyline points="7 10 12 15 17 10"></polyline>
           <line x1="12" y1="15" x2="12" y2="3"></line>
         </svg>
-        Latest GitHub Release
+        <span data-i18n="download.pill">Latest GitHub Release</span>
       </div>
-      <h2 class="section-title">Get Once Human: Event Timer</h2>
-      <p class="section-subtitle">
+      <h2 class="section-title" data-i18n="download.title">Get Once Human: Event Timer</h2>
+      <p class="section-subtitle" data-i18n="download.subtitle">
         Choose your preferred distribution format. All packages are built directly via GitHub Actions with verified checksums.
       </p>
     </div>
@@ -574,101 +604,101 @@
     <div class="download-grid">
       <!-- Package 1: Standalone (Recommended) -->
       <div class="download-card featured">
-        <div class="featured-pill">Recommended</div>
+        <div class="featured-pill" data-i18n="download.featured">Recommended</div>
         <div class="package-header">
-          <h3 class="package-name">Standalone Edition</h3>
-          <p class="package-tagline">Plug &amp; play single-file executable. Zero dependencies.</p>
+          <h3 class="package-name" data-i18n="download.standalone.name">Standalone Edition</h3>
+          <p class="package-tagline" data-i18n="download.standalone.tagline">Plug &amp; play single-file executable. Zero dependencies.</p>
           <span class="package-size">~63 MB</span>
         </div>
 
         <ul class="package-features-list">
           <li class="package-feature-item">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            Bundles .NET 8 LTS Runtime internally
+            <span data-i18n="download.standalone.f1">Bundles .NET 8 LTS Runtime internally</span>
           </li>
           <li class="package-feature-item">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            Works instantly on any Windows 10/11 PC
+            <span data-i18n="download.standalone.f2">Works instantly on any Windows 10/11 PC</span>
           </li>
           <li class="package-feature-item">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            True Portable or AppData dual storage mode
+            <span data-i18n="download.standalone.f3">True Portable or AppData dual storage mode</span>
           </li>
           <li class="package-feature-item">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            Built-in auto-updater with in-place replace
+            <span data-i18n="download.standalone.f4">Built-in auto-updater with in-place replace</span>
           </li>
         </ul>
 
         <a href="https://github.com/vtstv/OHTimer/releases/latest" target="_blank" rel="noopener noreferrer" class="btn btn-primary package-btn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-          Get Standalone (.ZIP)
+          <span data-i18n="download.standalone.btn">Get Standalone (.ZIP)</span>
         </a>
       </div>
 
       <!-- Package 2: Portable (Lightweight) -->
       <div class="download-card">
         <div class="package-header">
-          <h3 class="package-name">Portable Edition</h3>
-          <p class="package-tagline">Ultra-compact framework-dependent distribution.</p>
+          <h3 class="package-name" data-i18n="download.portable.name">Portable Edition</h3>
+          <p class="package-tagline" data-i18n="download.portable.tagline">Ultra-compact framework-dependent distribution.</p>
           <span class="package-size">~0.39 MB</span>
         </div>
 
         <ul class="package-features-list">
           <li class="package-feature-item">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            Requires .NET 8 Desktop Runtime installed
+            <span data-i18n="download.portable.f1">Requires .NET 8 Desktop Runtime installed</span>
           </li>
           <li class="package-feature-item">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            Microscopic download footprint (< 400 KB)
+            <span data-i18n="download.portable.f2">Microscopic download footprint (&lt; 400 KB)</span>
           </li>
           <li class="package-feature-item">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            Ideal for USB flash drives and portable rigs
+            <span data-i18n="download.portable.f3">Ideal for USB flash drives and portable rigs</span>
           </li>
           <li class="package-feature-item">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            Zero installation or registry changes
+            <span data-i18n="download.portable.f4">Zero installation or registry changes</span>
           </li>
         </ul>
 
         <a href="https://github.com/vtstv/OHTimer/releases/latest" target="_blank" rel="noopener noreferrer" class="btn btn-secondary package-btn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-          Get Portable (.ZIP)
+          <span data-i18n="download.portable.btn">Get Portable (.ZIP)</span>
         </a>
       </div>
 
       <!-- Package 3: Windows Setup Installer -->
       <div class="download-card">
         <div class="package-header">
-          <h3 class="package-name">Windows Installer</h3>
-          <p class="package-tagline">Complete setup wizard with system shortcuts.</p>
+          <h3 class="package-name" data-i18n="download.installer.name">Windows Installer</h3>
+          <p class="package-tagline" data-i18n="download.installer.tagline">Complete setup wizard with system shortcuts.</p>
           <span class="package-size">~64 MB</span>
         </div>
 
         <ul class="package-features-list">
           <li class="package-feature-item">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            Standard guided installation wizard
+            <span data-i18n="download.installer.f1">Standard guided installation wizard</span>
           </li>
           <li class="package-feature-item">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            Creates Start Menu &amp; Desktop shortcuts
+            <span data-i18n="download.installer.f2">Creates Start Menu &amp; Desktop shortcuts</span>
           </li>
           <li class="package-feature-item">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            Integrated Windows uninstaller in Apps &amp; Features
+            <span data-i18n="download.installer.f3">Integrated Windows uninstaller in Apps &amp; Features</span>
           </li>
           <li class="package-feature-item">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            Optional Windows startup launch registration
+            <span data-i18n="download.installer.f4">Optional Windows startup launch registration</span>
           </li>
         </ul>
 
         <a href="https://github.com/vtstv/OHTimer/releases/latest" target="_blank" rel="noopener noreferrer" class="btn btn-secondary package-btn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-          Get Setup Installer (.EXE)
+          <span data-i18n="download.installer.btn">Get Setup Installer (.EXE)</span>
         </a>
       </div>
     </div>
@@ -676,16 +706,16 @@
     <!-- Release Info Banner -->
     <div class="system-reqs-card">
       <div class="system-reqs-grid">
-        <div class="req-item">
+        <div class="req-item" data-i18n="download.reqs.os">
           <strong>Operating System:</strong> Windows 10 (1809+) or Windows 11 (64-bit)
         </div>
-        <div class="req-item">
+        <div class="req-item" data-i18n="download.reqs.dx">
           <strong>DirectX Mode:</strong> DirectX 11 / 12 (Borderless Windowed or Windowed)
         </div>
-        <div class="req-item">
+        <div class="req-item" data-i18n="download.reqs.source">
           <strong>Source Code:</strong> <a href="https://github.com/vtstv/OHTimer" target="_blank" rel="noopener noreferrer">github.com/vtstv/OHTimer</a> (MIT License)
         </div>
-        <div class="req-item">
+        <div class="req-item" data-i18n="download.reqs.releases">
           <strong>Releases:</strong> <a href="https://github.com/vtstv/OHTimer/releases" target="_blank" rel="noopener noreferrer">All Release Notes &amp; Checksums</a>
         </div>
       </div>
@@ -701,11 +731,11 @@
           <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
           <line x1="12" y1="17" x2="12.01" y2="17"></line>
         </svg>
-        Got Questions?
+        <span data-i18n="faq.pill">Got Questions?</span>
       </div>
-      <h2 class="section-title">Frequently Asked Questions</h2>
-      <p class="section-subtitle">
-        Clear technical answers regarding anti-cheat safety, game compatibility, and overlay behavior.
+      <h2 class="section-title" data-i18n="faq.title">Frequently Asked Questions</h2>
+      <p class="section-subtitle" data-i18n="faq.subtitle">
+        Clear technical answers regarding application architecture, game compatibility, and overlay behavior.
       </p>
     </div>
 
@@ -713,21 +743,21 @@
       <!-- Question 1 -->
       <div class="faq-item">
         <button type="button" class="faq-question" aria-expanded="false">
-          <span>Is Once Human: Event Timer safe from anti-cheat bans?</span>
+          <span data-i18n="faq.q1">Does the overlay inject into or modify the Once Human game process?</span>
           <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
         </button>
-        <div class="faq-answer">
-          <strong>Yes, 100% safe.</strong> The timer operates strictly as an out-of-process Windows desktop HUD using standard Win32 APIs (DWM composition, <code>WS_EX_LAYERED</code>, <code>WS_EX_TRANSPARENT</code>). It <strong>never</strong> attaches a debugger, reads, writes, hooks, or injects into Once Human process memory. Furthermore, it utilizes <code>ChangeWindowMessageFilterEx</code> to receive global keyboard shortcuts through Windows UIPI boundaries without requiring administrator privileges or interfering with Anti-Cheat Expert (ACE).
+        <div class="faq-answer" data-i18n="faq.a1">
+          <strong>No. The software is strictly out-of-process.</strong> The timer operates as an independent Windows desktop HUD using standard Win32 APIs (DWM composition, <code>WS_EX_LAYERED</code>, <code>WS_EX_TRANSPARENT</code>). It <strong>never</strong> attaches a debugger, reads, writes, hooks, or injects into Once Human process memory. Furthermore, it utilizes standard <code>ChangeWindowMessageFilterEx</code> to receive global keyboard shortcuts through Windows UIPI boundaries without modifying game files or interfering with game execution.
         </div>
       </div>
 
       <!-- Question 2 -->
       <div class="faq-item">
         <button type="button" class="faq-question" aria-expanded="false">
-          <span>How does the Dedicated Boss Respawn Timer work?</span>
+          <span data-i18n="faq.q2">How does the Dedicated Boss Respawn Timer work?</span>
           <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
         </button>
-        <div class="faq-answer">
+        <div class="faq-answer" data-i18n="faq.a2">
           Press your boss timer hotkey (<kbd>Alt+NumPad 1</kbd> by default) the moment a boss or elite dies. The HUD immediately shows an active cooldown bar with dynamic badges (<code>[🎯 RESPAWN]</code>, <code>[⚠️ APPROACHING]</code>, <code>[✨ SPAWNED!]</code>). You will hear an approaching warning chime before the spawn and an alarm when the boss appears. If you use the Kill Counter, you can also enable auto-starting the boss timer on each recorded kill.
         </div>
       </div>
@@ -735,10 +765,10 @@
       <!-- Question 3 -->
       <div class="faq-item">
         <button type="button" class="faq-question" aria-expanded="false">
-          <span>Will this cause FPS drops, stuttering, or input lag?</span>
+          <span data-i18n="faq.q3">Will this cause FPS drops, stuttering, or input lag?</span>
           <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
         </button>
-        <div class="faq-answer">
+        <div class="faq-answer" data-i18n="faq.a3">
           <strong>Zero FPS impact.</strong> The overlay uses Windows DWM hardware acceleration with the <code>WS_EX_NOACTIVATE</code> extended window style. This informs Windows GPU drivers that the overlay never steals input focus, preserving hardware DirectFlip and Multi-Plane Overlay (MPO) presentations in *Once Human*. CPU usage remains below 0.1% during gameplay.
         </div>
       </div>
@@ -746,10 +776,10 @@
       <!-- Question 4 -->
       <div class="faq-item">
         <button type="button" class="faq-question" aria-expanded="false">
-          <span>How do I make mouse clicks pass through the overlay?</span>
+          <span data-i18n="faq.q4">How do I make mouse clicks pass through the overlay?</span>
           <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
         </button>
-        <div class="faq-answer">
+        <div class="faq-answer" data-i18n="faq.a4">
           Press <kbd>Ctrl+Alt+L</kbd> or click the lock icon in the overlay header. This applies the Windows <code>WS_EX_TRANSPARENT</code> extended style, allowing all mouse clicks, aiming, and firing actions to pass directly through the timer into Once Human without losing focus or responsiveness.
         </div>
       </div>
@@ -757,10 +787,10 @@
       <!-- Question 5 -->
       <div class="faq-item">
         <button type="button" class="faq-question" aria-expanded="false">
-          <span>How does in-game clock synchronization work?</span>
+          <span data-i18n="faq.q5">How does in-game clock synchronization work?</span>
           <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
         </button>
-        <div class="faq-answer">
+        <div class="faq-answer" data-i18n="faq.a5">
           Every Once Human server can have slight time drift relative to your PC's local clock. Instead of guessing, press <kbd>Ctrl+Alt+O</kbd> to open Settings, type what you see on your in-game map or HUD (e.g., <code>1h 3m 29s</code> or <code>08:23</code>), and hit <strong>Sync</strong>. The built-in <code>GameTimeParser</code> supports English, German, and Russian formats and automatically synchronizes all timers.
         </div>
       </div>
@@ -768,10 +798,10 @@
       <!-- Question 6 -->
       <div class="faq-item">
         <button type="button" class="faq-question" aria-expanded="false">
-          <span>Where are my settings stored? Can I use it portably on a USB drive?</span>
+          <span data-i18n="faq.q6">Where are my settings stored? Can I use it portably on a USB drive?</span>
           <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
         </button>
-        <div class="faq-answer">
+        <div class="faq-answer" data-i18n="faq.a6">
           Yes! By default, settings are stored in <code>%APPDATA%\OnceHumanEventTimer</code>. If you create an empty file named <code>portable</code> or <code>portable.txt</code> in the application folder (or place <code>settings.json</code> next to the executable), the app automatically enters <strong>True Portable mode</strong>, keeping all configuration and presets contained in that folder.
         </div>
       </div>
@@ -788,7 +818,7 @@
           <img src="assets/images/app-logo.svg" alt="Logo" class="brand-logo-icon">
           Once Human: Event Timer
         </div>
-        <p class="footer-brand-text">
+        <p class="footer-brand-text" data-i18n="footer.brand.text">
           A modern, lightweight Windows desktop HUD overlay designed to enhance your Once Human experience with zero drift, dedicated boss timers, and seamless hardware performance.
         </p>
         <div class="hero-actions" style="margin-bottom:0;">
@@ -796,29 +826,29 @@
             <svg viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
             </svg>
-            Star on GitHub
+            <span data-i18n="footer.btn.star">Star on GitHub</span>
           </a>
         </div>
       </div>
 
       <div class="footer-links-col">
-        <h4>Navigation</h4>
+        <h4 data-i18n="footer.col.nav">Navigation</h4>
         <ul class="footer-nav-list">
-          <li class="footer-nav-item"><a href="#features">Features</a></li>
-          <li class="footer-nav-item"><a href="#screenshots">Screenshots</a></li>
-          <li class="footer-nav-item"><a href="#download">Download</a></li>
-          <li class="footer-nav-item"><a href="#faq">FAQ</a></li>
+          <li class="footer-nav-item"><a href="#features" data-i18n="nav.features">Features</a></li>
+          <li class="footer-nav-item"><a href="#screenshots" data-i18n="nav.screenshots">Screenshots</a></li>
+          <li class="footer-nav-item"><a href="#download" data-i18n="nav.download">Download</a></li>
+          <li class="footer-nav-item"><a href="#faq" data-i18n="nav.faq">FAQ</a></li>
         </ul>
       </div>
 
       <div class="footer-links-col">
-        <h4>Open Source</h4>
+        <h4 data-i18n="footer.col.oss">Open Source</h4>
         <ul class="footer-nav-list">
-          <li class="footer-nav-item"><a href="https://github.com/vtstv/OHTimer" target="_blank" rel="noopener noreferrer">GitHub Repository</a></li>
-          <li class="footer-nav-item"><a href="https://github.com/vtstv/OHTimer/releases" target="_blank" rel="noopener noreferrer">Releases &amp; Changelog</a></li>
-          <li class="footer-nav-item"><a href="https://github.com/vtstv/OHTimer/issues" target="_blank" rel="noopener noreferrer">Report an Issue / Bug</a></li>
-          <li class="footer-nav-item"><a href="https://github.com/vtstv/OHTimer/blob/master/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a></li>
-          <li class="footer-nav-item"><a href="https://github.com/vtstv/OHTimer/blob/master/docs/FEATURES.md" target="_blank" rel="noopener noreferrer">Feature Guide Documentation</a></li>
+          <li class="footer-nav-item"><a href="https://github.com/vtstv/OHTimer" target="_blank" rel="noopener noreferrer" data-i18n="footer.oss.repo">GitHub Repository</a></li>
+          <li class="footer-nav-item"><a href="https://github.com/vtstv/OHTimer/releases" target="_blank" rel="noopener noreferrer" data-i18n="footer.oss.releases">Releases &amp; Changelog</a></li>
+          <li class="footer-nav-item"><a href="https://github.com/vtstv/OHTimer/issues" target="_blank" rel="noopener noreferrer" data-i18n="footer.oss.issues">Report an Issue / Bug</a></li>
+          <li class="footer-nav-item"><a href="https://github.com/vtstv/OHTimer/blob/master/LICENSE" target="_blank" rel="noopener noreferrer" data-i18n="footer.oss.license">MIT License</a></li>
+          <li class="footer-nav-item"><a href="https://github.com/vtstv/OHTimer/blob/master/docs/FEATURES.md" target="_blank" rel="noopener noreferrer" data-i18n="footer.oss.docs">Feature Guide Documentation</a></li>
         </ul>
       </div>
     </div>
@@ -831,19 +861,19 @@
           <line x1="12" y1="8" x2="12" y2="12"></line>
           <line x1="12" y1="16" x2="12.01" y2="16"></line>
         </svg>
-        Legal Disclaimer &amp; Trademark Notice
+        <span data-i18n="footer.disclaimer.title">Legal Disclaimer &amp; Trademark Notice</span>
       </div>
-      <p class="disclaimer-text">
-        <strong>Once Human</strong> is a registered trademark of Starry Studio / NetEase. <strong>Once Human: Event Timer</strong> is an independent, community-driven open-source fan project and is not affiliated with, endorsed by, sponsored by, or associated in any way with Starry Studio, NetEase, or their subsidiaries. The software operates strictly out-of-process via standard Windows desktop APIs without memory reading, writing, code modification, or process injection.
+      <p class="disclaimer-text" data-i18n="footer.disclaimer.text">
+        <strong>Once Human</strong> is a registered trademark of Starry Studio / NetEase. <strong>Once Human: Event Timer</strong> is an independent, community-driven open-source fan project and is not affiliated with, endorsed by, sponsored by, or associated in any way with Starry Studio, NetEase, or their subsidiaries. The software operates strictly out-of-process via standard Windows desktop APIs without memory reading, writing, code modification, or process injection. As with any third-party gaming software, use is entirely at your own discretion and risk.
       </p>
     </div>
 
     <div class="footer-bottom">
-      <div class="footer-copyright">
+      <div class="footer-copyright" data-i18n="footer.copyright">
         &copy; 2026 <a href="https://github.com/vtstv" target="_blank" rel="noopener noreferrer">Murr</a>. Released under the <a href="https://github.com/vtstv/OHTimer/blob/master/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a>.
       </div>
       <a href="#" class="back-to-top-btn" aria-label="Back to top">
-        Back to top
+        <span data-i18n="footer.backToTop">Back to top</span>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"></polyline></svg>
       </a>
     </div>
@@ -851,6 +881,7 @@
 </footer>
 
   <!-- Scripts -->
+  <script src="assets/js/translations.js"></script>
   <script src="assets/js/main.js"></script>
 </body>
 </html>

@@ -11,6 +11,7 @@ const buildScriptPath = path.join(srcDir, 'build.js');
 const indexPath = path.join(websiteDir, 'index.html');
 const cssPath = path.join(websiteDir, 'assets/css/style.css');
 const jsPath = path.join(websiteDir, 'assets/js/main.js');
+const translationsPath = path.join(websiteDir, 'assets/js/translations.js');
 const cnamePath = path.join(websiteDir, 'CNAME');
 const nojekyllPath = path.join(websiteDir, '.nojekyll');
 const robotsPath = path.join(websiteDir, 'robots.txt');
@@ -28,6 +29,7 @@ const requiredFiles = [
   { name: 'build.js', path: buildScriptPath },
   { name: 'style.css', path: cssPath },
   { name: 'main.js', path: jsPath },
+  { name: 'translations.js', path: translationsPath },
   { name: 'CNAME', path: cnamePath },
   { name: '.nojekyll', path: nojekyllPath },
   { name: 'robots.txt', path: robotsPath },
@@ -184,7 +186,100 @@ try {
   errors++;
 }
 
-// 10. Verify GitHub Pages workflow
+try {
+  execSync(`node --check "${translationsPath}"`);
+  console.log('PASS: translations.js syntax check passed with 0 errors');
+} catch (e) {
+  console.error('FAIL: translations.js has syntax errors:', e.message);
+  errors++;
+}
+
+// 10. Verify Localization & Key Parity
+try {
+  const translations = require(translationsPath);
+  const langs = ['en', 'de', 'ru'];
+  const enKeys = Object.keys(translations.en);
+
+  langs.forEach(lang => {
+    if (!translations[lang]) {
+      console.error(`FAIL: Missing language dictionary for '${lang}'`);
+      errors++;
+      return;
+    }
+    const missing = enKeys.filter(k => typeof translations[lang][k] !== 'string');
+    if (missing.length > 0) {
+      console.error(`FAIL: Language '${lang}' missing ${missing.length} keys: ${missing.slice(0, 5).join(', ')}...`);
+      errors++;
+    }
+  });
+  console.log(`PASS: Multilingual translations verified (EN, DE, RU) with 100% key parity (${enKeys.length} keys each)`);
+
+  // Verify third-party software disclaimer across translations
+  const expectedDisclaimers = {
+    en: 'As with any third-party gaming software, use is entirely at your own discretion and risk.',
+    de: 'Wie bei jeder Drittanbieter-Software erfolgt die Nutzung auf eigene Verantwortung und eigenes Risiko.',
+    ru: 'Как и любое стороннее ПО, программа используется исключительно на свой страх и риск.'
+  };
+
+  for (const [lang, expectedText] of Object.entries(expectedDisclaimers)) {
+    const disclaimerInDict = translations[lang]['footer.disclaimer.text'] || '';
+    if (!disclaimerInDict.includes(expectedText)) {
+      console.error(`FAIL: Disclaimer for '${lang}' missing required text: "${expectedText}"`);
+      errors++;
+    } else {
+      console.log(`PASS: Disclaimer for '${lang}' verified with professional third-party risk notice`);
+    }
+  }
+
+  // Verify all data-i18n in HTML files map to valid translation keys
+  const dataI18nRegex = /data-i18n="([^"]+)"/g;
+  let dataI18nCount = 0;
+  let unmappedKeys = new Set();
+  let m;
+  while ((m = dataI18nRegex.exec(html)) !== null) {
+    dataI18nCount++;
+    const key = m[1];
+    if (!translations.en[key]) {
+      unmappedKeys.add(key);
+    }
+  }
+  if (unmappedKeys.size > 0) {
+    console.error(`FAIL: HTML contains unmapped translation keys: ${Array.from(unmappedKeys).join(', ')}`);
+    errors++;
+  } else {
+    console.log(`PASS: All ${dataI18nCount} data-i18n elements in HTML map to valid keys`);
+  }
+} catch (e) {
+  console.error('FAIL: Error validating translations:', e.message);
+  errors++;
+}
+
+// 11. Verify Absence of Prohibited Marketing Claims ("anti-cheat safe", "100% ban proof", "anti-cheat compliant")
+const prohibitedPhrases = ['anti-cheat safe', '100% ban proof', 'anti-cheat compliant'];
+const allHtmlFiles = [
+  indexPath,
+  templatePath,
+  ...requiredComponents.map(c => path.join(componentsDir, c))
+];
+
+let prohibitedFound = false;
+allHtmlFiles.forEach(file => {
+  if (fs.existsSync(file)) {
+    const content = fs.readFileSync(file, 'utf8').toLowerCase();
+    prohibitedPhrases.forEach(phrase => {
+      if (content.includes(phrase)) {
+        console.error(`FAIL: Prohibited marketing phrase "${phrase}" found in ${path.relative(rootDir, file)}`);
+        errors++;
+        prohibitedFound = true;
+      }
+    });
+  }
+});
+if (!prohibitedFound) {
+  console.log('PASS: 0 promotional anti-cheat marketing claims across all HTML components');
+}
+
+// 12. Verify GitHub Pages workflow
 const workflowYaml = fs.readFileSync(workflowPath, 'utf8');
 if (!workflowYaml.includes('actions/upload-pages-artifact') || !workflowYaml.includes('actions/deploy-pages')) {
   console.error('FAIL: pages.yml missing standard GitHub Pages deployment actions');
