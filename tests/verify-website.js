@@ -147,15 +147,40 @@ if (!twitterImageMatch || !twitterImageMatch[1].startsWith('https://')) {
   console.log(`PASS: Valid absolute twitter:image: ${twitterImageMatch[1]}`);
 }
 
-// 7. Verify Releases Link Integrity (no hardcoded obsolete download links)
-if (html.includes('https://github.com/vtstv/OHTimer/releases/download/')) {
-  console.error('FAIL: Direct version download link found. Links should point to repository releases.');
+// 7. Verify Direct Distribution Download Links & Dynamic Resolver
+const hasStandaloneLink = /href="https:\/\/github\.com\/vtstv\/OHTimer\/releases\/download\/[^"]+standalone\.zip"/i.test(html);
+const hasPortableLink = /href="https:\/\/github\.com\/vtstv\/OHTimer\/releases\/download\/[^"]+portable\.zip"/i.test(html);
+const hasSetupLink = /href="https:\/\/github\.com\/vtstv\/OHTimer\/releases\/download\/[^"]+Setup\.exe"/i.test(html);
+const hasReleasesPageLink = html.includes('https://github.com/vtstv/OHTimer/releases');
+
+if (!hasStandaloneLink) {
+  console.error('FAIL: Missing or invalid direct download link for Standalone edition (*standalone.zip)');
   errors++;
-} else if (html.includes('https://github.com/vtstv/OHTimer/releases')) {
-  console.log('PASS: Download links dynamically target repository releases');
+} else if (!hasPortableLink) {
+  console.error('FAIL: Missing or invalid direct download link for Portable edition (*portable.zip)');
+  errors++;
+} else if (!hasSetupLink) {
+  console.error('FAIL: Missing or invalid direct download link for Windows Setup installer (*Setup.exe)');
+  errors++;
+} else if (!hasReleasesPageLink) {
+  console.error('FAIL: Missing releases repository link in download section');
+  errors++;
 } else {
-  console.error('FAIL: Missing releases link in download section');
+  console.log('PASS: Direct distribution download links verified (Standalone, Portable, Setup) with releases fallback link');
+}
+
+// Verify dynamic release resolver in main.js
+const mainJsContent = fs.readFileSync(jsPath, 'utf8');
+const hasApiCall = mainJsContent.includes('api.github.com/repos/vtstv/OHTimer/releases/latest');
+const hasStandaloneResolver = mainJsContent.includes('standalone') && mainJsContent.includes('.zip');
+const hasPortableResolver = mainJsContent.includes('portable') && mainJsContent.includes('.zip');
+const hasSetupResolver = mainJsContent.includes('setup') && mainJsContent.includes('.exe');
+
+if (!hasApiCall || !hasStandaloneResolver || !hasPortableResolver || !hasSetupResolver) {
+  console.error('FAIL: main.js missing dynamic release resolver for GitHub release assets');
   errors++;
+} else {
+  console.log('PASS: Dynamic release resolver in main.js verified (fetches latest release assets for Standalone, Portable, Setup)');
 }
 
 // 8. Verify CSS syntax and url() references

@@ -117,25 +117,58 @@
 
   // Dropdown UI Interaction
   if (langBtn && langSelector) {
+    const optionsArray = Array.from(langOptions);
+
     langBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       const isOpen = langSelector.classList.toggle('open');
       langBtn.setAttribute('aria-expanded', isOpen);
+      if (isOpen) {
+        const activeOpt = langSelector.querySelector('.lang-option.active') || optionsArray[0];
+        if (activeOpt) activeOpt.focus();
+      }
     });
 
-    langOptions.forEach(opt => {
+    optionsArray.forEach((opt, idx) => {
       opt.addEventListener('click', (e) => {
         e.stopPropagation();
         const selectedLang = opt.getAttribute('data-lang');
         applyLanguage(selectedLang);
         langSelector.classList.remove('open');
         langBtn.setAttribute('aria-expanded', 'false');
+        langBtn.focus();
+      });
+
+      opt.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          const next = optionsArray[(idx + 1) % optionsArray.length];
+          next.focus();
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          const prev = optionsArray[(idx - 1 + optionsArray.length) % optionsArray.length];
+          prev.focus();
+        } else if (e.key === 'Home') {
+          e.preventDefault();
+          optionsArray[0].focus();
+        } else if (e.key === 'End') {
+          e.preventDefault();
+          optionsArray[optionsArray.length - 1].focus();
+        }
       });
     });
 
     // Close on outside click
     document.addEventListener('click', (e) => {
       if (!langSelector.contains(e.target)) {
+        langSelector.classList.remove('open');
+        langBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // Close when focus leaves the language selector
+    langSelector.addEventListener('focusout', (e) => {
+      if (!langSelector.contains(e.relatedTarget)) {
         langSelector.classList.remove('open');
         langBtn.setAttribute('aria-expanded', 'false');
       }
@@ -506,5 +539,47 @@
   }
 
   window.addEventListener('scroll', updateActiveNavLink, { passive: true });
+
+  // ========================================================================
+  // 9. Dynamic Release Links Resolver (GitHub Releases API)
+  // ========================================================================
+  function initDynamicReleaseLinks() {
+    const standaloneBtn = document.querySelector('[data-dist="standalone"]');
+    const portableBtn = document.querySelector('[data-dist="portable"]');
+    const setupBtn = document.querySelector('[data-dist="setup"]');
+
+    if (!standaloneBtn && !portableBtn && !setupBtn) return;
+
+    fetch('https://api.github.com/repos/vtstv/OHTimer/releases/latest')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('GitHub API HTTP ' + response.status);
+        }
+        return response.json();
+      })
+      .then(release => {
+        if (!release || !Array.isArray(release.assets)) return;
+
+        release.assets.forEach(asset => {
+          const name = (asset.name || '').toLowerCase();
+          const downloadUrl = asset.browser_download_url;
+          if (!downloadUrl) return;
+
+          if (standaloneBtn && name.includes('standalone') && name.endsWith('.zip')) {
+            standaloneBtn.href = downloadUrl;
+          } else if (portableBtn && name.includes('portable') && name.endsWith('.zip')) {
+            portableBtn.href = downloadUrl;
+          } else if (setupBtn && name.includes('setup') && name.endsWith('.exe')) {
+            setupBtn.href = downloadUrl;
+          }
+        });
+      })
+      .catch(err => {
+        // Silently preserve static fallback links in HTML
+        console.debug('Failed to fetch latest release assets from GitHub API:', err);
+      });
+  }
+
+  initDynamicReleaseLinks();
 
 })();
