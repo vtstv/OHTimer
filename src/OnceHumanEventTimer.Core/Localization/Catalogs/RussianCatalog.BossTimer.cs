@@ -12,7 +12,7 @@ internal static partial class RussianCatalog
         dict["BossTimer_Enable"] = "Включить таймер респауна босса";
         dict["BossTimer_Hotkey"] = "Горячая клавиша:";
         dict["BossTimer_HotkeyRecorderPrompt"] = "[ Нажмите клавишу... ]";
-        dict["BossTimer_HotkeyResetTooltip"] = "Сбросить на клавишу по умолчанию (NumPad 1)";
+        dict["BossTimer_HotkeyResetTooltip"] = "Сбросить на клавишу по умолчанию (Alt+NumPad 1)";
         dict["BossTimer_RepressBehavior"] = "При повторном нажатии:";
         dict["BossTimer_Repress_Restart"] = "Перезапуск отсчета";
         dict["BossTimer_Repress_Toggle"] = "Переключить Старт / Стоп";

@@ -12,7 +12,7 @@ internal static partial class EnglishCatalog
         dict["BossTimer_Enable"] = "Enable Boss Respawn Timer";
         dict["BossTimer_Hotkey"] = "Trigger Hotkey:";
         dict["BossTimer_HotkeyRecorderPrompt"] = "[ Press a key... ]";
-        dict["BossTimer_HotkeyResetTooltip"] = "Reset to default hotkey (NumPad 1)";
+        dict["BossTimer_HotkeyResetTooltip"] = "Reset to default hotkey (Alt+NumPad 1)";
         dict["BossTimer_RepressBehavior"] = "On Hotkey Re-press:";
         dict["BossTimer_Repress_Restart"] = "Restart countdown";
         dict["BossTimer_Repress_Toggle"] = "Toggle Start / Stop";

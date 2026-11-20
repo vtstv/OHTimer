@@ -45,7 +45,7 @@ public partial class SettingsViewModel
     }
 
     [ObservableProperty]
-    private string _bossTimerHotkey = "NumPad 1";
+    private string _bossTimerHotkey = "Alt+NumPad 1";
 
     [ObservableProperty]
     private BossTimerRepressBehavior _bossTimerRepressBehavior = BossTimerRepressBehavior.Restart;
@@ -121,7 +121,7 @@ public partial class SettingsViewModel
         _bossTimerTracker = bossTimerTracker;
         var bt = current.BossTimer ?? new BossTimerSettings();
         BossTimerEnabled = bt.IsEnabled;
-        BossTimerHotkey = !string.IsNullOrWhiteSpace(bt.Hotkey) ? bt.Hotkey : "NumPad 1";
+        BossTimerHotkey = !string.IsNullOrWhiteSpace(bt.Hotkey) ? bt.Hotkey : "Alt+NumPad 1";
         BossTimerRepressBehavior = bt.RepressBehavior;
         BossTimerPlayHotkeySound = bt.PlayHotkeySound;
         BossTimerName = !string.IsNullOrWhiteSpace(bt.BossName) ? bt.BossName : "Boss Respawn";
@@ -196,7 +196,7 @@ public partial class SettingsViewModel
     [RelayCommand]
     private void ResetBossTimerHotkey()
     {
-        BossTimerHotkey = "NumPad 1";
+        BossTimerHotkey = "Alt+NumPad 1";
     }
 
     [RelayCommand]

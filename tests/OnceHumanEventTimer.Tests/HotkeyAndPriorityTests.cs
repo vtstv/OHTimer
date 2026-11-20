@@ -83,6 +83,14 @@ public class HotkeyAndPriorityTests
         Assert.Equal(HotkeyParser.MOD_ALT, mod7);
         Assert.Equal(HotkeyParser.VK_NUMPAD1, vk7);
 
+        Assert.True(HotkeyParser.TryParse("Alt+NumPad +", out uint mod7a, out uint vk7a));
+        Assert.Equal(HotkeyParser.MOD_ALT, mod7a);
+        Assert.Equal(HotkeyParser.VK_ADD, vk7a);
+
+        Assert.True(HotkeyParser.TryParse("Alt+NumPad -", out uint mod7b, out uint vk7b));
+        Assert.Equal(HotkeyParser.MOD_ALT, mod7b);
+        Assert.Equal(HotkeyParser.VK_SUBTRACT, vk7b);
+
         Assert.True(HotkeyParser.TryParse("Ctrl+Alt+NumPad +", out uint mod8, out uint vk8));
         Assert.Equal(HotkeyParser.MOD_CONTROL | HotkeyParser.MOD_ALT, mod8);
         Assert.Equal(HotkeyParser.VK_ADD, vk8);
@@ -220,13 +228,16 @@ public class HotkeyAndPriorityTests
     public void DefaultHotkeys_AllParseSuccessfully()
     {
         var settings = new UserSettings();
-        Assert.True(HotkeyParser.TryParse(settings.BossTimer.Hotkey, out _, out uint bossVk));
+        Assert.True(HotkeyParser.TryParse(settings.BossTimer.Hotkey, out uint bossMod, out uint bossVk));
+        Assert.Equal(HotkeyParser.MOD_ALT, bossMod);
         Assert.Equal(HotkeyParser.VK_NUMPAD1, bossVk);
 
-        Assert.True(HotkeyParser.TryParse(settings.KillCounter.IncrementHotkey, out _, out uint incVk));
+        Assert.True(HotkeyParser.TryParse(settings.KillCounter.IncrementHotkey, out uint incMod, out uint incVk));
+        Assert.Equal(HotkeyParser.MOD_ALT, incMod);
         Assert.Equal(HotkeyParser.VK_ADD, incVk);
 
-        Assert.True(HotkeyParser.TryParse(settings.KillCounter.DecrementHotkey, out _, out uint decVk));
+        Assert.True(HotkeyParser.TryParse(settings.KillCounter.DecrementHotkey, out uint decMod, out uint decVk));
+        Assert.Equal(HotkeyParser.MOD_ALT, decMod);
         Assert.Equal(HotkeyParser.VK_SUBTRACT, decVk);
 
         Assert.True(HotkeyParser.TryParse(settings.ToggleSettingsHotkey, out uint setMod, out uint setVk));

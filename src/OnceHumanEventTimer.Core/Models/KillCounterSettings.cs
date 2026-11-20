@@ -47,20 +47,20 @@ public class KillCounterSettings
         set => _totalAllTimeCount = Math.Max(0, value);
     }
 
-    private string _incrementHotkey = "NumPad +";
+    private string _incrementHotkey = "Alt+NumPad +";
     /// <summary>Global hotkey string to increment kill count (+1).</summary>
     public string IncrementHotkey
     {
-        get => string.IsNullOrWhiteSpace(_incrementHotkey) ? "NumPad +" : _incrementHotkey;
-        set => _incrementHotkey = string.IsNullOrWhiteSpace(value) ? "NumPad +" : value;
+        get => string.IsNullOrWhiteSpace(_incrementHotkey) ? "Alt+NumPad +" : _incrementHotkey;
+        set => _incrementHotkey = string.IsNullOrWhiteSpace(value) ? "Alt+NumPad +" : value;
     }
 
-    private string _decrementHotkey = "NumPad -";
+    private string _decrementHotkey = "Alt+NumPad -";
     /// <summary>Global hotkey string to decrement / undo kill count (-1).</summary>
     public string DecrementHotkey
     {
-        get => string.IsNullOrWhiteSpace(_decrementHotkey) ? "NumPad -" : _decrementHotkey;
-        set => _decrementHotkey = string.IsNullOrWhiteSpace(value) ? "NumPad -" : value;
+        get => string.IsNullOrWhiteSpace(_decrementHotkey) ? "Alt+NumPad -" : _decrementHotkey;
+        set => _decrementHotkey = string.IsNullOrWhiteSpace(value) ? "Alt+NumPad -" : value;
     }
 
     /// <summary>Whether to play an audible sound chime on count increment or decrement.</summary>

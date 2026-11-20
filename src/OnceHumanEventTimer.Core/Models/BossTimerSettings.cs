@@ -11,12 +11,12 @@ public class BossTimerSettings
     /// <summary>Whether the Boss Timer feature and its global hotkey are enabled.</summary>
     public bool IsEnabled { get; set; } = true;
 
-    private string _hotkey = "NumPad 1";
-    /// <summary>Interactive hotkey string to trigger the boss timer (default: NumPad 1).</summary>
+    private string _hotkey = "Alt+NumPad 1";
+    /// <summary>Interactive hotkey string to trigger the boss timer (default: Alt+NumPad 1).</summary>
     public string Hotkey
     {
-        get => string.IsNullOrWhiteSpace(_hotkey) ? "NumPad 1" : _hotkey;
-        set => _hotkey = string.IsNullOrWhiteSpace(value) ? "NumPad 1" : value;
+        get => string.IsNullOrWhiteSpace(_hotkey) ? "Alt+NumPad 1" : _hotkey;
+        set => _hotkey = string.IsNullOrWhiteSpace(value) ? "Alt+NumPad 1" : value;
     }
 
     /// <summary>Action to take when hotkey is re-pressed while timer is active.</summary>

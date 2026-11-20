@@ -21,8 +21,8 @@ public class KillCounterSettingsTests
         Assert.False(settings.EnableGoal);
         Assert.Equal(20, settings.GoalCount);
         Assert.Equal(0, settings.TotalAllTimeCount);
-        Assert.Equal("NumPad +", settings.IncrementHotkey);
-        Assert.Equal("NumPad -", settings.DecrementHotkey);
+        Assert.Equal("Alt+NumPad +", settings.IncrementHotkey);
+        Assert.Equal("Alt+NumPad -", settings.DecrementHotkey);
         Assert.True(settings.PlaySound);
         Assert.False(settings.AutoStartBossTimer);
         Assert.Equal("#EF4444", settings.ColorHex);
@@ -96,6 +96,32 @@ public class KillCounterSettingsTests
     {
         var type = typeof(KillCounterSettings);
         Assert.True(type.GetCustomAttributes(typeof(SerializableAttribute), false).Length > 0, "KillCounterSettings must be marked with [Serializable].");
+    }
+
+    [Fact]
+    public void KillCounterSettings_NullOrWhitespace_FallbacksSafely()
+    {
+        var settings = new KillCounterSettings
+        {
+            BossName = "   ",
+            ColorHex = "",
+            IncrementHotkey = null!,
+            DecrementHotkey = "   "
+        };
+
+        Assert.Equal("Shadow Hound", settings.BossName);
+        Assert.Equal("#EF4444", settings.ColorHex);
+        Assert.Equal("Alt+NumPad +", settings.IncrementHotkey);
+        Assert.Equal("Alt+NumPad -", settings.DecrementHotkey);
+    }
+
+    [Fact]
+    public void UserSettings_KillCounter_NullSafety()
+    {
+        var userSettings = new UserSettings { KillCounter = null! };
+        Assert.NotNull(userSettings.KillCounter);
+        Assert.Equal("Alt+NumPad +", userSettings.KillCounter.IncrementHotkey);
+        Assert.Equal("Alt+NumPad -", userSettings.KillCounter.DecrementHotkey);
     }
 
     [Fact]

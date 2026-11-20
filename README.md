@@ -81,13 +81,13 @@ A modern, high-performance desktop HUD overlay for **Once Human** that tracks re
   - Quick-calibration nudge buttons (`-5s`, `-1s`, `+1s`, `+5s`, `0s`) for instant adjustment.
 
 - **Dedicated Boss Respawn Timer**:
-  - Track elite and boss respawn timers on demand with a single hotkey press (<kbd>NumPad 1</kbd> default) or manual Start/Stop buttons in Settings.
+  - Track elite and boss respawn timers on demand with a single hotkey press (<kbd>Alt+NumPad 1</kbd> default) or manual Start/Stop buttons in Settings.
   - Granular alerts: early warning audio chimes, 00:00 spawn alarms, Windows Toast notifications, and configurable repeating alerts.
   - Dedicated HUD countdown card with instant one-click dismiss (<kbd>✕</kbd>) from both Full HUD and Mini-HUD.
   - Full customization: target name, quick presets (3m, 5m, 10m, 15m, 20m, 30m), auto-hide delay, and neon accent palette.
 
 - **Smart Farm & Kill Tracker**:
-  - Track boss kills, silo runs, and farming goals on demand with dedicated global hotkeys (<kbd>NumPad +</kbd> to add, <kbd>NumPad -</kbd> to undo) or interactive HUD micro-buttons.
+  - Track boss kills, silo runs, and farming goals on demand with dedicated global hotkeys (<kbd>Alt+NumPad +</kbd> to add, <kbd>Alt+NumPad -</kbd> to undo) or interactive HUD micro-buttons.
   - Target run goal system with real-time percentage badge, mini progress bar, triumphant celebration chimes, and optional HUD card flash on goal completion.
   - Chained Boss Timer automation: auto-start the Boss Respawn Timer whenever a kill is registered, creating a seamless farm loop.
   - Dedicated HUD cards across both Full HUD and Mini-HUD with custom neon accent colors and session reset.
@@ -137,9 +137,9 @@ Releases are available in three distinct packages on the [GitHub Releases](https
 
 | Shortcut | Action |
 | :--- | :--- |
-| <kbd>NumPad 1</kbd> | Start / restart dedicated Boss Respawn Timer countdown |
-| <kbd>NumPad +</kbd> | Increment kill / run counter (+1) and optionally auto-start boss timer |
-| <kbd>NumPad -</kbd> | Decrement / undo kill counter (-1) |
+| <kbd>Alt</kbd> + <kbd>NumPad 1</kbd> | Start / restart dedicated Boss Respawn Timer countdown |
+| <kbd>Alt</kbd> + <kbd>NumPad +</kbd> | Increment kill / run counter (+1) and optionally auto-start boss timer |
+| <kbd>Alt</kbd> + <kbd>NumPad -</kbd> | Decrement / undo kill counter (-1) |
 | <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>O</kbd> | Toggle Settings window (open / close) |
 | <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>S</kbd> | Toggle HUD overlay visibility |
 | <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>L</kbd> | Toggle click-through mode and position lock |

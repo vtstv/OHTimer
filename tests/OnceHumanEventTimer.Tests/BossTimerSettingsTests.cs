@@ -16,7 +16,7 @@ public class BossTimerSettingsTests
         var settings = new BossTimerSettings();
 
         Assert.True(settings.IsEnabled);
-        Assert.Equal("NumPad 1", settings.Hotkey);
+        Assert.Equal("Alt+NumPad 1", settings.Hotkey);
         Assert.Equal(BossTimerRepressBehavior.Restart, settings.RepressBehavior);
         Assert.True(settings.PlayHotkeySound);
         Assert.Equal("Boss Respawn", settings.BossName);
@@ -76,7 +76,7 @@ public class BossTimerSettingsTests
 
         Assert.Equal("Boss Respawn", settings.BossName);
         Assert.Equal("#EF4444", settings.ColorHex);
-        Assert.Equal("NumPad 1", settings.Hotkey);
+        Assert.Equal("Alt+NumPad 1", settings.Hotkey);
     }
 
     [Fact]
@@ -100,7 +100,7 @@ public class BossTimerSettingsTests
     {
         var userSettings = new UserSettings { BossTimer = null! };
         Assert.NotNull(userSettings.BossTimer);
-        Assert.Equal("NumPad 1", userSettings.BossTimer.Hotkey);
+        Assert.Equal("Alt+NumPad 1", userSettings.BossTimer.Hotkey);
     }
 
     [Fact]

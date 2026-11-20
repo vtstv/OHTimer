@@ -39,7 +39,7 @@ Compensates for clock skew between local PC system time and Once Human game serv
 ## 2. Dedicated Boss Respawn Timer
 
 Track elite mob and world boss respawns on demand:
-- **Global Hotkey**: Press <kbd>NumPad 1</kbd> anywhere in-game to start or restart the countdown.
+- **Global Hotkey**: Press <kbd>Alt+NumPad 1</kbd> anywhere in-game to start or restart the countdown.
 - **Audio & Visual Alerts**:
   - Early warning chime at configurable seconds ahead (default: 30s).
   - Spawn alarm and celebratory chime at 00:00.
@@ -56,8 +56,8 @@ Track elite mob and world boss respawns on demand:
 A dedicated run and kill tracker designed for dungeon grinding, weapon calibration farming, and silo runs:
 - **Default State**: Disabled by default (`IsEnabled = false`) in base distribution to maintain a clean default overlay. Turn it on anytime under Settings > **Kill Counter** tab.
 - **Global Hotkeys**:
-  - <kbd>NumPad +</kbd>: Increment kill/run counter (+1) and optionally auto-start the Boss Respawn Timer.
-  - <kbd>NumPad -</kbd>: Undo / decrement kill counter (-1) in case of accidental press.
+  - <kbd>Alt+NumPad +</kbd>: Increment kill/run counter (+1) and optionally auto-start the Boss Respawn Timer.
+  - <kbd>Alt+NumPad -</kbd>: Undo / decrement kill counter (-1) in case of accidental press.
 - **Target Run Goal System**:
   - Set a run goal (e.g. 20 runs).
   - Real-time progress percentage badge and mini progress bar.
@@ -73,9 +73,9 @@ A dedicated run and kill tracker designed for dungeon grinding, weapon calibrati
 | Shortcut | Default Key | Action |
 | :--- | :--- | :--- |
 | **Toggle Settings Window** | <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>O</kbd> | Opens, focuses, or closes the Settings dialog instantly from in-game. |
-| **Boss Respawn Timer** | <kbd>NumPad 1</kbd> | Starts or restarts the active boss respawn countdown. |
-| **Kill Counter Increment** | <kbd>NumPad +</kbd> | Adds +1 kill/run and triggers optional chained boss timer. |
-| **Kill Counter Decrement** | <kbd>NumPad -</kbd> | Undoes -1 kill/run. |
+| **Boss Respawn Timer** | <kbd>Alt</kbd> + <kbd>NumPad 1</kbd> | Starts or restarts the active boss respawn countdown. |
+| **Kill Counter Increment** | <kbd>Alt</kbd> + <kbd>NumPad +</kbd> | Adds +1 kill/run and triggers optional chained boss timer. |
+| **Kill Counter Decrement** | <kbd>Alt</kbd> + <kbd>NumPad -</kbd> | Undoes -1 kill/run. |
 | **Toggle Overlay Visibility** | <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>S</kbd> | Temporarily hides or shows the floating HUD overlay. |
 | **Toggle Click-Through / Lock** | <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>L</kbd> | Locks overlay position and lets mouse clicks pass directly into the game. |
 | **Pause / Resume Alerts** | <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>P</kbd> | Temporarily mutes or resumes all sound chimes and toast notifications. |

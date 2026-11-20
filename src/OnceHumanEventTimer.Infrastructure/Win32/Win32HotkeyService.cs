@@ -7,32 +7,18 @@ using OnceHumanEventTimer.Core.Services;
 namespace OnceHumanEventTimer.Infrastructure.Win32;
 
 /// <summary>
-/// Registers and handles system-wide hotkeys using a hybrid engine:
-/// 1. Win32 RegisterHotKey API with persistent host window and UIPI message filter bypass.
-/// 2. Low-Level Keyboard Hook (WH_KEYBOARD_LL) capturing bare unmodified keys (e.g. NumPad 1, +, -)
-///    inside full-screen DirectX games where standard Win32 WM_HOTKEY messages are suppressed by RawInput.
+/// Registers and handles system-wide hotkeys using Win32 RegisterHotKey API and WPF HwndSource.
+/// Uses a dedicated persistent message-only host window (HWND_MESSAGE) ensuring hotkeys remain functional
+/// regardless of whether game or overlay windows are focused, visible, hidden, or minimized.
 /// </summary>
-public sealed partial class Win32HotkeyService : IHotkeyService
+public sealed class Win32HotkeyService : IHotkeyService
 {
-    private sealed record RegisteredHotkey(int Id, uint Modifiers, uint Vk, Action Callback);
-
-    private readonly Dictionary<int, RegisteredHotkey> _registeredHotkeys = new();
-    private readonly HashSet<uint> _pressedKeys = new();
-    private readonly Dictionary<int, long> _lastTriggerTicks = new();
-    private readonly object _lock = new();
-
+    private readonly Dictionary<int, Action> _hotkeyActions = new();
     private nint _windowHandle = 0;
     private HwndSource? _hwndSource;
     private HwndSource? _dedicatedHostSource;
-    private nint _llHookHandle = 0;
-    private readonly NativeMethods.HookProc _llKeyboardProc;
     private int _currentId = 1000;
     private bool _isInitialized;
-
-    public Win32HotkeyService()
-    {
-        _llKeyboardProc = LowLevelKeyboardProc;
-    }
 
     /// <summary>
     /// Initializes the hotkey hook. If hwnd is 0 or omitted, a dedicated persistent message-only host window is created.
@@ -78,16 +64,6 @@ public sealed partial class Win32HotkeyService : IHotkeyService
             catch { }
         }
 
-        try
-        {
-            _llHookHandle = NativeMethods.SetWindowsHookEx(
-                NativeMethods.WH_KEYBOARD_LL,
-                _llKeyboardProc,
-                NativeMethods.GetModuleHandle(null),
-                0);
-        }
-        catch { }
-
         _isInitialized = true;
     }
 
@@ -105,7 +81,7 @@ public sealed partial class Win32HotkeyService : IHotkeyService
             }
         }
 
-        if (string.IsNullOrWhiteSpace(hotkeyString))
+        if (_windowHandle == 0 || string.IsNullOrWhiteSpace(hotkeyString))
         {
             return false;
         }
@@ -116,29 +92,15 @@ public sealed partial class Win32HotkeyService : IHotkeyService
         }
 
         int id = Interlocked.Increment(ref _currentId);
-        bool success = false;
-
-        if (_windowHandle != 0)
+        bool success = NativeMethods.RegisterHotKey(_windowHandle, id, modifiers | NativeMethods.MOD_NOREPEAT, vk);
+        if (!success)
         {
-            success = NativeMethods.RegisterHotKey(_windowHandle, id, modifiers | NativeMethods.MOD_NOREPEAT, vk);
-            if (!success)
-            {
-                success = NativeMethods.RegisterHotKey(_windowHandle, id, modifiers, vk);
-            }
-        }
-
-        // Low-level hook ensures bare keys or conflicted keys still capture inside active games
-        if (_llHookHandle != 0)
-        {
-            success = true;
+            success = NativeMethods.RegisterHotKey(_windowHandle, id, modifiers, vk);
         }
 
         if (success)
         {
-            lock (_lock)
-            {
-                _registeredHotkeys[id] = new RegisteredHotkey(id, modifiers, vk, callback);
-            }
+            _hotkeyActions[id] = callback;
         }
 
         return success;
@@ -146,19 +108,34 @@ public sealed partial class Win32HotkeyService : IHotkeyService
 
     public void UnregisterAll()
     {
-        lock (_lock)
+        if (_windowHandle == 0) return;
+
+        foreach (var id in _hotkeyActions.Keys)
         {
-            if (_windowHandle != 0)
-            {
-                foreach (var id in _registeredHotkeys.Keys)
-                {
-                    NativeMethods.UnregisterHotKey(_windowHandle, id);
-                }
-            }
-            _registeredHotkeys.Clear();
-            _pressedKeys.Clear();
-            _lastTriggerTicks.Clear();
+            NativeMethods.UnregisterHotKey(_windowHandle, id);
         }
+        _hotkeyActions.Clear();
+    }
+
+    private nint HwndHook(nint hwnd, int msg, nint wParam, nint lParam, ref bool handled)
+    {
+        if (msg == NativeMethods.WM_HOTKEY)
+        {
+            int id = wParam.ToInt32();
+            if (_hotkeyActions.TryGetValue(id, out var action))
+            {
+                try
+                {
+                    action.Invoke();
+                }
+                catch
+                {
+                    // Prevent unhandled callback exceptions from crashing the UI message pump
+                }
+                handled = true;
+            }
+        }
+        return 0;
     }
 
     internal static bool TryParseHotkey(string hotkey, out uint modifiers, out uint vk)
@@ -180,12 +157,6 @@ public sealed partial class Win32HotkeyService : IHotkeyService
             _dedicatedHostSource.RemoveHook(HwndHook);
             _dedicatedHostSource.Dispose();
             _dedicatedHostSource = null;
-        }
-
-        if (_llHookHandle != 0)
-        {
-            NativeMethods.UnhookWindowsHookEx(_llHookHandle);
-            _llHookHandle = 0;
         }
 
         _windowHandle = 0;

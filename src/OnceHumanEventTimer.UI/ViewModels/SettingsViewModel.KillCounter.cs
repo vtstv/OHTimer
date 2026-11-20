@@ -77,10 +77,10 @@ public partial class SettingsViewModel
     private int _killCounterTotalAllTimeCount;
 
     [ObservableProperty]
-    private string _killCounterIncrementHotkey = "NumPad +";
+    private string _killCounterIncrementHotkey = "Alt+NumPad +";
 
     [ObservableProperty]
-    private string _killCounterDecrementHotkey = "NumPad -";
+    private string _killCounterDecrementHotkey = "Alt+NumPad -";
 
     [ObservableProperty]
     private bool _killCounterPlaySound = true;
@@ -186,10 +186,10 @@ public partial class SettingsViewModel
     }
 
     [RelayCommand]
-    private void ResetKillCounterIncrementHotkey() => KillCounterIncrementHotkey = "NumPad +";
+    private void ResetKillCounterIncrementHotkey() => KillCounterIncrementHotkey = "Alt+NumPad +";
 
     [RelayCommand]
-    private void ResetKillCounterDecrementHotkey() => KillCounterDecrementHotkey = "NumPad -";
+    private void ResetKillCounterDecrementHotkey() => KillCounterDecrementHotkey = "Alt+NumPad -";
 
     [RelayCommand]
     private void PickKillCounterColor()

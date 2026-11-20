@@ -15,7 +15,7 @@
             Padding="10,5"
             SnapsToDevicePixels="True">
         <TextBlock x:Name="HotkeyText"
-                   Text="NumPad 1"
+                   Text=""
                    FontFamily="Consolas, Segoe UI Mono, monospace"
                    FontSize="12"
                    FontWeight="Bold"

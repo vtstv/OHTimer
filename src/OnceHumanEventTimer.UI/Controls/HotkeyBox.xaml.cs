@@ -32,7 +32,7 @@ public partial class HotkeyBox : UserControl
             nameof(Hotkey),
             typeof(string),
             typeof(HotkeyBox),
-            new FrameworkPropertyMetadata("NumPad 1", FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnHotkeyChanged));
+            new FrameworkPropertyMetadata(string.Empty, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnHotkeyChanged));
 
     public static readonly DependencyProperty PromptTextProperty =
         DependencyProperty.Register(
