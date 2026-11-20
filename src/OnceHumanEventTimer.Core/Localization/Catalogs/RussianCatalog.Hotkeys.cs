@@ -15,6 +15,8 @@ internal static partial class RussianCatalog
         dict["Settings_HotkeyLockDesc"] = "Блокировка позиции и включение сквозного клика в игру.";
         dict["Settings_HotkeyPauseAlerts"] = "Хоткей паузы оповещений:";
         dict["Settings_HotkeyPauseAlertsDesc"] = "Временная пауза или включение всех звуков и уведомлений.";
+        dict["Settings_HotkeySettings"] = "Открыть / закрыть настройки:";
+        dict["Settings_HotkeySettingsDesc"] = "Глобальный хоткей для открытия и закрытия окна настроек (по умолчанию: Ctrl+Alt+O).";
         dict["Settings_HotkeyBossTimer"] = "Хоткей таймера босса:";
         dict["Settings_HotkeyBossTimerDesc"] = "Запуск, перезапуск или переключение таймера респауна босса.";
         dict["Settings_HotkeyResetTooltip"] = "Сбросить на клавишу по умолчанию";

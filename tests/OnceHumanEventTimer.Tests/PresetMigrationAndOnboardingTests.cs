@@ -12,30 +12,30 @@ public class PresetMigrationAndOnboardingTests
     private readonly LocalizationService _loc = new();
 
     [Fact]
-    public void DefaultEventPresets_HasSproutletAtTop_EchoSecond_AndGravityAbyssAtBottom()
+    public void DefaultEventPresets_HasEchoAtTop_SproutletSecond_AndGravityAbyssAtBottom()
     {
         var presets = DefaultEventPresets.CreateDefaultEvents();
         Assert.Equal(15, presets.Count);
 
-        // Index 0: Cargo Scramble (Sproutlet Truck)
-        Assert.Equal("cargo-scramble", presets[0].Id);
-        Assert.Equal("Cargo Scramble (Sproutlet Truck)", presets[0].Name);
+        // Index 0: S5: The Echo
+        Assert.Equal("dissonant-resonance", presets[0].Id);
+        Assert.Equal("S5: The Echo", presets[0].Name);
         Assert.Equal(60, presets[0].CycleMinutes);
-        Assert.Equal(0, presets[0].StartMinute);
-        Assert.Equal(20, presets[0].DurationMinutes);
-        Assert.Equal("#F59E0B", presets[0].ColorHex);
+        Assert.Equal(15, presets[0].StartMinute);
+        Assert.Equal(0, presets[0].StartSecond);
+        Assert.Equal(30, presets[0].DurationMinutes);
+        Assert.Equal("#D946EF", presets[0].ColorHex);
+        Assert.True(presets[0].IsEnabled);
+        Assert.True(presets[0].EnableExtraAlert);
+        Assert.Equal(15, presets[0].ExtraAlertMinutes);
 
-        // Index 1: S5: The Echo
-        Assert.Equal("dissonant-resonance", presets[1].Id);
-        Assert.Equal("S5: The Echo", presets[1].Name);
+        // Index 1: Cargo Scramble (Sproutlet Truck)
+        Assert.Equal("cargo-scramble", presets[1].Id);
+        Assert.Equal("Cargo Scramble (Sproutlet Truck)", presets[1].Name);
         Assert.Equal(60, presets[1].CycleMinutes);
-        Assert.Equal(15, presets[1].StartMinute);
-        Assert.Equal(0, presets[1].StartSecond);
-        Assert.Equal(30, presets[1].DurationMinutes);
-        Assert.Equal("#D946EF", presets[1].ColorHex);
-        Assert.True(presets[1].IsEnabled);
-        Assert.True(presets[1].EnableExtraAlert);
-        Assert.Equal(15, presets[1].ExtraAlertMinutes);
+        Assert.Equal(0, presets[1].StartMinute);
+        Assert.Equal(20, presets[1].DurationMinutes);
+        Assert.Equal("#F59E0B", presets[1].ColorHex);
 
         // Index 14 (Last): Gravity Abyss (Legacy)
         Assert.Equal("gravity-abyss", presets[^1].Id);
@@ -44,7 +44,7 @@ public class PresetMigrationAndOnboardingTests
     }
 
     [Fact]
-    public void EnsureDefaultPresets_MigratesLegacyOrder_SproutletAndEchoMovedToTop_GravityAbyssMovedToBottom()
+    public void EnsureDefaultPresets_MigratesLegacyOrder_EchoAndSproutletMovedToTop_GravityAbyssMovedToBottom()
     {
         // Simulate existing user settings from earlier versions with Gravity Abyss at top,
         // Aberrant Progeny in middle, and S5 near bottom
@@ -64,9 +64,9 @@ public class PresetMigrationAndOnboardingTests
         bool wasMigrated = settings.EnsureDefaultPresets();
         Assert.True(wasMigrated);
 
-        // Check list ordering: Cargo Scramble is index 0, S5 The Echo is index 1
-        Assert.Equal("cargo-scramble", settings.Events[0].Id);
-        Assert.Equal("dissonant-resonance", settings.Events[1].Id);
+        // Check list ordering: S5 The Echo is index 0, Cargo Scramble is index 1
+        Assert.Equal("dissonant-resonance", settings.Events[0].Id);
+        Assert.Equal("cargo-scramble", settings.Events[1].Id);
 
         // Gravity Abyss is moved to the very bottom and disabled
         Assert.Equal("gravity-abyss", settings.Events[^1].Id);

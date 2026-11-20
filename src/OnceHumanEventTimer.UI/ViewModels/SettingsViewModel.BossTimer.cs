@@ -30,6 +30,7 @@ public partial class SettingsViewModel
             {
                 _settingsService.Settings.BossTimer.IsEnabled = false;
                 _bossTimerTracker?.Configure(_settingsService.Settings.BossTimer);
+                _settingsService.NotifyChanged();
             }
         }
         else
@@ -38,6 +39,7 @@ public partial class SettingsViewModel
             {
                 _settingsService.Settings.BossTimer.IsEnabled = true;
                 _bossTimerTracker?.Configure(_settingsService.Settings.BossTimer);
+                _settingsService.NotifyChanged();
             }
         }
     }

@@ -97,7 +97,7 @@ internal static partial class EnglishCatalog
         ["Event_Skyripper_Desc"] = "Skyripper Rift anomaly encounter across aerial floating rift zones.",
         ["Event_CargoScramble_Name"] = "Cargo Scramble (Sproutlet Truck)",
         ["Event_CargoScramble_Desc"] = "Cargo Scramble PvP sproutlet truck dynamic encounter.",
-        ["Event_PrimeWar_Name"] = "Prime War (Nightmare Defense)",
+        ["Event_PrimeWar_Name"] = "Manibus (Prime War)",
         ["Event_PrimeWar_Desc"] = "Massive cooperative battlefield defending the Staroid Restraint device against Manibus.",
         ["Event_PublicCrisis_Name"] = "Public Crisis (Harrowing)",
         ["Event_PublicCrisis_Desc"] = "Rapid dynamic open-world public crisis event rewarding weapon mods and Stardust Source.",

@@ -85,6 +85,11 @@ public partial class App
             hotkeyService.RegisterHotkey("Ctrl+Alt+P", HandlePauseToggle);
         }
 
+        if (!string.IsNullOrWhiteSpace(settings.ToggleSettingsHotkey))
+        {
+            hotkeyService.RegisterHotkey(settings.ToggleSettingsHotkey, ToggleSettingsWindow);
+        }
+
         if (bossTimer != null && settings.BossTimer.IsEnabled && !string.IsNullOrWhiteSpace(settings.BossTimer.Hotkey))
         {
             hotkeyService.RegisterHotkey(settings.BossTimer.Hotkey, () =>
@@ -124,6 +129,10 @@ public partial class App
                     Dispatcher.Invoke(() =>
                     {
                         killCounter.Decrement();
+                        if (!overlayWindow.IsVisible && !_userManuallyHidden)
+                        {
+                            overlayWindow.Show();
+                        }
                     });
                 });
             }

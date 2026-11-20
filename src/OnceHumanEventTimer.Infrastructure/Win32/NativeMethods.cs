@@ -8,7 +8,7 @@ namespace OnceHumanEventTimer.Infrastructure.Win32;
 /// <summary>
 /// Native Windows API imports for window styling, click-through, global hotkeys, and system tray.
 /// </summary>
-internal static class NativeMethods
+internal static partial class NativeMethods
 {
     public const int GWL_EXSTYLE = -20;
     public const int WS_EX_TRANSPARENT = 0x00000020;
@@ -208,29 +208,7 @@ internal static class NativeMethods
         public nint lpTemplateName;
     }
 
-    [DllImport("user32.dll")]
-    public static extern nint GetForegroundWindow();
-
-    [DllImport("user32.dll", SetLastError = true)]
-    public static extern uint GetWindowThreadProcessId(nint hWnd, out uint lpdwProcessId);
-
-    [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-    public static extern int GetWindowText(nint hWnd, System.Text.StringBuilder lpString, int nMaxCount);
-
     [DllImport("comdlg32.dll", SetLastError = true, CharSet = CharSet.Auto)]
     [return: MarshalAs(UnmanagedType.Bool)]
     public static extern bool ChooseColor(ref CHOOSECOLOR lpcc);
-
-    public const uint PROCESS_QUERY_LIMITED_INFORMATION = 0x1000;
-
-    [DllImport("kernel32.dll", SetLastError = true)]
-    public static extern nint OpenProcess(uint processAccess, [MarshalAs(UnmanagedType.Bool)] bool bInheritHandle, uint processId);
-
-    [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    public static extern bool QueryFullProcessImageName(nint hProcess, uint dwFlags, System.Text.StringBuilder lpExeName, ref uint lpdwSize);
-
-    [DllImport("kernel32.dll", SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    public static extern bool CloseHandle(nint hObject);
 }

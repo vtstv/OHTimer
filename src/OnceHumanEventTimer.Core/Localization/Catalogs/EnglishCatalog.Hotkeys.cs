@@ -15,6 +15,8 @@ internal static partial class EnglishCatalog
         dict["Settings_HotkeyLockDesc"] = "Lock overlay position and allow mouse clicks to pass through to the game.";
         dict["Settings_HotkeyPauseAlerts"] = "Toggle Pause Alerts Hotkey:";
         dict["Settings_HotkeyPauseAlertsDesc"] = "Temporarily mute or resume all audio alerts and toast notifications.";
+        dict["Settings_HotkeySettings"] = "Open / Close Settings Window:";
+        dict["Settings_HotkeySettingsDesc"] = "Global hotkey to toggle the Settings dialog on and off (default: Ctrl+Alt+O).";
         dict["Settings_HotkeyBossTimer"] = "Boss Respawn Timer Hotkey:";
         dict["Settings_HotkeyBossTimerDesc"] = "Start, restart, or toggle the dedicated boss respawn countdown.";
         dict["Settings_HotkeyResetTooltip"] = "Reset to default hotkey";

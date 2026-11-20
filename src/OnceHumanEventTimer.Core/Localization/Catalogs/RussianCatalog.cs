@@ -97,7 +97,7 @@ internal static partial class RussianCatalog
         ["Event_Skyripper_Desc"] = "Аномалия Разломщика небес среди парящих пространственных разломов.",
         ["Event_CargoScramble_Name"] = "Заварушка с грузом (Грузовик со спорками)",
         ["Event_CargoScramble_Desc"] = "Динамическое PvP-событие «Заварушка с грузом» по перехвату грузовика со спорками.",
-        ["Event_PrimeWar_Name"] = "Первая война (Оборона Кошмара)",
+        ["Event_PrimeWar_Name"] = "Манибус (Оборона Кошмара)",
         ["Event_PrimeWar_Desc"] = "Масштабная битва по защите Звездоидного сдерживателя от Манибуса.",
         ["Event_PublicCrisis_Name"] = "Кризис зоны (Harrowing)",
         ["Event_PublicCrisis_Desc"] = "Динамическое публичное событие с наградами в виде модов оружия и источника пыли.",

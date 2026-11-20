@@ -11,6 +11,8 @@ internal static partial class RussianCatalog
         dict["KillCounter_CardTarget"] = "Цель и задачи забегов";
         dict["KillCounter_TargetName"] = "Имя цели / босса:";
         dict["KillCounter_QuickPresets"] = "Быстрые пресеты:";
+        dict["KillCounter_PresetGiant"] = "Giant";
+        dict["KillCounter_PresetManibus"] = "Манибус";
         dict["KillCounter_CurrentCount"] = "Текущие убийства / забеги:";
         dict["KillCounter_EnableGoal"] = "Включить цель по убийствам / забегам";
         dict["KillCounter_GoalCount"] = "Количество цели:";

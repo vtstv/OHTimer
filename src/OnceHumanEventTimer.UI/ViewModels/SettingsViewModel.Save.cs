@@ -47,6 +47,7 @@ public partial class SettingsViewModel
         s.ToggleVisibilityHotkey = ToggleVisibilityHotkey;
         s.ToggleClickThroughHotkey = ToggleClickThroughHotkey;
         s.TogglePauseAlertsHotkey = TogglePauseAlertsHotkey;
+        s.ToggleSettingsHotkey = ToggleSettingsHotkey;
         s.StartWithWindows = StartWithWindows;
         s.AutoHideWhenGameOutOfFocus = AutoHideWhenGameOutOfFocus;
 

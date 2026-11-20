@@ -15,19 +15,6 @@ public static class DefaultEventPresets
     {
         new EventDefinition
         {
-            Id = "cargo-scramble",
-            Name = "Cargo Scramble (Sproutlet Truck)",
-            CycleMinutes = 60,
-            StartMinute = 0,
-            DurationMinutes = 20,
-            TimeOffsetSeconds = 0,
-            ColorHex = "#F59E0B",
-            IsEnabled = false,
-            SoundPreset = SoundPreset.CyberWarning,
-            Description = "PvP cargo truck event in Red Sands / Iron River. Spawns Sproutlets periodically."
-        },
-        new EventDefinition
-        {
             Id = "dissonant-resonance",
             Name = "S5: The Echo",
             CycleMinutes = 60,
@@ -43,6 +30,19 @@ public static class DefaultEventPresets
             ExtraAlertMinutes = 15,
             CountdownToBoss = false,
             Description = "Season 5: Dissonant Resonance. Hourly schedule starting at XX:15:00. The Echo War boss portal opens at XX:30:00."
+        },
+        new EventDefinition
+        {
+            Id = "cargo-scramble",
+            Name = "Cargo Scramble (Sproutlet Truck)",
+            CycleMinutes = 60,
+            StartMinute = 0,
+            DurationMinutes = 20,
+            TimeOffsetSeconds = 0,
+            ColorHex = "#F59E0B",
+            IsEnabled = false,
+            SoundPreset = SoundPreset.CyberWarning,
+            Description = "PvP cargo truck event in Red Sands / Iron River. Spawns Sproutlets periodically."
         },
         new EventDefinition
         {
@@ -63,7 +63,7 @@ public static class DefaultEventPresets
         new EventDefinition
         {
             Id = "prime-war",
-            Name = "Prime War (Nightmare Defense)",
+            Name = "Manibus (Prime War)",
             CycleMinutes = 120,
             StartMinute = 0,
             DurationMinutes = 30,

@@ -890,9 +890,9 @@
                                                 <WrapPanel Grid.Column="1" VerticalAlignment="Center">
                                                     <Button Style="{StaticResource ModernDarkButtonStyle}" Command="{Binding SetKillCounterPresetCommand}" CommandParameter="Treant" Content="Treant" Padding="7,3" FontSize="10.5" Margin="0,0,4,4" />
                                                     <Button Style="{StaticResource ModernDarkButtonStyle}" Command="{Binding SetKillCounterPresetCommand}" CommandParameter="Hound" Content="Hound" Padding="7,3" FontSize="10.5" Margin="0,0,4,4" />
-                                                    <Button Style="{StaticResource ModernDarkButtonStyle}" Command="{Binding SetKillCounterPresetCommand}" CommandParameter="Arachsiam" Content="Arachsiam" Padding="7,3" FontSize="10.5" Margin="0,0,4,4" />
+                                                    <Button Style="{StaticResource ModernDarkButtonStyle}" Command="{Binding SetKillCounterPresetCommand}" CommandParameter="{loc:Loc KillCounter_PresetGiant}" Content="{loc:Loc KillCounter_PresetGiant}" Padding="7,3" FontSize="10.5" Margin="0,0,4,4" />
                                                     <Button Style="{StaticResource ModernDarkButtonStyle}" Command="{Binding SetKillCounterPresetCommand}" CommandParameter="Silo" Content="Silo" Padding="7,3" FontSize="10.5" Margin="0,0,4,4" />
-                                                    <Button Style="{StaticResource ModernDarkButtonStyle}" Command="{Binding SetKillCounterPresetCommand}" CommandParameter="Prime War" Content="Prime War" Padding="7,3" FontSize="10.5" Margin="0,0,4,4" />
+                                                    <Button Style="{StaticResource ModernDarkButtonStyle}" Command="{Binding SetKillCounterPresetCommand}" CommandParameter="{loc:Loc KillCounter_PresetManibus}" Content="{loc:Loc KillCounter_PresetManibus}" Padding="7,3" FontSize="10.5" Margin="0,0,4,4" />
                                                 </WrapPanel>
                                             </Grid>
 
@@ -1215,6 +1215,24 @@
                                             <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                                                 <controls:HotkeyBox Width="140" Height="28" Hotkey="{Binding TogglePauseAlertsHotkey, Mode=TwoWay}" PromptText="{loc:Loc BossTimer_HotkeyRecorderPrompt}" Margin="0,0,6,0" />
                                                 <Button Style="{StaticResource ModernDarkButtonStyle}" Command="{Binding ResetTogglePauseAlertsHotkeyCommand}" Content="↺" ToolTip="{loc:Loc Settings_HotkeyResetTooltip}" Padding="8,4" FontSize="12" />
+                                            </StackPanel>
+                                        </Grid>
+
+                                        <Rectangle Height="1" Fill="#1E293B" Margin="0,0,0,14" />
+
+                                        <!-- Row 4: Toggle Settings Window -->
+                                        <Grid Margin="0,0,0,14">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                                <TextBlock Text="{loc:Loc Settings_HotkeySettings}" Foreground="{StaticResource TextPrimaryBrush}" FontSize="12" FontWeight="SemiBold" />
+                                                <TextBlock Text="{loc:Loc Settings_HotkeySettingsDesc}" Foreground="{StaticResource TextMutedBrush}" FontSize="10.5" Margin="0,2,0,0" />
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                                <controls:HotkeyBox Width="140" Height="28" Hotkey="{Binding ToggleSettingsHotkey, Mode=TwoWay}" PromptText="{loc:Loc BossTimer_HotkeyRecorderPrompt}" Margin="0,0,6,0" />
+                                                <Button Style="{StaticResource ModernDarkButtonStyle}" Command="{Binding ResetToggleSettingsHotkeyCommand}" Content="↺" ToolTip="{loc:Loc Settings_HotkeyResetTooltip}" Padding="8,4" FontSize="12" />
                                             </StackPanel>
                                         </Grid>
 

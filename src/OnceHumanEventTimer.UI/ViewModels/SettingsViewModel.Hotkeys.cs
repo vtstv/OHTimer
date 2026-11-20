@@ -18,11 +18,15 @@ public partial class SettingsViewModel
     [ObservableProperty]
     private string _togglePauseAlertsHotkey = "Ctrl+Alt+P";
 
+    [ObservableProperty]
+    private string _toggleSettingsHotkey = "Ctrl+Alt+O";
+
     private void InitializeHotkeys(UserSettings current)
     {
         ToggleVisibilityHotkey = current.ToggleVisibilityHotkey;
         ToggleClickThroughHotkey = current.ToggleClickThroughHotkey;
         TogglePauseAlertsHotkey = current.TogglePauseAlertsHotkey;
+        ToggleSettingsHotkey = current.ToggleSettingsHotkey;
     }
 
     [RelayCommand]
@@ -41,5 +45,11 @@ public partial class SettingsViewModel
     private void ResetTogglePauseAlertsHotkey()
     {
         TogglePauseAlertsHotkey = "Ctrl+Alt+P";
+    }
+
+    [RelayCommand]
+    private void ResetToggleSettingsHotkey()
+    {
+        ToggleSettingsHotkey = "Ctrl+Alt+O";
     }
 }

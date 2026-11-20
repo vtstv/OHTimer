@@ -91,7 +91,7 @@ A modern, high-performance desktop HUD overlay for **Once Human** that tracks re
   - Target run goal system with real-time percentage badge, mini progress bar, triumphant celebration chimes, and optional HUD card flash on goal completion.
   - Chained Boss Timer automation: auto-start the Boss Respawn Timer whenever a kill is registered, creating a seamless farm loop.
   - Dedicated HUD cards across both Full HUD and Mini-HUD with custom neon accent colors and session reset.
-  - Quick target presets (*Treant*, *Hound*, *Arachsiam*, *Silo*, *Prime War*) for instantaneous setup.
+  - Quick target presets (*Treant*, *Hound*, *Giant*, *Silo*, *Manibus*) for instantaneous setup.
 
 - **Game Focus Detection (Smart Auto-Hide)**:
   - Automatically conceals the overlay when *Once Human* is not the active window (e.g., when Alt-Tabbing to a web browser or another desktop app).
@@ -140,6 +140,7 @@ Releases are available in three distinct packages on the [GitHub Releases](https
 | <kbd>NumPad 1</kbd> | Start / restart dedicated Boss Respawn Timer countdown |
 | <kbd>NumPad +</kbd> | Increment kill / run counter (+1) and optionally auto-start boss timer |
 | <kbd>NumPad -</kbd> | Decrement / undo kill counter (-1) |
+| <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>O</kbd> | Toggle Settings window (open / close) |
 | <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>S</kbd> | Toggle HUD overlay visibility |
 | <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>L</kbd> | Toggle click-through mode and position lock |
 | <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>P</kbd> | Toggle pause / resume for audio alerts and notifications |

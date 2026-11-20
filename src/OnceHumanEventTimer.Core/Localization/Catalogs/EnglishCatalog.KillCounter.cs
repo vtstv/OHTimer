@@ -11,6 +11,8 @@ internal static partial class EnglishCatalog
         dict["KillCounter_CardTarget"] = "Target & Run Goal";
         dict["KillCounter_TargetName"] = "Target / Boss Name:";
         dict["KillCounter_QuickPresets"] = "Quick Presets:";
+        dict["KillCounter_PresetGiant"] = "Giant";
+        dict["KillCounter_PresetManibus"] = "Manibus";
         dict["KillCounter_CurrentCount"] = "Current Kills / Runs:";
         dict["KillCounter_EnableGoal"] = "Enable Run / Kill Goal";
         dict["KillCounter_GoalCount"] = "Goal Count:";

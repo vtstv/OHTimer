@@ -89,7 +89,7 @@ public class SettingsAndPresetsTests
 
         var primeWar = events.FirstOrDefault(e => e.Id == "prime-war");
         Assert.NotNull(primeWar);
-        Assert.Equal("Prime War (Nightmare Defense)", primeWar.Name);
+        Assert.Equal("Manibus (Prime War)", primeWar.Name);
         Assert.Equal(SoundPreset.DeepResonance, primeWar.SoundPreset);
 
         var cargoScramble = events.FirstOrDefault(e => e.Id == "cargo-scramble");

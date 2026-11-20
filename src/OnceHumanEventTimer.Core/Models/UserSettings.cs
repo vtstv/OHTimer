@@ -157,6 +157,14 @@ public partial class UserSettings
     /// <summary>Global hotkey string to toggle pause/mute for alerts (default: Ctrl+Alt+P).</summary>
     public string TogglePauseAlertsHotkey { get; set; } = "Ctrl+Alt+P";
 
+    private string _toggleSettingsHotkey = "Ctrl+Alt+O";
+    /// <summary>Global hotkey string to toggle (open/close) the Settings window (default: Ctrl+Alt+O).</summary>
+    public string ToggleSettingsHotkey
+    {
+        get => string.IsNullOrWhiteSpace(_toggleSettingsHotkey) ? "Ctrl+Alt+O" : _toggleSettingsHotkey;
+        set => _toggleSettingsHotkey = string.IsNullOrWhiteSpace(value) ? "Ctrl+Alt+O" : value;
+    }
+
     /// <summary>Whether all audio alerts and toast notifications are temporarily paused/muted.</summary>
     public bool AreAlertsPaused { get; set; } = false;
 

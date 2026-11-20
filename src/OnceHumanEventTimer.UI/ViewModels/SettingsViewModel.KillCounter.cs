@@ -26,6 +26,7 @@ public partial class SettingsViewModel
         {
             _settingsService.Settings.KillCounter.IsEnabled = value;
             _killCounterTracker?.Configure(_settingsService.Settings.KillCounter);
+            _settingsService.NotifyChanged();
         }
     }
 

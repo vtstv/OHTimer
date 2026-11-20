@@ -97,7 +97,7 @@ internal static partial class GermanCatalog
         ["Event_Skyripper_Desc"] = "Himmelsreißer-Riss-Begegnung in schwebenden Risszonen.",
         ["Event_CargoScramble_Name"] = "Frachtgerangel (Spross-LKW)",
         ["Event_CargoScramble_Desc"] = "Frachtgerangel PvP-Event um den dynamischen Spross-LKW.",
-        ["Event_PrimeWar_Name"] = "Erster Krieg (Albtraum-Verteidigung)",
+        ["Event_PrimeWar_Name"] = "Manibus (Erster Krieg)",
         ["Event_PrimeWar_Desc"] = "Massive Koop-Schlacht zur Verteidigung der Sternoid-Eindämmung gegen Manibus.",
         ["Event_PublicCrisis_Name"] = "Öffentliche Krise (Harrowing)",
         ["Event_PublicCrisis_Desc"] = "Schnelles dynamisches Krisenevent mit Belohnungen für Waffen-Mods und Sternenstaubquelle.",

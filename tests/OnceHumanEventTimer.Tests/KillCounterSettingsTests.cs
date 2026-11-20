@@ -76,7 +76,7 @@ public class KillCounterSettingsTests
         var original = new KillCounterSettings
         {
             IsEnabled = true,
-            BossName = "Arachsiam",
+            BossName = "Giant",
             CurrentCount = 7,
             GoalCount = 15
         };
@@ -85,7 +85,7 @@ public class KillCounterSettingsTests
         clone.BossName = "Modified";
         clone.CurrentCount = 99;
 
-        Assert.Equal("Arachsiam", original.BossName);
+        Assert.Equal("Giant", original.BossName);
         Assert.Equal(7, original.CurrentCount);
         Assert.Equal("Modified", clone.BossName);
         Assert.Equal(99, clone.CurrentCount);
@@ -129,6 +129,8 @@ public class KillCounterSettingsTests
             "KillCounter_CardTarget",
             "KillCounter_TargetName",
             "KillCounter_QuickPresets",
+            "KillCounter_PresetGiant",
+            "KillCounter_PresetManibus",
             "KillCounter_CurrentCount",
             "KillCounter_EnableGoal",
             "KillCounter_GoalCount",

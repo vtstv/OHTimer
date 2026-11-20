@@ -16,7 +16,7 @@ public partial class OverlayWindow : Window
     private readonly ISettingsService _settingsService;
     private nint _hwnd;
 
-    public nint Handle => _hwnd;
+    public nint Handle => _hwnd != 0 ? _hwnd : new WindowInteropHelper(this).EnsureHandle();
 
     public OverlayWindow(OverlayViewModel viewModel, ISettingsService settingsService)
     {
@@ -25,6 +25,8 @@ public partial class OverlayWindow : Window
         DataContext = _viewModel;
 
         InitializeComponent();
+
+        _hwnd = new WindowInteropHelper(this).EnsureHandle();
 
         Left = _settingsService.Settings.OverlayPositionX;
         Top = _settingsService.Settings.OverlayPositionY;

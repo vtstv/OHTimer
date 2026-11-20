@@ -152,30 +152,38 @@ public partial class UserSettings
             }
         }
 
-        // Reorder presets:
-        // 1. Cargo Scramble (Sproutlet Truck) at index 0
-        var cargo = Events.FirstOrDefault(e => e.Id == "cargo-scramble");
-        if (cargo != null)
+        // Migrate prime-war preset name from legacy Prime War (Nightmare Defense) to Manibus (Prime War)
+        var existingPrimeWar = Events.FirstOrDefault(e => e.Id == "prime-war");
+        if (existingPrimeWar != null && (existingPrimeWar.Name == "Prime War (Nightmare Defense)" || existingPrimeWar.Name == "Prime War"))
         {
-            int idx = Events.IndexOf(cargo);
-            if (idx != 0)
-            {
-                Events.RemoveAt(idx);
-                Events.Insert(0, cargo);
-                wasMigrated = true;
-            }
+            existingPrimeWar.Name = "Manibus (Prime War)";
+            wasMigrated = true;
         }
 
-        // 2. S5: The Echo at index 1
+        // Reorder presets:
+        // 1. S5: The Echo at index 0 (current active season event)
         var echo = Events.FirstOrDefault(e => e.Id == "dissonant-resonance");
         if (echo != null)
         {
             int idx = Events.IndexOf(echo);
+            if (idx != 0)
+            {
+                Events.RemoveAt(idx);
+                Events.Insert(0, echo);
+                wasMigrated = true;
+            }
+        }
+
+        // 2. Cargo Scramble (Sproutlet Truck) at index 1
+        var cargo = Events.FirstOrDefault(e => e.Id == "cargo-scramble");
+        if (cargo != null)
+        {
+            int idx = Events.IndexOf(cargo);
             int targetIdx = Events.Count > 1 ? 1 : 0;
             if (idx != targetIdx)
             {
                 Events.RemoveAt(idx);
-                Events.Insert(targetIdx, echo);
+                Events.Insert(targetIdx, cargo);
                 wasMigrated = true;
             }
         }

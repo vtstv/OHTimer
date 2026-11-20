@@ -15,6 +15,8 @@ internal static partial class GermanCatalog
         dict["Settings_HotkeyLockDesc"] = "Overlay-Position sperren und Mausklicks an das Spiel weiterleiten.";
         dict["Settings_HotkeyPauseAlerts"] = "Hotkey für Benachrichtigungen pausieren:";
         dict["Settings_HotkeyPauseAlertsDesc"] = "Alle Audioalarme und Benachrichtigungen vorübergehend stummschalten oder fortsetzen.";
+        dict["Settings_HotkeySettings"] = "Einstellungen öffnen / schließen:";
+        dict["Settings_HotkeySettingsDesc"] = "Globaler Hotkey zum Öffnen und Schließen des Einstellungsfensters (Standard: Ctrl+Alt+O).";
         dict["Settings_HotkeyBossTimer"] = "Hotkey für Boss-Respawn-Timer:";
         dict["Settings_HotkeyBossTimerDesc"] = "Den speziellen Boss-Respawn-Countdown starten, neu starten oder umschalten.";
         dict["Settings_HotkeyResetTooltip"] = "Auf Standard-Hotkey zurücksetzen";

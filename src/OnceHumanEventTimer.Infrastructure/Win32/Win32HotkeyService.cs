@@ -22,6 +22,20 @@ public sealed class Win32HotkeyService : IHotkeyService
     public void Initialize(nint hwnd)
     {
         _windowHandle = hwnd;
+        try
+        {
+            NativeMethods.ChangeWindowMessageFilter(NativeMethods.WM_HOTKEY, NativeMethods.MSGFLT_ADD);
+        }
+        catch { }
+
+        if (_windowHandle != 0)
+        {
+            try
+            {
+                NativeMethods.ChangeWindowMessageFilterEx(_windowHandle, NativeMethods.WM_HOTKEY, NativeMethods.MSGFLT_ALLOW, 0);
+            }
+            catch { }
+        }
         _hwndSource = HwndSource.FromHwnd(hwnd);
         _hwndSource?.AddHook(HwndHook);
     }
@@ -80,58 +94,7 @@ public sealed class Win32HotkeyService : IHotkeyService
 
     internal static bool TryParseHotkey(string hotkey, out uint modifiers, out uint vk)
     {
-        modifiers = 0;
-        vk = 0;
-        if (string.IsNullOrWhiteSpace(hotkey)) return false;
-
-        string preprocessed = hotkey
-            .Replace("NumPad +", "NumPadPlus", StringComparison.OrdinalIgnoreCase)
-            .Replace("NumPad -", "NumPadMinus", StringComparison.OrdinalIgnoreCase)
-            .Replace("NumPad *", "NumPadMultiply", StringComparison.OrdinalIgnoreCase)
-            .Replace("NumPad /", "NumPadDivide", StringComparison.OrdinalIgnoreCase)
-            .Replace("NumPad .", "NumPadDecimal", StringComparison.OrdinalIgnoreCase);
-
-        if (preprocessed.EndsWith("++", StringComparison.Ordinal))
-            preprocessed = preprocessed[..^1] + "OemPlus";
-        else if (preprocessed.EndsWith("+ +", StringComparison.Ordinal))
-            preprocessed = preprocessed[..^3] + "+OemPlus";
-
-        var parts = preprocessed.Split('+', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
-        if (parts.Length == 0) return false;
-
-        string keyPart = parts[^1];
-        string normalizedKey = keyPart.Replace(" ", "");
-        if (normalizedKey.Length == 1 && char.IsDigit(normalizedKey[0]))
-        {
-            normalizedKey = "D" + normalizedKey;
-        }
-
-        for (int i = 0; i < parts.Length - 1; i++)
-        {
-            string mod = parts[i].ToLowerInvariant();
-            if (mod is "ctrl" or "control") modifiers |= NativeMethods.MOD_CONTROL;
-            else if (mod is "alt") modifiers |= NativeMethods.MOD_ALT;
-            else if (mod is "shift") modifiers |= NativeMethods.MOD_SHIFT;
-            else if (mod is "win" or "windows") modifiers |= NativeMethods.MOD_WIN;
-        }
-
-        string mapped = normalizedKey.ToLowerInvariant() switch
-        {
-            "numpadplus" or "numpadadd" => "Add",
-            "numpadminus" or "numpadsubtract" => "Subtract",
-            "numpadmultiply" or "numpadstar" => "Multiply",
-            "numpaddivide" or "numpadslash" => "Divide",
-            "numpaddecimal" or "numpaddot" => "Decimal",
-            _ => normalizedKey
-        };
-
-        if (Enum.TryParse<System.Windows.Input.Key>(mapped, true, out var key))
-        {
-            vk = (uint)System.Windows.Input.KeyInterop.VirtualKeyFromKey(key);
-            return vk != 0;
-        }
-
-        return false;
+        return OnceHumanEventTimer.Core.Utils.HotkeyParser.TryParse(hotkey, out modifiers, out vk);
     }
 
     public void Dispose()

@@ -129,13 +129,41 @@ public class GameFocusMonitor : IGameFocusMonitor
         if (pid == _currentProcessId) return true;
 
         string? procName = GetProcessName(pid);
-        if (string.IsNullOrEmpty(procName)) return IsExactOnceHumanTitle(hwnd);
+        if (!string.IsNullOrEmpty(procName) && KnownNonGameProcesses.Contains(procName)) return false;
 
-        // Common browsers/tools with "Once Human" in title/tab are never the game
-        if (KnownNonGameProcesses.Contains(procName)) return false;
+        if (!string.IsNullOrEmpty(procName))
+        {
+            if (procName.Equals("ONCE_HUMAN", StringComparison.OrdinalIgnoreCase) ||
+                procName.Equals("OnceHuman", StringComparison.OrdinalIgnoreCase) ||
+                procName.Equals("AF_AP", StringComparison.OrdinalIgnoreCase) ||
+                procName.Equals("AF_AP_Client", StringComparison.OrdinalIgnoreCase) ||
+                procName.StartsWith("OnceHuman", StringComparison.OrdinalIgnoreCase) ||
+                procName.StartsWith("ONCE_HUMAN", StringComparison.OrdinalIgnoreCase) ||
+                procName.IndexOf("OnceHuman", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                procName.IndexOf("AF_AP", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return true;
+            }
+        }
 
-        return procName.Equals("ONCE_HUMAN", StringComparison.OrdinalIgnoreCase) ||
-               procName.Equals("OnceHuman", StringComparison.OrdinalIgnoreCase);
+        return IsOnceHumanWindowTitle(hwnd);
+    }
+
+    private static bool IsOnceHumanWindowTitle(nint hwnd)
+    {
+        try
+        {
+            var sb = new StringBuilder(256);
+            int len = NativeMethods.InternalGetWindowText(hwnd, sb, sb.Capacity);
+            if (len <= 0) len = NativeMethods.GetWindowText(hwnd, sb, sb.Capacity);
+            if (len > 0)
+            {
+                string title = sb.ToString().Trim();
+                return title.Contains("Once Human", StringComparison.OrdinalIgnoreCase);
+            }
+        }
+        catch { }
+        return false;
     }
 
     private string? GetProcessName(uint pid)
@@ -172,23 +200,14 @@ public class GameFocusMonitor : IGameFocusMonitor
             using var proc = Process.GetProcessById((int)pid);
             return proc.ProcessName;
         }
-        catch { return null; }
-    }
+        catch { }
 
-    private static bool IsExactOnceHumanTitle(nint hwnd)
-    {
         try
         {
-            var sb = new StringBuilder(256);
-            int len = NativeMethods.GetWindowText(hwnd, sb, sb.Capacity);
-            if (len > 0)
-            {
-                string title = sb.ToString().Trim();
-                return title.Equals("Once Human", StringComparison.OrdinalIgnoreCase);
-            }
+            var proc = Process.GetProcesses().FirstOrDefault(p => p.Id == (int)pid);
+            return proc?.ProcessName;
         }
-        catch { }
-        return false;
+        catch { return null; }
     }
 
     public void Dispose()
