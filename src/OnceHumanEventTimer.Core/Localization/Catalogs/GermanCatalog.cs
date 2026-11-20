@@ -173,10 +173,6 @@ internal static partial class GermanCatalog
         ["Settings_Save"] = "Speichern & Anwenden",
         ["Settings_SavedSuccess"] = "Einstellungen erfolgreich gespeichert!",
 
-        ["Settings_HotkeyToggle"] = "Hotkey für Overlay-Sichtbarkeit:",
-        ["Settings_HotkeyLock"] = "Hotkey für Durchklicken / Sperren:",
-        ["Settings_HotkeyPauseAlerts"] = "Hotkey für Benachrichtigungen pausieren:",
-
         ["Tray_OpenHUD"] = "Overlay anzeigen",
         ["Tray_HideHUD"] = "Overlay ausblenden",
         ["Tray_Settings"] = "Einstellungen...",
@@ -241,8 +237,10 @@ internal static partial class GermanCatalog
     };
 
     RegisterBossTimerEntries(entries);
+    RegisterHotkeyEntries(entries);
     return entries;
 }
 
     static partial void RegisterBossTimerEntries(Dictionary<string, string> dict);
+    static partial void RegisterHotkeyEntries(Dictionary<string, string> dict);
 }

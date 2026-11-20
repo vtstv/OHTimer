@@ -128,4 +128,30 @@ public class BossTimerSettingsTests
         Assert.Empty(extraDe);
         Assert.Empty(extraRu);
     }
+
+    [Fact]
+    public void Hotkeys_Localization_StrictBidirectionalParity()
+    {
+        var en = EnglishCatalog.GetEntries();
+        var de = GermanCatalog.GetEntries();
+        var ru = RussianCatalog.GetEntries();
+
+        var hotkeyKeys = en.Keys.Where(k => k.StartsWith("Settings_Hotkey")).ToList();
+        Assert.NotEmpty(hotkeyKeys);
+
+        foreach (var key in hotkeyKeys)
+        {
+            Assert.True(de.ContainsKey(key), $"German missing {key}");
+            Assert.True(ru.ContainsKey(key), $"Russian missing {key}");
+            Assert.False(string.IsNullOrWhiteSpace(en[key]));
+            Assert.False(string.IsNullOrWhiteSpace(de[key]));
+            Assert.False(string.IsNullOrWhiteSpace(ru[key]));
+        }
+
+        var extraDe = de.Keys.Where(k => k.StartsWith("Settings_Hotkey") && !en.ContainsKey(k));
+        var extraRu = ru.Keys.Where(k => k.StartsWith("Settings_Hotkey") && !en.ContainsKey(k));
+
+        Assert.Empty(extraDe);
+        Assert.Empty(extraRu);
+    }
 }

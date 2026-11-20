@@ -173,10 +173,6 @@ internal static partial class RussianCatalog
         ["Settings_Save"] = "Сохранить и применить",
         ["Settings_SavedSuccess"] = "Настройки успешно сохранены!",
 
-        ["Settings_HotkeyToggle"] = "Хоткей скрытия/показа оверлея:",
-        ["Settings_HotkeyLock"] = "Хоткей сквозного клика/блокировки:",
-        ["Settings_HotkeyPauseAlerts"] = "Хоткей паузы оповещений:",
-
         ["Tray_OpenHUD"] = "Показать оверлей",
         ["Tray_HideHUD"] = "Скрыть оверлей",
         ["Tray_Settings"] = "Настройки...",
@@ -241,8 +237,10 @@ internal static partial class RussianCatalog
     };
 
     RegisterBossTimerEntries(entries);
+    RegisterHotkeyEntries(entries);
     return entries;
 }
 
     static partial void RegisterBossTimerEntries(Dictionary<string, string> dict);
+    static partial void RegisterHotkeyEntries(Dictionary<string, string> dict);
 }

@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.6.1] - 2026-11-20
+
+### Added
+- **Dedicated Boss Respawn Timer Feature**: Added on-demand boss respawn timer driven by a global shortcut (default: `NumPad 1`). Displays remaining respawn countdown, progress bar, and dynamic badges (`[🎯 RESPAWN]`, `[⚠️ APPROACHING]`, `[✨ SPAWNED!]`) across both Full HUD and Mini-HUD.
+- **Compact Zero-Scroll 2-Column Layout**: Redesigned the Boss Timer configuration tab into a balanced 2-column grid layout that fits all controls without requiring any vertical scrolling or clipping.
+- **Interactive HotkeyBox Recording Control**: Upgraded all system hotkeys (`Toggle Overlay Visibility`, `Toggle Click-Through / Lock`, `Toggle Pause Alerts`, and `Boss Respawn Timer`) to interactive recording boxes with neon cyan glow, click-to-record behavior, Esc cancel, and individual `↺` reset buttons.
+- **Configurable Repress Actions & Audio**: Supports configurable behavior when re-pressing the hotkey (`Restart`, `Toggle`, `Stop`), custom boss name, minutes/seconds stepper, quick presets (3m, 5m, 10m, 15m, 20m, 30m), warning chime before spawn, spawn siren, repeat alerts, and native OS palette color picker.
+- **Full Localization Parity**: Updated English, German, and Russian catalogs with comprehensive translations for all boss timer and unified hotkey controls.
+
+---
+
 ## [1.6.0] - 2026-11-19
 
 ### Added

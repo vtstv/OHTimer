@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using OnceHumanEventTimer.Core.Models;
 
 namespace OnceHumanEventTimer.UI.ViewModels;
@@ -22,5 +23,23 @@ public partial class SettingsViewModel
         ToggleVisibilityHotkey = current.ToggleVisibilityHotkey;
         ToggleClickThroughHotkey = current.ToggleClickThroughHotkey;
         TogglePauseAlertsHotkey = current.TogglePauseAlertsHotkey;
+    }
+
+    [RelayCommand]
+    private void ResetToggleVisibilityHotkey()
+    {
+        ToggleVisibilityHotkey = "Ctrl+Alt+S";
+    }
+
+    [RelayCommand]
+    private void ResetToggleClickThroughHotkey()
+    {
+        ToggleClickThroughHotkey = "Ctrl+Alt+L";
+    }
+
+    [RelayCommand]
+    private void ResetTogglePauseAlertsHotkey()
+    {
+        TogglePauseAlertsHotkey = "Ctrl+Alt+P";
     }
 }

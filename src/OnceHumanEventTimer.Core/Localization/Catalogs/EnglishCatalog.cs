@@ -173,10 +173,6 @@ internal static partial class EnglishCatalog
         ["Settings_Save"] = "Save & Apply",
         ["Settings_SavedSuccess"] = "Settings saved successfully!",
 
-        ["Settings_HotkeyToggle"] = "Toggle Overlay Visibility Hotkey:",
-        ["Settings_HotkeyLock"] = "Toggle Click-Through / Lock Hotkey:",
-        ["Settings_HotkeyPauseAlerts"] = "Toggle Pause Alerts Hotkey:",
-
         ["Tray_OpenHUD"] = "Show Overlay",
         ["Tray_HideHUD"] = "Hide Overlay",
         ["Tray_Settings"] = "Settings...",
@@ -241,8 +237,10 @@ internal static partial class EnglishCatalog
     };
 
     RegisterBossTimerEntries(entries);
+    RegisterHotkeyEntries(entries);
     return entries;
 }
 
     static partial void RegisterBossTimerEntries(Dictionary<string, string> dict);
+    static partial void RegisterHotkeyEntries(Dictionary<string, string> dict);
 }
