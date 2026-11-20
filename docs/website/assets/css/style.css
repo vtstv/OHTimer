@@ -261,6 +261,7 @@ section {
   background: linear-gradient(135deg, var(--cyan-primary) 0%, var(--purple-primary) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  white-space: nowrap;
 }
 
 /* Buttons */
