@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.7.1] - 2026-11-20
+
+### Added
+- **Anti-Cheat Safe Global Hotkeys (`RegisterHotKey`)**: Default hotkeys for Boss Respawn Timer and Kill Counter are now configured with `Alt+NumPad` combinations (`Alt+NumPad 1` for Boss Timer, `Alt+NumPad +` for Increment, `Alt+NumPad -` for Decrement), ensuring 100% reliable in-game registration without being swallowed by DirectX / DirectInput exclusive mode.
+- **Dedicated Persistent Hotkey Host (`HWND_MESSAGE`)**: `Win32HotkeyService` now hosts a dedicated message-only window (`OnceHumanHotkeyHost`) decoupled from the visual overlay, ensuring hotkeys remain responsive even when the overlay is hidden, minimized, or out of focus.
+- **Modular Component Website Architecture**: Modular component layout for the official website (`website/src/components/`, `website/src/build.js`) synchronized directly with `docs/` for native zero-configuration GitHub Pages hosting at `https://ohtimer.murr.li/`.
+
+### Fixed
+- **In-Game Hotkey Capture Under ACE Anti-Cheat**: Resolved in-game bare key suppression by switching default hotkeys to system modifier combinations (`Alt+NumPad`), eliminating the need for invasive low-level hooks.
+- **Zero Process Hooks Policy**: Removed all `WH_KEYBOARD_LL` low-level keyboard hooks, preserving strict anti-cheat compliance ("Zero memory injection, zero process hooks").
+- **Screenshot Configuration Pollution**: Sandboxed `--capture-screenshots` execution to isolated temporary directories, preventing screenshot mock data from overwriting user profile settings.
+
+---
+
 ## [1.7.0] - 2026-11-20
 
 ### Added

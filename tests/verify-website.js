@@ -146,7 +146,7 @@ if (!twitterImageMatch || !twitterImageMatch[1].startsWith('https://')) {
 }
 
 // 7. Verify Releases Link Integrity (no hardcoded obsolete download links)
-if (html.includes('https://github.com/vtstv/OHTimer/releases/download/v1.7.0/')) {
+if (html.includes('https://github.com/vtstv/OHTimer/releases/download/')) {
   console.error('FAIL: Direct version download link found. Links should point to repository releases.');
   errors++;
 } else if (html.includes('https://github.com/vtstv/OHTimer/releases')) {
