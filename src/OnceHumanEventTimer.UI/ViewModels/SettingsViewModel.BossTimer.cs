@@ -7,6 +7,7 @@ using System.Windows.Interop;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using OnceHumanEventTimer.Core.Models;
+using OnceHumanEventTimer.Core.Services;
 using OnceHumanEventTimer.Infrastructure.Win32;
 
 namespace OnceHumanEventTimer.UI.ViewModels;
@@ -15,8 +16,31 @@ public record BossRepressOption(BossTimerRepressBehavior Behavior, string Displa
 
 public partial class SettingsViewModel
 {
+    private IBossTimerTracker? _bossTimerTracker;
+
     [ObservableProperty]
     private bool _bossTimerEnabled = true;
+
+    partial void OnBossTimerEnabledChanged(bool value)
+    {
+        if (!value)
+        {
+            _bossTimerTracker?.Stop();
+            if (_settingsService?.Settings.BossTimer != null)
+            {
+                _settingsService.Settings.BossTimer.IsEnabled = false;
+                _bossTimerTracker?.Configure(_settingsService.Settings.BossTimer);
+            }
+        }
+        else
+        {
+            if (_settingsService?.Settings.BossTimer != null)
+            {
+                _settingsService.Settings.BossTimer.IsEnabled = true;
+                _bossTimerTracker?.Configure(_settingsService.Settings.BossTimer);
+            }
+        }
+    }
 
     [ObservableProperty]
     private string _bossTimerHotkey = "NumPad 1";
@@ -90,8 +114,9 @@ public partial class SettingsViewModel
     [ObservableProperty]
     private ObservableCollection<BossRepressOption> _availableRepressBehaviors = new();
 
-    private void InitializeBossTimer(UserSettings current)
+    private void InitializeBossTimer(UserSettings current, IBossTimerTracker? bossTimerTracker = null)
     {
+        _bossTimerTracker = bossTimerTracker;
         var bt = current.BossTimer ?? new BossTimerSettings();
         BossTimerEnabled = bt.IsEnabled;
         BossTimerHotkey = !string.IsNullOrWhiteSpace(bt.Hotkey) ? bt.Hotkey : "NumPad 1";
@@ -126,6 +151,44 @@ public partial class SettingsViewModel
         AvailableRepressBehaviors.Add(new BossRepressOption(BossTimerRepressBehavior.Toggle, _loc.GetString("BossTimer_Repress_Toggle")));
         AvailableRepressBehaviors.Add(new BossRepressOption(BossTimerRepressBehavior.Stop, _loc.GetString("BossTimer_Repress_Stop")));
         BossTimerRepressBehavior = current;
+    }
+
+    [RelayCommand]
+    private void StartBossTimer()
+    {
+        if (_bossTimerTracker != null)
+        {
+            var s = _settingsService.Settings.BossTimer;
+            s.IsEnabled = true;
+            BossTimerEnabled = true;
+            s.DurationMinutes = BossTimerMinutes;
+            s.DurationSeconds = BossTimerSeconds;
+            s.BossName = BossTimerName;
+            s.Hotkey = BossTimerHotkey;
+            s.RepressBehavior = BossTimerRepressBehavior;
+            s.PlayHotkeySound = BossTimerPlayHotkeySound;
+            s.EnableWarningAlert = BossTimerEnableWarningAlert;
+            s.WarningSecondsAhead = BossTimerWarningSeconds;
+            s.WarningSoundPreset = BossTimerWarningSoundPreset;
+            s.EnableSpawnAlert = BossTimerEnableSpawnAlert;
+            s.SpawnSoundPreset = BossTimerSpawnSoundPreset;
+            s.Volume = BossTimerVolume;
+            s.EnableRepeatAlert = BossTimerEnableRepeatAlert;
+            s.RepeatAlertCount = BossTimerRepeatCount;
+            s.RepeatAlertIntervalSeconds = BossTimerRepeatInterval;
+            s.ShowToastOnSpawn = BossTimerShowToast;
+            s.FlashCardOnSpawn = BossTimerFlashCard;
+            s.AutoHideSeconds = BossTimerAutoHideSeconds;
+            s.ColorHex = BossTimerColorHex;
+            _bossTimerTracker.Configure(s);
+            _bossTimerTracker.Start();
+        }
+    }
+
+    [RelayCommand]
+    private void StopBossTimer()
+    {
+        _bossTimerTracker?.Stop();
     }
 
     [RelayCommand]

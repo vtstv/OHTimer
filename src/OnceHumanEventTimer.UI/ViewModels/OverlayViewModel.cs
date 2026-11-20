@@ -135,6 +135,10 @@ public partial class OverlayViewModel : ObservableObject
         {
             ApplySettings(settings);
             UpdateActiveTimers(_scheduler.ActiveSnapshots);
+            if (_bossTimer != null)
+            {
+                UpdateBossTimerFromSnapshot(_bossTimer.CurrentSnapshot);
+            }
         });
     }
 

@@ -76,32 +76,24 @@ public partial class App
                 var dg = settingsVm.Events.FirstOrDefault(e => e.Id == "drift-greenhouse");
                 if (dg != null) settingsVm.SelectedEvent = dg;
 
-                tabControl.SelectedIndex = 0;
-                settingsWindow.UpdateLayout();
-                await Task.Delay(250);
-                CaptureVisual(settingsWindow, Path.Combine(docsDir, "settings-events.jpg"), 860, 670, isJpeg: true);
-                File.AppendAllText(logFile, "Captured settings-events.jpg\n");
+                var tabCaptures = new (int index, string filename, bool isJpeg)[]
+                {
+                    (0, "settings-events.jpg", true),
+                    (1, "settings-audio.png", false),
+                    (2, "settings-bosstimer.png", false),
+                    (3, "hud-appearance.jpg", true),
+                    (4, "settings-system.png", false),
+                    (5, "settings-hotkeys.png", false)
+                };
 
-                // Tab 1: Alerts & Audio
-                tabControl.SelectedIndex = 1;
-                settingsWindow.UpdateLayout();
-                await Task.Delay(250);
-                CaptureVisual(settingsWindow, Path.Combine(docsDir, "settings-audio.png"), 860, 670);
-                File.AppendAllText(logFile, "Captured settings-audio.png\n");
-
-                // Tab 2: Appearance
-                tabControl.SelectedIndex = 2;
-                settingsWindow.UpdateLayout();
-                await Task.Delay(250);
-                CaptureVisual(settingsWindow, Path.Combine(docsDir, "hud-appearance.jpg"), 860, 670, isJpeg: true);
-                File.AppendAllText(logFile, "Captured hud-appearance.jpg\n");
-
-                // Tab 3: System
-                tabControl.SelectedIndex = 3;
-                settingsWindow.UpdateLayout();
-                await Task.Delay(250);
-                CaptureVisual(settingsWindow, Path.Combine(docsDir, "settings-system.png"), 860, 670);
-                File.AppendAllText(logFile, "Captured settings-system.png\n");
+                foreach (var (idx, file, isJpg) in tabCaptures)
+                {
+                    tabControl.SelectedIndex = idx;
+                    settingsWindow.UpdateLayout();
+                    await Task.Delay(200);
+                    CaptureVisual(settingsWindow, Path.Combine(docsDir, file), 860, 670, isJpeg: isJpg);
+                    File.AppendAllText(logFile, $"Captured {file}\n");
+                }
             }
             settingsWindow.Close();
 
@@ -126,7 +118,11 @@ public partial class App
                 RadiusY = 0.85
             };
 
-            // 2A. Capture Full Multi-Timer HUD (shows Cargo Scramble, Gravity Abyss, Drift Greenhouse)
+            // 2A. Capture Full Multi-Timer HUD (shows Cargo Scramble, Gravity Abyss, Drift Greenhouse, and Boss Respawn)
+            var bossTracker = _serviceProvider!.GetRequiredService<IBossTimerTracker>();
+            bossTracker.Start();
+            await Task.Delay(200);
+
             overlayVm.CompactMode = false;
             overlayWindow.Width = double.NaN;
             overlayWindow.Height = double.NaN;
@@ -134,10 +130,10 @@ public partial class App
             overlayWindow.Show();
             overlayWindow.UpdateLayout();
             await Task.Delay(350);
-            CaptureVisual(overlayWindow, Path.Combine(docsDir, "hud-multitimer.png"), 520, 360, backdrop: hudBackdrop, drawBorderFrame: true);
+            CaptureVisual(overlayWindow, Path.Combine(docsDir, "hud-multitimer.png"), 520, 520, backdrop: hudBackdrop, drawBorderFrame: true);
             File.AppendAllText(logFile, $"Captured hud-multitimer.png (size: {overlayWindow.ActualWidth}x{overlayWindow.ActualHeight})\n");
 
-            // 2B. Capture Mini-HUD (showcase Single-Timer Gravity Abyss floating pill)
+            // 2B. Capture Mini-HUD (showcase Single-Timer Gravity Abyss floating pill with Boss Timer badge)
             var singleList = settingsService.Settings.Events.Select(e => e.Clone()).ToList();
             foreach (var ev in singleList) ev.IsEnabled = false;
             var gMini = singleList.FirstOrDefault(e => e.Id == "gravity-abyss");
@@ -150,7 +146,7 @@ public partial class App
             overlayWindow.SizeToContent = SizeToContent.Height;
             overlayWindow.UpdateLayout();
             await Task.Delay(350);
-            CaptureVisual(overlayWindow, Path.Combine(docsDir, "hud-mini.png"), 380, 180, backdrop: hudBackdrop, drawBorderFrame: true);
+            CaptureVisual(overlayWindow, Path.Combine(docsDir, "hud-mini.png"), 380, 200, backdrop: hudBackdrop, drawBorderFrame: true);
             File.AppendAllText(logFile, $"Captured hud-mini.png (size: {overlayWindow.ActualWidth}x{overlayWindow.ActualHeight})\n");
 
             File.AppendAllText(logFile, "Capture completed successfully!\n");

@@ -51,6 +51,10 @@ public partial class SettingsViewModel
         s.AutoHideWhenGameOutOfFocus = AutoHideWhenGameOutOfFocus;
 
         s.BossTimer.IsEnabled = BossTimerEnabled;
+        if (!BossTimerEnabled)
+        {
+            _bossTimerTracker?.Stop();
+        }
         s.BossTimer.Hotkey = BossTimerHotkey;
         s.BossTimer.RepressBehavior = BossTimerRepressBehavior;
         s.BossTimer.PlayHotkeySound = BossTimerPlayHotkeySound;

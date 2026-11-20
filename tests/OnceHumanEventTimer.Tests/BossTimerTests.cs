@@ -214,4 +214,28 @@ public class BossTimerTests
         tracker.Tick(baseTime.AddSeconds(45));
         Assert.Equal(BossTimerState.Running, tracker.State);
     }
+
+    [Fact]
+    public void BossTimerTracker_Start_WhenDisabled_DoesNotStart()
+    {
+        var settings = new BossTimerSettings { IsEnabled = false };
+        using var tracker = new BossTimerTracker(settings);
+        tracker.Start();
+        Assert.Equal(BossTimerState.Inactive, tracker.State);
+        Assert.False(tracker.IsActive);
+    }
+
+    [Fact]
+    public void BossTimerTracker_Configure_WhenDisabled_ImmediatelyStopsRunningTimer()
+    {
+        var settings = new BossTimerSettings { IsEnabled = true, DurationMinutes = 5 };
+        using var tracker = new BossTimerTracker(settings);
+        tracker.Start();
+        Assert.True(tracker.IsActive);
+        Assert.Equal(BossTimerState.Running, tracker.State);
+
+        tracker.Configure(new BossTimerSettings { IsEnabled = false });
+        Assert.False(tracker.IsActive);
+        Assert.Equal(BossTimerState.Inactive, tracker.State);
+    }
 }

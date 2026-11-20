@@ -60,7 +60,13 @@ public sealed class BossTimerTracker : IBossTimerTracker
         {
             _settings = settings?.Clone() ?? new BossTimerSettings();
             _totalDuration = _settings.GetTotalDuration();
-            if (_state is BossTimerState.Running or BossTimerState.Warning)
+            if (!_settings.IsEnabled)
+            {
+                _state = BossTimerState.Inactive;
+                _repeatAlertsLeft = 0;
+                _timer.Stop();
+            }
+            else if (_state is BossTimerState.Running or BossTimerState.Warning)
             {
                 _targetSpawnTime = _startTime + _totalDuration;
             }
@@ -71,9 +77,10 @@ public sealed class BossTimerTracker : IBossTimerTracker
 
     public void Start(DateTimeOffset? startTime = null)
     {
-        bool fireWarning;
+        bool fireWarning = false;
         lock (_lock)
         {
+            if (!_settings.IsEnabled) return;
             var now = startTime ?? DateTimeOffset.Now;
             StartInternal(now, out fireWarning);
         }

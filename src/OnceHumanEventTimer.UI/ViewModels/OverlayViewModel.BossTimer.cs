@@ -67,7 +67,8 @@ public partial class OverlayViewModel
 
     private void UpdateBossTimerFromSnapshot(BossTimerSnapshot snapshot)
     {
-        IsBossTimerActive = snapshot.IsActive;
+        bool isEnabled = _settingsService?.Settings.BossTimer.IsEnabled ?? true;
+        IsBossTimerActive = snapshot.IsActive && isEnabled;
         BossTimerFormattedRemaining = snapshot.FormattedRemaining;
         BossTimerProgressRatio = snapshot.ProgressRatio;
         BossTimerName = !string.IsNullOrWhiteSpace(snapshot.BossName) ? snapshot.BossName.ToUpperInvariant() : "BOSS RESPAWN";
@@ -99,7 +100,8 @@ public partial class OverlayViewModel
 
     public void UpdateOverlayCardVisibility()
     {
-        IsOverlayCardVisible = IsTimerVisible || IsBossTimerActive;
+        bool isBossEnabled = _settingsService?.Settings.BossTimer.IsEnabled ?? true;
+        IsOverlayCardVisible = IsTimerVisible || (IsBossTimerActive && isBossEnabled);
     }
 
     [RelayCommand]

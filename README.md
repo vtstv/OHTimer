@@ -31,6 +31,18 @@ A modern, high-performance desktop HUD overlay for **Once Human** that tracks re
 </p>
 
 <p align="center">
+  <img src="docs/images/settings-audio.png" alt="Procedural Audio Alerts and Synthesizer" width="760"/>
+  <br/>
+  <em>Procedural synthesizer audio presets, volume controls, and server skew calibration.</em>
+</p>
+
+<p align="center">
+  <img src="docs/images/settings-bosstimer.png" alt="Dedicated Boss Respawn Timer Configuration" width="760"/>
+  <br/>
+  <em>Dedicated boss respawn countdown timer with custom hotkey trigger, warning chimes, spawn alerts, and repeat notifications.</em>
+</p>
+
+<p align="center">
   <img src="docs/images/hud-appearance.jpg" alt="Appearance and HUD Customization" width="760"/>
   <br/>
   <em>Granular appearance settings for transparency, scale, borders, circular progress rings, and Mini-HUD header controls.</em>
@@ -43,9 +55,9 @@ A modern, high-performance desktop HUD overlay for **Once Human** that tracks re
 </p>
 
 <p align="center">
-  <img src="docs/images/settings-audio.png" alt="Procedural Audio Alerts and Synthesizer" width="760"/>
+  <img src="docs/images/settings-hotkeys.png" alt="Global Hotkeys and Keybindings" width="760"/>
   <br/>
-  <em>Procedural synthesizer audio presets, volume controls, and per-event sound assignment.</em>
+  <em>Customizable global hotkeys with live recording and conflict-free shortcuts.</em>
 </p>
 
 ---
@@ -61,6 +73,12 @@ A modern, high-performance desktop HUD overlay for **Once Human** that tracks re
   - Sub-second server cycle anchor: Gravity Abyss triggers at exact server second `XX:22:29` with `0s` offset, providing zero-drift accuracy out of the box.
   - Dynamic game clock synchronization: enter in-game remaining time (e.g. `08:23`) to calibrate clock skew immediately.
   - Quick-calibration nudge buttons (`-5s`, `-1s`, `+1s`, `+5s`, `0s`) for instant adjustment.
+
+- **Dedicated Boss Respawn Timer**:
+  - Track elite and boss respawn timers on demand with a single hotkey press (<kbd>NumPad 1</kbd> default) or manual Start/Stop buttons in Settings.
+  - Granular alerts: early warning audio chimes, 00:00 spawn alarms, Windows Toast notifications, and configurable repeating alerts.
+  - Dedicated HUD countdown card with instant one-click dismiss (<kbd>✕</kbd>) from both Full HUD and Mini-HUD.
+  - Full customization: target name, quick presets (3m, 5m, 10m, 15m, 20m, 30m), auto-hide delay, and neon accent palette.
 
 - **Game Focus Detection (Smart Auto-Hide)**:
   - Automatically conceals the overlay when *Once Human* is not the active window (e.g., when Alt-Tabbing to a web browser or another desktop app).

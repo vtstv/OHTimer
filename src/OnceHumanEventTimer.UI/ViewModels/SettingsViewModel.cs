@@ -113,7 +113,8 @@ public partial class SettingsViewModel : ObservableObject
         IAudioService audio,
         ILocalizationService loc,
         IUpdateService? updateService = null,
-        IAutostartService? autostartService = null)
+        IAutostartService? autostartService = null,
+        IBossTimerTracker? bossTimerTracker = null)
     {
         _settingsService = settingsService;
         _scheduler = scheduler;
@@ -152,7 +153,7 @@ public partial class SettingsViewModel : ObservableObject
         InitializeAudio(current);
         InitializeSystem(current, autostartService);
         InitializeHotkeys(current);
-        InitializeBossTimer(current);
+        InitializeBossTimer(current, bossTimerTracker);
     }
 
     [RelayCommand]

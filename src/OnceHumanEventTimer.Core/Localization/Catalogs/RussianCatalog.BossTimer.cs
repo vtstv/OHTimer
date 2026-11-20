@@ -14,26 +14,29 @@ internal static partial class RussianCatalog
         dict["BossTimer_HotkeyRecorderPrompt"] = "[ Нажмите клавишу... ]";
         dict["BossTimer_HotkeyResetTooltip"] = "Сбросить на клавишу по умолчанию (NumPad 1)";
         dict["BossTimer_RepressBehavior"] = "При повторном нажатии:";
-        dict["BossTimer_Repress_Restart"] = "Перезапустить обратный отсчет (По умолчанию)";
+        dict["BossTimer_Repress_Restart"] = "Перезапуск отсчета";
         dict["BossTimer_Repress_Toggle"] = "Переключить Старт / Стоп";
         dict["BossTimer_Repress_Stop"] = "Остановить обратный отсчет";
-        dict["BossTimer_PlayHotkeySound"] = "Звуковое подтверждение при нажатии";
+        dict["BossTimer_PlayHotkeySound"] = "Звуковой сигнал при нажатии";
 
         dict["BossTimer_CardDuration"] = "Длительность и имя босса";
         dict["BossTimer_BossName"] = "Имя цели / босса:";
         dict["BossTimer_DurationMinutes"] = "Минуты:";
         dict["BossTimer_DurationSeconds"] = "Секунды:";
         dict["BossTimer_QuickPresets"] = "Быстрые пресеты:";
+        dict["BossTimer_StartAction"] = "▶ Запустить отсчет";
+        dict["BossTimer_StopAction"] = "⏹ Остановить отсчет";
 
         dict["BossTimer_CardAudio"] = "Звуковые и повторные оповещения";
         dict["BossTimer_WarningAlert"] = "Предупреждение перед респауном";
-        dict["BossTimer_WarningSeconds"] = "Секунд до появления:";
+        dict["BossTimer_WarningSeconds"] = "За (сек.):";
         dict["BossTimer_SpawnAlert"] = "Оповещение в 00:00 (Респаун)";
         dict["BossTimer_SoundPreset"] = "Звуковой пресет респауна:";
         dict["BossTimer_Volume"] = "Громкость оповещения:";
         dict["BossTimer_TestSound"] = "Тест";
         dict["BossTimer_EnableRepeatAlert"] = "Повторять оповещение после респауна";
-        dict["BossTimer_RepeatCount"] = "Количество повторов:";
+        dict["BossTimer_RepeatSettings"] = "Параметры:";
+        dict["BossTimer_RepeatCount"] = "Повторов:";
         dict["BossTimer_RepeatInterval"] = "Интервал (сек.):";
 
         dict["BossTimer_CardVisuals"] = "Визуальные эффекты и оформление";

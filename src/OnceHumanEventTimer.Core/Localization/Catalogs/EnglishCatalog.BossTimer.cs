@@ -14,25 +14,28 @@ internal static partial class EnglishCatalog
         dict["BossTimer_HotkeyRecorderPrompt"] = "[ Press a key... ]";
         dict["BossTimer_HotkeyResetTooltip"] = "Reset to default hotkey (NumPad 1)";
         dict["BossTimer_RepressBehavior"] = "On Hotkey Re-press:";
-        dict["BossTimer_Repress_Restart"] = "Restart countdown (Default)";
+        dict["BossTimer_Repress_Restart"] = "Restart countdown";
         dict["BossTimer_Repress_Toggle"] = "Toggle Start / Stop";
         dict["BossTimer_Repress_Stop"] = "Stop countdown";
-        dict["BossTimer_PlayHotkeySound"] = "Sound confirmation on hotkey press";
+        dict["BossTimer_PlayHotkeySound"] = "Sound chime on hotkey press";
 
         dict["BossTimer_CardDuration"] = "Duration & Target Boss";
         dict["BossTimer_BossName"] = "Target / Boss Name:";
         dict["BossTimer_DurationMinutes"] = "Minutes:";
         dict["BossTimer_DurationSeconds"] = "Seconds:";
         dict["BossTimer_QuickPresets"] = "Quick Presets:";
+        dict["BossTimer_StartAction"] = "▶ Start Countdown";
+        dict["BossTimer_StopAction"] = "⏹ Stop Countdown";
 
         dict["BossTimer_CardAudio"] = "Audio & Repeat Alerts";
         dict["BossTimer_WarningAlert"] = "Warning alert before spawn";
-        dict["BossTimer_WarningSeconds"] = "Seconds ahead:";
+        dict["BossTimer_WarningSeconds"] = "Ahead (sec):";
         dict["BossTimer_SpawnAlert"] = "Alert at 00:00 (Spawn)";
         dict["BossTimer_SoundPreset"] = "Spawn Sound Preset:";
         dict["BossTimer_Volume"] = "Alert Volume:";
         dict["BossTimer_TestSound"] = "Test";
         dict["BossTimer_EnableRepeatAlert"] = "Repeat alert after spawn";
+        dict["BossTimer_RepeatSettings"] = "Repeat timing:";
         dict["BossTimer_RepeatCount"] = "Repeat count:";
         dict["BossTimer_RepeatInterval"] = "Interval (sec):";
 
