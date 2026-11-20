@@ -152,6 +152,7 @@ public partial class SettingsViewModel : ObservableObject
         InitializeAudio(current);
         InitializeSystem(current, autostartService);
         InitializeHotkeys(current);
+        InitializeBossTimer(current);
     }
 
     [RelayCommand]

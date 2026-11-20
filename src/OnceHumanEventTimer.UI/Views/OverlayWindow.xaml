@@ -33,7 +33,7 @@
     </Window.Resources>
 
     <Border Margin="12" CornerRadius="10"
-            Visibility="{Binding IsTimerVisible, Converter={StaticResource BoolToVis}}">
+            Visibility="{Binding IsOverlayCardVisible, Converter={StaticResource BoolToVis}}">
         <Border.ContextMenu>
             <ContextMenu>
                 <MenuItem Header="{loc:Loc Tray_Settings}" Command="{Binding OpenSettingsCommand}">
@@ -141,6 +141,7 @@
             <!-- 1. FULL HUD MODE -->
             <Grid Width="240" Margin="12,10" Visibility="{Binding CompactMode, Converter={StaticResource InvBoolToVis}}">
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
@@ -261,7 +262,7 @@
                 </Grid>
 
                 <!-- Full Mode Body -->
-                <Grid Grid.Row="1">
+                <Grid Grid.Row="1" Visibility="{Binding IsTimerVisible, Converter={StaticResource BoolToVis}}">
                     <!-- Single-Timer View (when not multi-timer) -->
                     <StackPanel Visibility="{Binding IsMultiTimer, Converter={StaticResource InvBoolToVis}}">
                         <!-- Circular Progress & Countdown -->
@@ -410,11 +411,100 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </Grid>
+
+                <!-- Full Mode Boss Respawn Timer Card -->
+                <Border Grid.Row="2" Margin="0,4,0,0" CornerRadius="6" Padding="8,6"
+                        Visibility="{Binding IsBossTimerActive, Converter={StaticResource BoolToVis}}">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Background" Value="#121824" />
+                            <Setter Property="BorderBrush" Value="{Binding BossTimerStatusColorHex}" />
+                            <Setter Property="BorderThickness" Value="1.2" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsBossTimerSpawned}" Value="True">
+                                    <Setter Property="Background" Value="#1A10B981" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsBossTimerFlashing}" Value="True">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard x:Name="BossCardFlashStoryboard">
+                                            <Storyboard RepeatBehavior="Forever" AutoReverse="True">
+                                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                 From="1.0" To="0.35" Duration="0:0:0.4" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                    <DataTrigger.ExitActions>
+                                        <StopStoryboard BeginStoryboardName="BossCardFlashStoryboard" />
+                                    </DataTrigger.ExitActions>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ShowBackground}" Value="False">
+                                    <Setter Property="Background" Value="#01000000" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ShowBorder}" Value="False">
+                                    <Setter Property="BorderThickness" Value="0" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <!-- Card Header -->
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Ellipse Width="6" Height="6" Fill="{Binding BossTimerStatusColorHex}" Margin="0,0,5,0" VerticalAlignment="Center" />
+                                <TextBlock Text="{Binding BossTimerName}" FontWeight="Bold" FontSize="10.5" Foreground="{Binding BossTimerStatusColorHex}" TextTrimming="CharacterEllipsis" MaxWidth="130" />
+                            </StackPanel>
+                            <Border Grid.Column="1" Background="#20FFFFFF" CornerRadius="3" Padding="4,1" Margin="0,0,4,0">
+                                <TextBlock Text="{Binding BossTimerBadge}" FontSize="8.5" FontWeight="Bold" Foreground="{Binding BossTimerStatusColorHex}" />
+                            </Border>
+                            <Button Grid.Column="2" Style="{StaticResource HudIconButtonStyle}"
+                                    Command="{Binding DismissBossTimerCommand}"
+                                    ToolTip="{loc:Loc HUD_Close}" Padding="2,0">
+                                <TextBlock Text="✕" FontSize="8.5" Foreground="{StaticResource TextMutedBrush}" />
+                            </Button>
+                        </Grid>
+
+                        <!-- Card Body: Countdown -->
+                        <Grid Grid.Row="1" Margin="0,4,0,2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding BossTimerFormattedRemaining}"
+                                       Foreground="{StaticResource TextPrimaryBrush}"
+                                       FontFamily="Consolas, Segoe UI Mono, monospace"
+                                       FontSize="18"
+                                       FontWeight="Bold">
+                                <TextBlock.Effect>
+                                    <DropShadowEffect Color="{Binding BossTimerStatusColorHex}" BlurRadius="6" ShadowDepth="0" Opacity="0.6" />
+                                </TextBlock.Effect>
+                            </TextBlock>
+                            <TextBlock Grid.Column="1" Text="{Binding BossTimerStateIcon}" FontSize="13" VerticalAlignment="Center" Margin="0,0,2,0" />
+                        </Grid>
+
+                        <!-- Mini Horizontal Progress Bar -->
+                        <ProgressBar Grid.Row="2" Height="2" Minimum="0" Maximum="1"
+                                     Value="{Binding BossTimerProgressRatio}"
+                                     Foreground="{Binding BossTimerStatusColorHex}"
+                                     Background="#1F2937" BorderThickness="0" Margin="0,2,0,0" />
+                    </Grid>
+                </Border>
             </Grid>
 
             <!-- 2. COMPACT MINI-HUD MODE (Floating Pill) -->
             <Grid Margin="10,6" Visibility="{Binding CompactMode, Converter={StaticResource BoolToVis}}">
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
@@ -499,98 +589,156 @@
                     </StackPanel>
                 </Grid>
 
-                <!-- Compact Single Timer View -->
-                <Grid Grid.Row="1" Visibility="{Binding IsMultiTimer, Converter={StaticResource InvBoolToVis}}" Margin="2,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
+                <!-- Mini-HUD Event Timers Container -->
+                <Grid Grid.Row="1" Visibility="{Binding IsTimerVisible, Converter={StaticResource BoolToVis}}">
+                    <!-- Compact Single Timer View -->
+                    <Grid Visibility="{Binding IsMultiTimer, Converter={StaticResource InvBoolToVis}}" Margin="2,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
 
-                    <!-- Event Badge -->
-                    <Border Grid.Column="0"
-                            Background="#22FFFFFF"
-                            BorderBrush="{Binding StatusColorHex}"
-                            BorderThickness="1"
-                            CornerRadius="4"
-                            Padding="6,2"
-                            VerticalAlignment="Center"
-                            Margin="0,0,10,0"
-                            ToolTip="{Binding ActiveEventName}">
-                        <StackPanel Orientation="Horizontal">
-                            <Ellipse Width="6" Height="6" Fill="{Binding StatusColorHex}" Margin="0,0,4,0" VerticalAlignment="Center" />
-                            <TextBlock Text="{Binding PhaseBadgeText}" FontWeight="Bold" FontSize="10" Foreground="{StaticResource TextPrimaryBrush}" />
-                            <TextBlock Text=" 🔕" FontWeight="Bold" FontSize="10" Foreground="#EF4444"
-                                       ToolTip="{loc:Loc HUD_AlertsPausedToast}"
-                                       Visibility="{Binding AreAlertsPaused, Converter={StaticResource BoolToVis}}" />
-                        </StackPanel>
-                    </Border>
+                        <!-- Event Badge -->
+                        <Border Grid.Column="0"
+                                Background="#22FFFFFF"
+                                BorderBrush="{Binding StatusColorHex}"
+                                BorderThickness="1"
+                                CornerRadius="4"
+                                Padding="6,2"
+                                VerticalAlignment="Center"
+                                Margin="0,0,10,0"
+                                ToolTip="{Binding ActiveEventName}">
+                            <StackPanel Orientation="Horizontal">
+                                <Ellipse Width="6" Height="6" Fill="{Binding StatusColorHex}" Margin="0,0,4,0" VerticalAlignment="Center" />
+                                <TextBlock Text="{Binding PhaseBadgeText}" FontWeight="Bold" FontSize="10" Foreground="{StaticResource TextPrimaryBrush}" />
+                                <TextBlock Text=" 🔕" FontWeight="Bold" FontSize="10" Foreground="#EF4444"
+                                           ToolTip="{loc:Loc HUD_AlertsPausedToast}"
+                                           Visibility="{Binding AreAlertsPaused, Converter={StaticResource BoolToVis}}" />
+                            </StackPanel>
+                        </Border>
 
-                    <!-- Large Remaining Countdown -->
-                    <TextBlock Grid.Column="1"
-                               Text="{Binding FormattedRemaining}"
-                               Foreground="{StaticResource TextPrimaryBrush}"
-                               FontFamily="Consolas, Segoe UI Mono, monospace"
-                               FontSize="22"
-                               FontWeight="Bold"
-                               VerticalAlignment="Center">
-                        <TextBlock.Effect>
-                            <DropShadowEffect Color="{Binding StatusColorHex}" BlurRadius="6" ShadowDepth="0" Opacity="0.7" />
-                        </TextBlock.Effect>
-                    </TextBlock>
+                        <!-- Large Remaining Countdown -->
+                        <TextBlock Grid.Column="1"
+                                   Text="{Binding FormattedRemaining}"
+                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                   FontFamily="Consolas, Segoe UI Mono, monospace"
+                                   FontSize="22"
+                                   FontWeight="Bold"
+                                   VerticalAlignment="Center">
+                            <TextBlock.Effect>
+                                <DropShadowEffect Color="{Binding StatusColorHex}" BlurRadius="6" ShadowDepth="0" Opacity="0.7" />
+                            </TextBlock.Effect>
+                        </TextBlock>
+                    </Grid>
+
+                    <!-- Compact Multi-Timer View (Clean Stacked Rows) -->
+                    <StackPanel Visibility="{Binding IsMultiTimer, Converter={StaticResource BoolToVis}}">
+                        <!-- Miniature Muted Badge when Paused in Multi-Timer Mini-HUD -->
+                        <Border Margin="0,0,0,4"
+                                Padding="5,1.5"
+                                CornerRadius="3"
+                                Background="#25EF4444"
+                                BorderBrush="#EF4444"
+                                BorderThickness="1"
+                                HorizontalAlignment="Right"
+                                ToolTip="{loc:Loc HUD_AlertsPausedToast}"
+                                Visibility="{Binding AreAlertsPaused, Converter={StaticResource BoolToVis}}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="🔕 " FontSize="9" Foreground="#EF4444" VerticalAlignment="Center" />
+                                <TextBlock Text="{loc:Loc Status_Muted}" FontSize="8.5" FontWeight="Bold" Foreground="#EF4444" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Border>
+
+                        <ItemsControl ItemsSource="{Binding ActiveTimers}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <Ellipse Grid.Column="0" Width="6" Height="6" Fill="{Binding StatusColorHex}" Margin="0,0,6,0" VerticalAlignment="Center" />
+
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding Name}"
+                                                   FontWeight="SemiBold"
+                                                   FontSize="10"
+                                                   Foreground="{Binding StatusColorHex}"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   MaxWidth="110"
+                                                   VerticalAlignment="Center"
+                                                   Margin="0,0,8,0" />
+
+                                        <TextBlock Grid.Column="2"
+                                                   Text="{Binding FormattedRemaining}"
+                                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                                   FontFamily="Consolas, Segoe UI Mono, monospace"
+                                                   FontSize="14"
+                                                   FontWeight="Bold"
+                                                   VerticalAlignment="Center" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
                 </Grid>
 
-                <!-- Compact Multi-Timer View (Clean Stacked Rows) -->
-                <StackPanel Grid.Row="1" Visibility="{Binding IsMultiTimer, Converter={StaticResource BoolToVis}}">
-                    <!-- Miniature Muted Badge when Paused in Multi-Timer Mini-HUD -->
-                    <Border Margin="0,0,0,4"
-                            Padding="5,1.5"
-                            CornerRadius="3"
-                            Background="#25EF4444"
-                            BorderBrush="#EF4444"
-                            BorderThickness="1"
-                            HorizontalAlignment="Right"
-                            ToolTip="{loc:Loc HUD_AlertsPausedToast}"
-                            Visibility="{Binding AreAlertsPaused, Converter={StaticResource BoolToVis}}">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="🔕 " FontSize="9" Foreground="#EF4444" VerticalAlignment="Center" />
-                            <TextBlock Text="{loc:Loc Status_Muted}" FontSize="8.5" FontWeight="Bold" Foreground="#EF4444" VerticalAlignment="Center" />
-                        </StackPanel>
-                    </Border>
-
-                    <ItemsControl ItemsSource="{Binding ActiveTimers}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Grid Margin="0,2">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-
-                                    <Ellipse Grid.Column="0" Width="6" Height="6" Fill="{Binding StatusColorHex}" Margin="0,0,6,0" VerticalAlignment="Center" />
-
-                                    <TextBlock Grid.Column="1"
-                                               Text="{Binding Name}"
-                                               FontWeight="SemiBold"
-                                               FontSize="10"
-                                               Foreground="{Binding StatusColorHex}"
-                                               TextTrimming="CharacterEllipsis"
-                                               MaxWidth="110"
-                                               VerticalAlignment="Center"
-                                               Margin="0,0,8,0" />
-
-                                    <TextBlock Grid.Column="2"
-                                               Text="{Binding FormattedRemaining}"
-                                               Foreground="{StaticResource TextPrimaryBrush}"
-                                               FontFamily="Consolas, Segoe UI Mono, monospace"
-                                               FontSize="14"
-                                               FontWeight="Bold"
-                                               VerticalAlignment="Center" />
-                                </Grid>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </StackPanel>
+                <!-- Compact Mini-HUD Boss Respawn Timer Row -->
+                <Border Grid.Row="2" Margin="0,4,0,0" CornerRadius="4" Padding="6,3"
+                        Visibility="{Binding IsBossTimerActive, Converter={StaticResource BoolToVis}}">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Background" Value="#16121824" />
+                            <Setter Property="BorderBrush" Value="{Binding BossTimerStatusColorHex}" />
+                            <Setter Property="BorderThickness" Value="1" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsBossTimerSpawned}" Value="True">
+                                    <Setter Property="Background" Value="#2510B981" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsBossTimerFlashing}" Value="True">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard x:Name="MiniBossFlashStoryboard">
+                                            <Storyboard RepeatBehavior="Forever" AutoReverse="True">
+                                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                 From="1.0" To="0.35" Duration="0:0:0.4" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                    <DataTrigger.ExitActions>
+                                        <StopStoryboard BeginStoryboardName="MiniBossFlashStoryboard" />
+                                    </DataTrigger.ExitActions>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Ellipse Grid.Column="0" Width="6" Height="6" Fill="{Binding BossTimerStatusColorHex}" Margin="0,0,4,0" VerticalAlignment="Center" />
+                            <TextBlock Grid.Column="1" Text="{Binding BossTimerName}" FontWeight="SemiBold" FontSize="9.5"
+                                       Foreground="{Binding BossTimerStatusColorHex}" TextTrimming="CharacterEllipsis" MaxWidth="90" VerticalAlignment="Center" />
+                            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding BossTimerBadge}" FontSize="8" FontWeight="Bold" Foreground="{Binding BossTimerStatusColorHex}" Margin="0,0,6,0" VerticalAlignment="Center" />
+                                <TextBlock Text="{Binding BossTimerFormattedRemaining}" Foreground="{StaticResource TextPrimaryBrush}"
+                                           FontFamily="Consolas, Segoe UI Mono, monospace" FontSize="13" FontWeight="Bold" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Grid>
+                        <ProgressBar Grid.Row="1" Height="2" Minimum="0" Maximum="1"
+                                     Value="{Binding BossTimerProgressRatio}"
+                                     Foreground="{Binding BossTimerStatusColorHex}"
+                                     Background="#1F2937" BorderThickness="0" Margin="0,2,0,0" />
+                    </Grid>
+                </Border>
             </Grid>
         </Grid>
     </Border>

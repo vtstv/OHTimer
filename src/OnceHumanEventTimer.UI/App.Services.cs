@@ -24,6 +24,7 @@ public partial class App
         services.AddSingleton<IAudioService, SynthesizerAudioService>();
         services.AddSingleton<INotificationService, WindowsNotificationService>();
         services.AddSingleton<IEventScheduler, EventScheduler>();
+        services.AddSingleton<IBossTimerTracker, BossTimerTracker>();
         services.AddSingleton<IHotkeyService, Win32HotkeyService>();
         services.AddSingleton<IUpdateService, GitHubUpdateService>();
         services.AddSingleton<IAutostartService, WindowsAutostartService>();

@@ -162,4 +162,13 @@ public partial class UserSettings
 
     /// <summary>Whether the user has completed or dismissed the first-run interactive onboarding wizard.</summary>
     public bool HasCompletedOnboarding { get; set; } = false;
+
+    private BossTimerSettings _bossTimer = new();
+
+    /// <summary>Configuration options for the dedicated Boss Respawn Timer.</summary>
+    public BossTimerSettings BossTimer
+    {
+        get => _bossTimer ??= new();
+        set => _bossTimer = value ?? new();
+    }
 }

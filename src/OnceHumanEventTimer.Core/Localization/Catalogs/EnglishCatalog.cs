@@ -3,9 +3,11 @@
 
 namespace OnceHumanEventTimer.Core.Localization.Catalogs;
 
-internal static class EnglishCatalog
+internal static partial class EnglishCatalog
 {
-    public static Dictionary<string, string> GetEntries() => new(StringComparer.OrdinalIgnoreCase)
+    public static Dictionary<string, string> GetEntries()
+    {
+        var entries = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
     {
         ["App_Title"] = "Once Human — Event Timer",
         ["Status_Waiting"] = "WAITING",
@@ -38,7 +40,6 @@ internal static class EnglishCatalog
         ["Notification_EndingSoon_Body"] = "Event concludes in {0} minutes. Finish collecting your loot!",
         ["Notification_BossPortal_Title"] = "Boss Portal Open!",
         ["Notification_BossPortal_Body"] = "The boss portal is now open ({0}m after event start)!",
-
         ["Settings_Title"] = "Once Human Event Timer — Settings",
         ["Settings_TabGeneral"] = "General",
         ["Settings_TabSchedule"] = "Schedule",
@@ -47,7 +48,6 @@ internal static class EnglishCatalog
         ["Settings_TabAppearance"] = "Appearance",
         ["Settings_TabHotkeys"] = "Hotkeys",
         ["Settings_TabAbout"] = "About",
-
         ["Settings_ActiveEvent"] = "Active Event:",
         ["Settings_CycleMinutes"] = "Cycle Period (minutes):",
         ["Settings_StartTime"] = "Cycle Start Time (HH:MM:SS):",
@@ -217,31 +217,32 @@ internal static class EnglishCatalog
         ["Onboarding_Step1_Subtitle"] = "Interactive floating overlay with zero FPS loss",
         ["Onboarding_Step1_Desc"] = "Once Human: Event Timer runs directly on top of the game with zero frame drops (hardware DirectFlip/MPO). Drag the overlay to any position when unlocked. Use the 🗖 button to toggle between full HUD and compact Mini-HUD.",
         ["Onboarding_Step1_Tip"] = "Toggle Click-Through (Ctrl+Alt+L) to let mouse clicks pass directly into Once Human without activating the overlay.",
-
         ["Onboarding_Step2_Title"] = "Multi-Timer & Priority Presets",
         ["Onboarding_Step2_Subtitle"] = "Select events to track directly on your HUD overlay",
         ["Onboarding_Step2_Desc"] = "Select which events to track on your HUD overlay. By default, S5: The Echo is enabled. Mark any additional events you want to monitor:\n• S5: The Echo (Visional Wheel Season 5)\n• Cargo Scramble (Sproutlet Truck)\n• Drift Greenhouse (Manual Sync)\nEnable multiple checkboxes to track active events simultaneously in Multi-Timer mode!",
         ["Onboarding_Step2_Tip"] = "Use the 🔝, ▲, ▼ buttons in Settings to reorder presets, or click ⧉ Duplicate to create custom variants.",
-
         ["Onboarding_Step3_Title"] = "Season 5: The Echo & Boss Portal",
         ["Onboarding_Step3_Subtitle"] = "Hourly cycle at XX:15:00 with 15-minute boss portal alert",
         ["Onboarding_Step3_Desc"] = "The Echo event descends hourly at XX:15:00. Exactly 15 minutes after start (XX:30:00), the 4-player 'Echo War' boss dungeon portal opens!\nTurn on 'Countdown to Boss Portal only' in event settings to track time directly until the boss opens, with a dedicated Emergency Siren alert at the 15th minute.",
         ["Onboarding_Step3_Tip"] = "You can silence the event start chime and only receive the boss portal alert on the 15th minute.",
-
         ["Onboarding_Step4_Title"] = "Zero-Drift Clock Calibration",
         ["Onboarding_Step4_Subtitle"] = "Perfect synchronization with your Once Human server",
         ["Onboarding_Step4_Desc"] = "Server clocks may drift by several seconds from your PC clock. Simply open your in-game map or event prompt, enter the countdown you see (e.g. '1h 3m 29s' or '01:03:29') into 'Calibrate Start from In-Game Timer', and press Calibrate. The timer instantaneously calculates exact cycle anchors and server skew!",
         ["Onboarding_Step4_Tip"] = "Supports natural language inputs in English, German, and Russian ('1h 3m 29s', '1ч 3м 29с', '1 Std 3 Min 29 Sek').",
-
         ["Onboarding_Step5_Title"] = "Global Hotkeys & System Tray",
         ["Onboarding_Step5_Subtitle"] = "Hands-free in-game control and silent background tray",
         ["Onboarding_Step5_Desc"] = "Control your overlay during intense gameplay with global hotkeys:\n• Ctrl+Alt+S — Toggle overlay visibility (hide/show).\n• Ctrl+Alt+L — Lock position & toggle click-through (mouse clicks pass directly to the game).\n• Ctrl+Alt+P — Temporarily pause/resume sound alerts (indicated by 🔕).\nRuns silently in the Windows system tray with < 0.1% CPU usage.",
         ["Onboarding_Step5_Tip"] = "You can customize any hotkey combinations in the 'Hotkeys' tab, and re-launch this guide anytime from the 'About' tab.",
-
         ["Settings_TutorialTitle"] = "Interactive Quick Start Guide",
         ["Settings_TutorialDesc"] = "Re-launch the step-by-step tutorial explaining overlay controls, hotkeys, Season 5 boss timer, and server calibration.",
         ["Settings_LaunchTutorial"] = "Launch Guide",
         ["Onboarding_SelectEvents"] = "Select Events to Track",
         ["Onboarding_MultiTimerHint"] = "✓ HUD displays all checked events when active or approaching"
     };
+
+    RegisterBossTimerEntries(entries);
+    return entries;
+}
+
+    static partial void RegisterBossTimerEntries(Dictionary<string, string> dict);
 }

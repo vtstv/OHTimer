@@ -44,6 +44,7 @@ public partial class OverlayViewModel
                 IsTimerVisible = false;
                 ActiveTimers.Clear();
                 IsMultiTimer = false;
+                UpdateOverlayCardVisibility();
                 return;
             }
         }
@@ -60,6 +61,7 @@ public partial class OverlayViewModel
 
         IsTimerVisible = visibleSnapshots.Count > 0;
         IsMultiTimer = visibleSnapshots.Count > 1;
+        UpdateOverlayCardVisibility();
 
         // Dynamic ordering: active events first, followed by events closest to starting (shortest remaining time)
         var sortedSnapshots = visibleSnapshots

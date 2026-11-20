@@ -78,15 +78,33 @@ public sealed class Win32HotkeyService : IHotkeyService
         return 0;
     }
 
-    private static bool TryParseHotkey(string hotkey, out uint modifiers, out uint vk)
+    internal static bool TryParseHotkey(string hotkey, out uint modifiers, out uint vk)
     {
         modifiers = 0;
         vk = 0;
+        if (string.IsNullOrWhiteSpace(hotkey)) return false;
 
-        var parts = hotkey.Split('+', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+        string preprocessed = hotkey
+            .Replace("NumPad +", "NumPadPlus", StringComparison.OrdinalIgnoreCase)
+            .Replace("NumPad -", "NumPadMinus", StringComparison.OrdinalIgnoreCase)
+            .Replace("NumPad *", "NumPadMultiply", StringComparison.OrdinalIgnoreCase)
+            .Replace("NumPad /", "NumPadDivide", StringComparison.OrdinalIgnoreCase)
+            .Replace("NumPad .", "NumPadDecimal", StringComparison.OrdinalIgnoreCase);
+
+        if (preprocessed.EndsWith("++", StringComparison.Ordinal))
+            preprocessed = preprocessed[..^1] + "OemPlus";
+        else if (preprocessed.EndsWith("+ +", StringComparison.Ordinal))
+            preprocessed = preprocessed[..^3] + "+OemPlus";
+
+        var parts = preprocessed.Split('+', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
         if (parts.Length == 0) return false;
 
         string keyPart = parts[^1];
+        string normalizedKey = keyPart.Replace(" ", "");
+        if (normalizedKey.Length == 1 && char.IsDigit(normalizedKey[0]))
+        {
+            normalizedKey = "D" + normalizedKey;
+        }
 
         for (int i = 0; i < parts.Length - 1; i++)
         {
@@ -97,7 +115,17 @@ public sealed class Win32HotkeyService : IHotkeyService
             else if (mod is "win" or "windows") modifiers |= NativeMethods.MOD_WIN;
         }
 
-        if (Enum.TryParse<System.Windows.Input.Key>(keyPart, true, out var key))
+        string mapped = normalizedKey.ToLowerInvariant() switch
+        {
+            "numpadplus" or "numpadadd" => "Add",
+            "numpadminus" or "numpadsubtract" => "Subtract",
+            "numpadmultiply" or "numpadstar" => "Multiply",
+            "numpaddivide" or "numpadslash" => "Divide",
+            "numpaddecimal" or "numpaddot" => "Decimal",
+            _ => normalizedKey
+        };
+
+        if (Enum.TryParse<System.Windows.Input.Key>(mapped, true, out var key))
         {
             vk = (uint)System.Windows.Input.KeyInterop.VirtualKeyFromKey(key);
             return vk != 0;

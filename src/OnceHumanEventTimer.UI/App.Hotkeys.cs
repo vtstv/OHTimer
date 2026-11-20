@@ -36,7 +36,8 @@ public partial class App
         OverlayWindow overlayWindow,
         OverlayViewModel overlayVm,
         ILocalizationService? loc = null,
-        INotificationService? notifications = null)
+        INotificationService? notifications = null,
+        IBossTimerTracker? bossTimer = null)
     {
         hotkeyService.UnregisterAll();
 
@@ -81,6 +82,21 @@ public partial class App
         {
             settings.TogglePauseAlertsHotkey = "Ctrl+Alt+P";
             hotkeyService.RegisterHotkey("Ctrl+Alt+P", HandlePauseToggle);
+        }
+
+        if (bossTimer != null && settings.BossTimer.IsEnabled && !string.IsNullOrWhiteSpace(settings.BossTimer.Hotkey))
+        {
+            hotkeyService.RegisterHotkey(settings.BossTimer.Hotkey, () =>
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    bossTimer.HandleHotkeyPress();
+                    if (!overlayWindow.IsVisible && !_userManuallyHidden)
+                    {
+                        overlayWindow.Show();
+                    }
+                });
+            });
         }
     }
 }

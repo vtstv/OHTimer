@@ -5,6 +5,7 @@ using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using OnceHumanEventTimer.Core.Models;
+using OnceHumanEventTimer.Core.Scheduling;
 using OnceHumanEventTimer.Core.Services;
 
 namespace OnceHumanEventTimer.UI.ViewModels;
@@ -95,7 +96,8 @@ public partial class OverlayViewModel : ObservableObject
     public OverlayViewModel(
         IEventScheduler scheduler,
         ISettingsService settingsService,
-        ILocalizationService loc)
+        ILocalizationService loc,
+        IBossTimerTracker? bossTimer = null)
     {
         _scheduler = scheduler;
         _settingsService = settingsService;
@@ -108,6 +110,7 @@ public partial class OverlayViewModel : ObservableObject
         _loc.LanguageChanged += OnLanguageChanged;
 
         InitializeMultiTimer();
+        InitializeBossTimer(bossTimer ?? new BossTimerTracker(settingsService));
     }
 
     private void ApplySettings(UserSettings settings)
@@ -141,6 +144,10 @@ public partial class OverlayViewModel : ObservableObject
         {
             UpdatePhaseLabels(CurrentPhase, _scheduler.CurrentSnapshot?.Event);
             UpdateActiveTimers(_scheduler.ActiveSnapshots);
+            if (_bossTimer != null)
+            {
+                UpdateBossTimerFromSnapshot(_bossTimer.CurrentSnapshot);
+            }
         });
     }
 
@@ -195,6 +202,7 @@ public partial class OverlayViewModel : ObservableObject
             {
                 IsTimerVisible = snapshot.Event?.IsEnabled ?? true;
             }
+            UpdateOverlayCardVisibility();
         }
     }
 

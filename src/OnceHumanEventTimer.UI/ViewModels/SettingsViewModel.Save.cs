@@ -50,6 +50,27 @@ public partial class SettingsViewModel
         s.StartWithWindows = StartWithWindows;
         s.AutoHideWhenGameOutOfFocus = AutoHideWhenGameOutOfFocus;
 
+        s.BossTimer.IsEnabled = BossTimerEnabled;
+        s.BossTimer.Hotkey = BossTimerHotkey;
+        s.BossTimer.RepressBehavior = BossTimerRepressBehavior;
+        s.BossTimer.PlayHotkeySound = BossTimerPlayHotkeySound;
+        s.BossTimer.BossName = BossTimerName;
+        s.BossTimer.DurationMinutes = BossTimerMinutes;
+        s.BossTimer.DurationSeconds = BossTimerSeconds;
+        s.BossTimer.EnableWarningAlert = BossTimerEnableWarningAlert;
+        s.BossTimer.WarningSecondsAhead = BossTimerWarningSeconds;
+        s.BossTimer.WarningSoundPreset = BossTimerWarningSoundPreset;
+        s.BossTimer.EnableSpawnAlert = BossTimerEnableSpawnAlert;
+        s.BossTimer.SpawnSoundPreset = BossTimerSpawnSoundPreset;
+        s.BossTimer.Volume = BossTimerVolume;
+        s.BossTimer.EnableRepeatAlert = BossTimerEnableRepeatAlert;
+        s.BossTimer.RepeatAlertCount = BossTimerRepeatCount;
+        s.BossTimer.RepeatAlertIntervalSeconds = BossTimerRepeatInterval;
+        s.BossTimer.ShowToastOnSpawn = BossTimerShowToast;
+        s.BossTimer.FlashCardOnSpawn = BossTimerFlashCard;
+        s.BossTimer.AutoHideSeconds = BossTimerAutoHideSeconds;
+        s.BossTimer.ColorHex = BossTimerColorHex;
+
         _autostartService?.SetAutostart(StartWithWindows);
 
         s.Events = Events.ToList();

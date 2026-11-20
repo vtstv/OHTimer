@@ -134,12 +134,15 @@ public partial class App : Application
         overlayVm.RequestHideOverlay = () => overlayWindow.Hide();
         overlayVm.RequestExitApp = ShutdownApp;
 
-        // 6. Setup Hotkeys
+        // 6. Setup Hotkeys & Boss Timer
+        var bossTimer = _serviceProvider.GetRequiredService<IBossTimerTracker>();
+        SetupBossTimerAlerts(bossTimer, settingsService, audio, loc, notifications);
+
         var hotkeyService = _serviceProvider.GetRequiredService<IHotkeyService>();
         if (hotkeyService is Win32HotkeyService winHotkey)
         {
             winHotkey.Initialize(overlayWindow.Handle);
-            RegisterHotkeys(winHotkey, settingsService.Settings, overlayWindow, overlayVm, loc, notifications);
+            RegisterHotkeys(winHotkey, settingsService.Settings, overlayWindow, overlayVm, loc, notifications, bossTimer);
         }
 
         // 7. Setup System Tray
@@ -193,7 +196,7 @@ public partial class App : Application
             {
                 if (hotkeyService is Win32HotkeyService winHotkey)
                 {
-                    RegisterHotkeys(winHotkey, updatedSettings, overlayWindow, overlayVm, loc, notifications);
+                    RegisterHotkeys(winHotkey, updatedSettings, overlayWindow, overlayVm, loc, notifications, bossTimer);
                 }
 
                 if (!updatedSettings.AutoHideWhenGameOutOfFocus && !_userManuallyHidden && !overlayWindow.IsVisible)

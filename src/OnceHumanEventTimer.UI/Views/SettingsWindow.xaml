@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:loc="clr-namespace:OnceHumanEventTimer.UI.Localization"
         xmlns:vm="clr-namespace:OnceHumanEventTimer.UI.ViewModels"
+        xmlns:controls="clr-namespace:OnceHumanEventTimer.UI.Controls"
         xmlns:converters="clr-namespace:OnceHumanEventTimer.UI.Converters"
         d:DataContext="{d:DesignInstance Type=vm:SettingsViewModel}"
         mc:Ignorable="d"
@@ -485,7 +486,203 @@
                         </Grid>
                     </TabItem>
 
-                    <!-- Tab 2: Alerts & Audio -->
+                    <!-- Tab 2: Boss Respawn Timer -->
+                    <TabItem Header="{loc:Loc Settings_TabBossTimer}">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <StackPanel Margin="16">
+                                <!-- Card 1: Activation & Hotkey -->
+                                <Border Background="#141D2B" BorderBrush="#2A384C" BorderThickness="1" CornerRadius="8" Padding="14,12" Margin="0,0,0,12">
+                                    <StackPanel>
+                                        <TextBlock Text="{loc:Loc BossTimer_CardActivation}" FontWeight="SemiBold" FontSize="12.5" Foreground="{StaticResource AccentWaitingBrush}" Margin="0,0,0,10" />
+
+                                        <CheckBox Content="{loc:Loc BossTimer_Enable}" IsChecked="{Binding BossTimerEnabled}" Style="{StaticResource ModernCheckBoxStyle}" Margin="0,0,0,12" />
+
+                                        <!-- Hotkey Recorder Row -->
+                                        <Grid Margin="0,0,0,12">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{loc:Loc BossTimer_Hotkey}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11" />
+                                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                                <controls:HotkeyBox Width="130" Height="28" Hotkey="{Binding BossTimerHotkey, Mode=TwoWay}" PromptText="{loc:Loc BossTimer_HotkeyRecorderPrompt}" Margin="0,0,6,0" />
+                                                <Button Style="{StaticResource ModernDarkButtonStyle}" Command="{Binding ResetBossTimerHotkeyCommand}" Content="↺" ToolTip="{loc:Loc BossTimer_HotkeyResetTooltip}" Padding="8,4" FontSize="12" />
+                                            </StackPanel>
+                                        </Grid>
+
+                                        <!-- Repress Behavior Row -->
+                                        <Grid Margin="0,0,0,12">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{loc:Loc BossTimer_RepressBehavior}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11" />
+                                            <ComboBox Grid.Column="1" Width="200"
+                                                      ItemsSource="{Binding AvailableRepressBehaviors}"
+                                                      SelectedValuePath="Behavior"
+                                                      DisplayMemberPath="DisplayName"
+                                                      SelectedValue="{Binding BossTimerRepressBehavior}"
+                                                      Validation.ErrorTemplate="{x:Null}" />
+                                        </Grid>
+
+                                        <!-- Sound Confirmation Checkbox -->
+                                        <CheckBox Content="{loc:Loc BossTimer_PlayHotkeySound}" IsChecked="{Binding BossTimerPlayHotkeySound}" Style="{StaticResource ModernCheckBoxStyle}" />
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Card 2: Duration & Quick Presets -->
+                                <Border Background="#141D2B" BorderBrush="#2A384C" BorderThickness="1" CornerRadius="8" Padding="14,12" Margin="0,0,0,12">
+                                    <StackPanel>
+                                        <TextBlock Text="{loc:Loc BossTimer_CardDuration}" FontWeight="SemiBold" FontSize="12.5" Foreground="{StaticResource AccentWaitingBrush}" Margin="0,0,0,10" />
+
+                                        <!-- Boss Name Input -->
+                                        <Grid Margin="0,0,0,12">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="180" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{loc:Loc BossTimer_BossName}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11" />
+                                            <TextBox Grid.Column="1" Text="{Binding BossTimerName, UpdateSourceTrigger=PropertyChanged}" />
+                                        </Grid>
+
+                                        <!-- Minutes and Seconds Inputs -->
+                                        <Grid Margin="0,0,0,12">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{loc:Loc BossTimer_DurationMinutes}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11" />
+                                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                                <TextBox Width="50" Text="{Binding BossTimerMinutes, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center" Margin="0,0,8,0" />
+                                                <TextBlock Text="{loc:Loc BossTimer_DurationSeconds}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11" Margin="0,0,6,0" />
+                                                <TextBox Width="50" Text="{Binding BossTimerSeconds, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center" />
+                                            </StackPanel>
+                                        </Grid>
+
+                                        <!-- Quick Presets -->
+                                        <Grid Margin="0,4,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{loc:Loc BossTimer_QuickPresets}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11" Margin="0,0,10,0" />
+                                            <WrapPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <Button Style="{StaticResource ModernDarkButtonStyle}" Command="{Binding SetBossPresetCommand}" CommandParameter="3" Content="3 min" Padding="8,3" FontSize="10.5" Margin="0,0,6,4" />
+                                                <Button Style="{StaticResource ModernDarkButtonStyle}" Command="{Binding SetBossPresetCommand}" CommandParameter="5" Content="5 min" Padding="8,3" FontSize="10.5" Margin="0,0,6,4" />
+                                                <Button Style="{StaticResource ModernDarkButtonStyle}" Command="{Binding SetBossPresetCommand}" CommandParameter="10" Content="10 min" Padding="8,3" FontSize="10.5" Margin="0,0,6,4" />
+                                                <Button Style="{StaticResource ModernDarkButtonStyle}" Command="{Binding SetBossPresetCommand}" CommandParameter="15" Content="15 min" Padding="8,3" FontSize="10.5" Margin="0,0,6,4" />
+                                                <Button Style="{StaticResource ModernDarkButtonStyle}" Command="{Binding SetBossPresetCommand}" CommandParameter="20" Content="20 min" Padding="8,3" FontSize="10.5" Margin="0,0,6,4" />
+                                                <Button Style="{StaticResource ModernDarkButtonStyle}" Command="{Binding SetBossPresetCommand}" CommandParameter="30" Content="30 min" Padding="8,3" FontSize="10.5" Margin="0,0,6,4" />
+                                            </WrapPanel>
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Card 3: Audio & Repeat Alerts -->
+                                <Border Background="#141D2B" BorderBrush="#2A384C" BorderThickness="1" CornerRadius="8" Padding="14,12" Margin="0,0,0,12">
+                                    <StackPanel>
+                                        <TextBlock Text="{loc:Loc BossTimer_CardAudio}" FontWeight="SemiBold" FontSize="12.5" Foreground="{StaticResource AccentWaitingBrush}" Margin="0,0,0,10" />
+
+                                        <!-- Warning Alert Row -->
+                                        <Grid Margin="0,0,0,10">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <CheckBox Content="{loc:Loc BossTimer_WarningAlert}" IsChecked="{Binding BossTimerEnableWarningAlert}" Style="{StaticResource ModernCheckBoxStyle}" VerticalAlignment="Center" />
+                                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                                <TextBlock Text="{loc:Loc BossTimer_WarningSeconds}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11" Margin="0,0,6,0" />
+                                                <TextBox Width="50" Text="{Binding BossTimerWarningSeconds, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center" Margin="0,0,8,0" />
+                                                <Button Style="{StaticResource ModernDarkButtonStyle}" Command="{Binding TestBossWarningSoundCommand}" Content="{loc:Loc BossTimer_TestSound}" Padding="8,3" FontSize="10.5" />
+                                            </StackPanel>
+                                        </Grid>
+
+                                        <!-- Spawn Alert Row -->
+                                        <Grid Margin="0,0,0,10">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <CheckBox Content="{loc:Loc BossTimer_SpawnAlert}" IsChecked="{Binding BossTimerEnableSpawnAlert}" Style="{StaticResource ModernCheckBoxStyle}" VerticalAlignment="Center" />
+                                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                                <ComboBox Width="145" ItemsSource="{Binding AvailableSoundPresets}" SelectedValuePath="Preset" DisplayMemberPath="DisplayName" SelectedValue="{Binding BossTimerSpawnSoundPreset}" Validation.ErrorTemplate="{x:Null}" Margin="0,0,8,0" />
+                                                <Button Style="{StaticResource ModernDarkButtonStyle}" Command="{Binding TestBossSpawnSoundCommand}" Content="{loc:Loc BossTimer_TestSound}" Padding="8,3" FontSize="10.5" />
+                                            </StackPanel>
+                                        </Grid>
+
+                                        <!-- Volume Slider -->
+                                        <Grid Margin="0,0,0,10">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="140" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{loc:Loc BossTimer_Volume}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11" />
+                                            <Slider Grid.Column="1" Minimum="0" Maximum="1" Value="{Binding BossTimerVolume}" SmallChange="0.05" LargeChange="0.1" VerticalAlignment="Center" />
+                                        </Grid>
+
+                                        <!-- Repeat Alerts Row -->
+                                        <Grid Margin="0,0,0,4">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <CheckBox Content="{loc:Loc BossTimer_EnableRepeatAlert}" IsChecked="{Binding BossTimerEnableRepeatAlert}" Style="{StaticResource ModernCheckBoxStyle}" VerticalAlignment="Center" />
+                                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                                <TextBlock Text="{loc:Loc BossTimer_RepeatCount}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11" Margin="0,0,4,0" />
+                                                <TextBox Width="45" Text="{Binding BossTimerRepeatCount, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center" Margin="0,0,8,0" />
+                                                <TextBlock Text="{loc:Loc BossTimer_RepeatInterval}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11" Margin="0,0,4,0" />
+                                                <TextBox Width="45" Text="{Binding BossTimerRepeatInterval, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Card 4: Visuals & Color Palette -->
+                                <Border Background="#141D2B" BorderBrush="#2A384C" BorderThickness="1" CornerRadius="8" Padding="14,12" Margin="0,0,0,12">
+                                    <StackPanel>
+                                        <TextBlock Text="{loc:Loc BossTimer_CardVisuals}" FontWeight="SemiBold" FontSize="12.5" Foreground="{StaticResource AccentWaitingBrush}" Margin="0,0,0,10" />
+
+                                        <CheckBox Content="{loc:Loc BossTimer_ShowToast}" IsChecked="{Binding BossTimerShowToast}" Style="{StaticResource ModernCheckBoxStyle}" Margin="0,0,0,8" />
+                                        <CheckBox Content="{loc:Loc BossTimer_FlashCard}" IsChecked="{Binding BossTimerFlashCard}" Style="{StaticResource ModernCheckBoxStyle}" Margin="0,0,0,10" />
+
+                                        <!-- Auto-Hide Delay -->
+                                        <Grid Margin="0,0,0,10">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="80" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{loc:Loc BossTimer_AutoHide}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11" />
+                                            <TextBox Grid.Column="1" Text="{Binding BossTimerAutoHideSeconds, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center" />
+                                        </Grid>
+
+                                        <!-- Visual Accent Color Picker & Hex Input -->
+                                        <Grid Margin="0,0,0,4">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{loc:Loc BossTimer_Color}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11" />
+                                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                                <Button Command="{Binding PickBossColorCommand}" 
+                                                        Style="{StaticResource ModernDarkButtonStyle}"
+                                                        Padding="8,4" Margin="0,0,6,0" Cursor="Hand"
+                                                        ToolTip="{loc:Loc BossTimer_ColorTooltip}">
+                                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                        <Border Width="16" Height="16" Background="{Binding BossTimerColorHex, FallbackValue='#EF4444', TargetNullValue='#EF4444'}" CornerRadius="3" BorderBrush="#334155" BorderThickness="1" Margin="0,0,6,0" />
+                                                        <TextBlock Text="🎨 " FontSize="11" VerticalAlignment="Center" />
+                                                        <TextBlock Text="{Binding BossTimerColorHex}" FontWeight="Bold" FontSize="11" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center" />
+                                                    </StackPanel>
+                                                </Button>
+                                                <TextBox Width="75" Text="{Binding BossTimerColorHex, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center" VerticalAlignment="Center" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+
+                    <!-- Tab 3: Alerts & Audio -->
                     <TabItem Header="{loc:Loc Settings_TabNotifications}">
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
                             <StackPanel Margin="16">

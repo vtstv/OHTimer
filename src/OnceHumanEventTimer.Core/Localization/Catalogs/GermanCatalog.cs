@@ -3,9 +3,11 @@
 
 namespace OnceHumanEventTimer.Core.Localization.Catalogs;
 
-internal static class GermanCatalog
+internal static partial class GermanCatalog
 {
-    public static Dictionary<string, string> GetEntries() => new(StringComparer.OrdinalIgnoreCase)
+    public static Dictionary<string, string> GetEntries()
+    {
+        var entries = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
     {
         ["App_Title"] = "Once Human — Event-Timer",
         ["Status_Waiting"] = "WARTEN",
@@ -38,7 +40,6 @@ internal static class GermanCatalog
         ["Notification_EndingSoon_Body"] = "Event endet in {0} Minuten. Beende das Einsammeln deiner Beute!",
         ["Notification_BossPortal_Title"] = "Boss-Portal geöffnet!",
         ["Notification_BossPortal_Body"] = "Das Boss-Portal ist jetzt geöffnet ({0} Min. nach Event-Start)!",
-
         ["Settings_Title"] = "Once Human Event-Timer — Einstellungen",
         ["Settings_TabGeneral"] = "Allgemein",
         ["Settings_TabSchedule"] = "Zeitplan",
@@ -47,7 +48,6 @@ internal static class GermanCatalog
         ["Settings_TabAppearance"] = "Erscheinungsbild",
         ["Settings_TabHotkeys"] = "Tastenkombinationen",
         ["Settings_TabAbout"] = "Über",
-
         ["Settings_ActiveEvent"] = "Aktives Event:",
         ["Settings_CycleMinutes"] = "Zyklusdauer (Minuten):",
         ["Settings_StartTime"] = "Zyklus-Startzeit (HH:MM:SS):",
@@ -217,31 +217,32 @@ internal static class GermanCatalog
         ["Onboarding_Step1_Subtitle"] = "Interaktives Desktop-Widget ohne FPS-Verlust",
         ["Onboarding_Step1_Desc"] = "Once Human: Event Timer läuft direkt über dem Spiel ohne FPS-Verlust (Hardware DirectFlip/MPO). Ziehen Sie das Overlay im entsperrten Zustand an eine beliebige Stelle. Verwenden Sie die 🗖-Schaltfläche zum Wechseln zwischen Voll-HUD und kompaktem Mini-HUD.",
         ["Onboarding_Step1_Tip"] = "Aktivieren Sie Durchklicken (Strg+Alt+L), damit Mausklicks direkt ins Spiel durchgehen, ohne das Overlay zu aktivieren.",
-
         ["Onboarding_Step2_Title"] = "Multi-Timer & Prioritäts-Presets",
         ["Onboarding_Step2_Subtitle"] = "Wählen Sie Events direkt für das HUD-Overlay aus",
         ["Onboarding_Step2_Desc"] = "Wählen Sie, welche Events auf dem HUD-Overlay angezeigt werden sollen. Standardmäßig ist S5: Das Echo aktiviert. Markieren Sie weitere gewünschte Events:\n• S5: Das Echo (Dissonante Resonanz)\n• Frachtgerangel (Spross-LKW)\n• Driften-Gewächshaus (Manueller Sync)\nAktivieren Sie mehrere Kontrollkästchen für den gleichzeitigen Multi-Timer-Modus!",
         ["Onboarding_Step2_Tip"] = "Nutzen Sie 🔝, ▲, ▼ in den Einstellungen zum Umsortieren oder klicken Sie auf ⧉ Duplizieren für Varianten.",
-
         ["Onboarding_Step3_Title"] = "Saison 5: Das Echo & Boss-Portal",
         ["Onboarding_Step3_Subtitle"] = "Stündlich ab XX:15:00 mit Boss-Portal-Alarm nach 15 Minuten",
         ["Onboarding_Step3_Desc"] = "Das Echo-Event startet stündlich um XX:15:00. Exakt 15 Minuten nach Beginn (XX:30:00) öffnet sich das 4-Spieler-Portal zu 'The Echo War'!\nAktivieren Sie 'Nur Countdown zum Boss-Portal', um direkt die Zeit bis zum Boss zu sehen — mit Sirenen-Alarm in Minute 15.",
         ["Onboarding_Step3_Tip"] = "Der Start-Gong kann stummgeschaltet werden, sodass nur der Boss-Alarm auf Minute 15 ertönt.",
-
         ["Onboarding_Step4_Title"] = "Null-Drift-Uhr-Kalibrierung",
         ["Onboarding_Step4_Subtitle"] = "Perfekte Synchronisation mit dem Once Human Server",
         ["Onboarding_Step4_Desc"] = "Server-Uhren können leicht von Ihrer PC-Zeit abweichen. Schauen Sie einfach auf den Countdown auf Ihrer Karte (z. B. '1h 3m 29s' oder '01:03:29'), geben Sie ihn ein und klicken Sie auf Kalibrieren. Der Timer berechnet sofort den Zyklusanker und gleicht Drift aus!",
         ["Onboarding_Step4_Tip"] = "Unterstützt Eingaben auf Deutsch, Englisch und Russisch ('1 Std 3 Min 29 Sek', '1h 3m 29s', '1ч 3м 29с').",
-
         ["Onboarding_Step5_Title"] = "Globale Hotkeys & System-Tray",
         ["Onboarding_Step5_Subtitle"] = "Steuerung während des Spiels und Tray im Hintergrund",
         ["Onboarding_Step5_Desc"] = "Steuern Sie das Overlay mitten im Kampf per Tastenkombination:\n• Strg+Alt+S — Overlay ein-/ausblenden.\n• Strg+Alt+L — Position sperren & Durchklicken umschalten (Klicks gehen ins Spiel).\n• Strg+Alt+P — Audio-Warnungen pausieren/fortsetzen (Anzeige: 🔕).\nLäuft unauffällig im Windows-Infobereich mit < 0,1% CPU-Auslastung.",
         ["Onboarding_Step5_Tip"] = "Tastenkombinationen können im Reiter 'Hotkeys' angepasst werden. Diese Anleitung ist jederzeit unter 'Über' aufrufbar.",
-
         ["Settings_TutorialTitle"] = "Interaktive Schnellstart-Anleitung",
         ["Settings_TutorialDesc"] = "Schritt-für-Schritt-Anleitung zu Overlay-Steuerung, Hotkeys, S5-Boss-Timer und Server-Kalibrierung erneut starten.",
         ["Settings_LaunchTutorial"] = "Anleitung starten",
         ["Onboarding_SelectEvents"] = "Zu überwachende Events wählen",
         ["Onboarding_MultiTimerHint"] = "✓ HUD zeigt alle markierten Events an, wenn sie aktiv oder bevorstehend sind"
     };
+
+    RegisterBossTimerEntries(entries);
+    return entries;
+}
+
+    static partial void RegisterBossTimerEntries(Dictionary<string, string> dict);
 }

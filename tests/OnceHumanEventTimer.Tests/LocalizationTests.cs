@@ -50,6 +50,8 @@ public class LocalizationTests
             Assert.True(germanEntries.ContainsKey(key), $"GermanCatalog is missing key '{key}'");
             Assert.False(string.IsNullOrWhiteSpace(germanEntries[key]), $"GermanCatalog has empty value for key '{key}'");
         }
+
+        Assert.Empty(germanEntries.Keys.Except(englishKeys));
     }
 
     [Fact]
@@ -78,6 +80,8 @@ public class LocalizationTests
             Assert.True(russianEntries.ContainsKey(key), $"RussianCatalog is missing key '{key}'");
             Assert.False(string.IsNullOrWhiteSpace(russianEntries[key]), $"RussianCatalog has empty value for key '{key}'");
         }
+
+        Assert.Empty(russianEntries.Keys.Except(englishKeys));
     }
 
     [Fact]

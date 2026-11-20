@@ -3,9 +3,11 @@
 
 namespace OnceHumanEventTimer.Core.Localization.Catalogs;
 
-internal static class RussianCatalog
+internal static partial class RussianCatalog
 {
-    public static Dictionary<string, string> GetEntries() => new(StringComparer.OrdinalIgnoreCase)
+    public static Dictionary<string, string> GetEntries()
+    {
+        var entries = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
     {
         ["App_Title"] = "Once Human — Таймер Событий",
         ["Status_Waiting"] = "ОЖИДАНИЕ",
@@ -38,7 +40,6 @@ internal static class RussianCatalog
         ["Notification_EndingSoon_Body"] = "До конца события осталось {0} мин. Завершайте сбор добычи!",
         ["Notification_BossPortal_Title"] = "Портал босса открыт!",
         ["Notification_BossPortal_Body"] = "Портал к боссу открыт ({0} мин. после начала события)!",
-
         ["Settings_Title"] = "Таймер Событий Once Human — Настройки",
         ["Settings_TabGeneral"] = "Основные",
         ["Settings_TabSchedule"] = "Расписание",
@@ -47,7 +48,6 @@ internal static class RussianCatalog
         ["Settings_TabAppearance"] = "Внешний вид",
         ["Settings_TabHotkeys"] = "Горячие клавиши",
         ["Settings_TabAbout"] = "О программе",
-
         ["Settings_ActiveEvent"] = "Активное событие:",
         ["Settings_CycleMinutes"] = "Период цикла (минут):",
         ["Settings_StartTime"] = "Время старта цикла (ЧЧ:ММ:СС):",
@@ -217,31 +217,32 @@ internal static class RussianCatalog
         ["Onboarding_Step1_Subtitle"] = "Интерактивный виджет без потери FPS",
         ["Onboarding_Step1_Desc"] = "Once Human: Event Timer работает поверх игры с нулевой потерей кадров (DirectFlip/MPO). В разблокированном состоянии перетащите оверлей в любое место экрана. Кнопка 🗖 переключает между полным HUD и компактным Mini-HUD.",
         ["Onboarding_Step1_Tip"] = "Включите сквозные клики (Ctrl+Alt+L), чтобы мышь кликала прямо сквозь оверлей в игру без потери фокуса.",
-
         ["Onboarding_Step2_Title"] = "Мульти-таймер и приоритет пресетов",
         ["Onboarding_Step2_Subtitle"] = "Выберите события для отслеживания прямо на оверлее",
         ["Onboarding_Step2_Desc"] = "Выберите события, которые хотите отслеживать на оверлее. По умолчанию включено S5: The Echo. Отметьте нужные события:\n• S5: The Echo (Диссонансный резонанс)\n• Заварушка с грузом (Грузовик со спорками)\n• Дрейфующая теплица (Ручной Sync)\nОтметьте несколько галочек для одновременного отслеживания в режиме Multi-Timer!",
         ["Onboarding_Step2_Tip"] = "Используйте кнопки 🔝, ▲, ▼ в настройках для сортировки или «⧉ Дублировать» для создания копий.",
-
         ["Onboarding_Step3_Title"] = "Сезон 5: Эхо и портал босса",
         ["Onboarding_Step3_Subtitle"] = "Старт в XX:15:00 и тревога открытия портала босса на 15-й минуте",
         ["Onboarding_Step3_Desc"] = "Событие Эхо спускается каждый час в XX:15:00. Ровно через 15 минут (XX:30:00) открывается портал группового данжа The Echo War на 4 игрока!\nВключите «Таймер только до портала босса», чтобы видеть отсчёт прямо до босса, с отдельной сиреной тревоги на 15-й минуте.",
         ["Onboarding_Step3_Tip"] = "Вы можете отключить стартовый колокол и оставить звук только на открытие босса.",
-
         ["Onboarding_Step4_Title"] = "Быстрая калибровка по карте игры",
         ["Onboarding_Step4_Subtitle"] = "Синхронизация секунда в секунду с сервером Once Human",
         ["Onboarding_Step4_Desc"] = "Время серверов игры может расходиться с часами ПК. Просто посмотрите на таймер на карте или в игре (например, «1ч 3м 29с» или «01:03:29»), введите его в поле калибровки и нажмите «Откалибровать». Таймер мгновенно рассчитает точные координаты цикла!",
         ["Onboarding_Step4_Tip"] = "Поддерживает естественный ввод на русском, английском и немецком («1ч 3м 29с», «1h 3m 29s», «1 Std 3 Min 29 Sek»).",
-
         ["Onboarding_Step5_Title"] = "Горячие клавиши и системный трей",
         ["Onboarding_Step5_Subtitle"] = "Управление в бою и тихий фоновый режим",
         ["Onboarding_Step5_Desc"] = "Управляйте оверлеем в игре без открытия окон:\n• Ctrl+Alt+S — Показать или скрыть оверлей.\n• Ctrl+Alt+L — Заблокировать позицию и включить сквозные клики (клики идут в игру).\n• Ctrl+Alt+P — Заглушить/возобновить звуковые оповещения (индикатор: 🔕).\nРаботает в системном трее Windows с нагрузкой < 0.1% CPU.",
         ["Onboarding_Step5_Tip"] = "Комбинации клавиш можно изменить во вкладке «Горячие клавиши». Это обучение можно запустить снова во вкладке «О программе».",
-
         ["Settings_TutorialTitle"] = "Интерактивное обучение",
         ["Settings_TutorialDesc"] = "Запустить пошаговое руководство по управлению оверлеем, хоткеям, таймеру босса S5 и калибровке времени.",
         ["Settings_LaunchTutorial"] = "Запустить обучение",
         ["Onboarding_SelectEvents"] = "Выбор событий для отслеживания",
         ["Onboarding_MultiTimerHint"] = "✓ Оверлей отображает все отмеченные события, когда они активны или приближаются"
     };
+
+    RegisterBossTimerEntries(entries);
+    return entries;
+}
+
+    static partial void RegisterBossTimerEntries(Dictionary<string, string> dict);
 }
