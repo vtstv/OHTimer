@@ -71,7 +71,14 @@ public sealed class Win32HotkeyService : IHotkeyService
     {
         if (!_isInitialized)
         {
-            Initialize(0);
+            if (System.Windows.Application.Current?.Dispatcher != null && !System.Windows.Application.Current.Dispatcher.CheckAccess())
+            {
+                System.Windows.Application.Current.Dispatcher.Invoke(() => Initialize());
+            }
+            else
+            {
+                Initialize();
+            }
         }
 
         if (_windowHandle == 0 || string.IsNullOrWhiteSpace(hotkeyString))
@@ -117,7 +124,14 @@ public sealed class Win32HotkeyService : IHotkeyService
             int id = wParam.ToInt32();
             if (_hotkeyActions.TryGetValue(id, out var action))
             {
-                action.Invoke();
+                try
+                {
+                    action.Invoke();
+                }
+                catch
+                {
+                    // Prevent unhandled callback exceptions from crashing the UI message pump
+                }
                 handled = true;
             }
         }

@@ -171,4 +171,30 @@ public class KillCounterSettingsTests
             Assert.False(string.IsNullOrWhiteSpace(ru[key]), $"Russian catalog empty value for '{key}'");
         }
     }
+
+    [Fact]
+    public void EnsureDefaultPresets_PreservesLegitimateKillCounterState()
+    {
+        var settings = new UserSettings
+        {
+            KillCounter = new KillCounterSettings
+            {
+                IsEnabled = true,
+                CurrentCount = 14,
+                BossName = "Shadow Hound",
+                TotalAllTimeCount = 0,
+                EnableGoal = true,
+                GoalCount = 20
+            }
+        };
+
+        settings.EnsureDefaultPresets();
+
+        Assert.True(settings.KillCounter.IsEnabled);
+        Assert.Equal(14, settings.KillCounter.CurrentCount);
+        Assert.Equal("Shadow Hound", settings.KillCounter.BossName);
+        Assert.Equal(0, settings.KillCounter.TotalAllTimeCount);
+        Assert.True(settings.KillCounter.EnableGoal);
+        Assert.Equal(20, settings.KillCounter.GoalCount);
+    }
 }
