@@ -854,6 +854,171 @@
                         </ScrollViewer>
                     </TabItem>
 
+                    <!-- Tab: Kill Counter -->
+                    <TabItem Header="{loc:Loc Settings_TabKillCounter}">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <Grid Margin="16,14">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="14" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Left Column: Target & Session Counts -->
+                                <StackPanel Grid.Column="0">
+                                    <Border Background="#141D2B" BorderBrush="#2A384C" BorderThickness="1" CornerRadius="8" Padding="14,12" Margin="0,0,0,12">
+                                        <StackPanel>
+                                            <TextBlock Text="{loc:Loc KillCounter_CardTarget}" FontWeight="SemiBold" FontSize="12.5" Foreground="{StaticResource AccentWaitingBrush}" Margin="0,0,0,10" />
+
+                                            <!-- Target Name Input -->
+                                            <Grid Margin="0,0,0,10">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="170" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{loc:Loc KillCounter_TargetName}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11" />
+                                                <TextBox Grid.Column="1" Text="{Binding KillCounterBossName, UpdateSourceTrigger=PropertyChanged}" />
+                                            </Grid>
+
+                                            <!-- Quick Presets -->
+                                            <Grid Margin="0,0,0,10">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{loc:Loc KillCounter_QuickPresets}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11" Margin="0,0,8,0" />
+                                                <WrapPanel Grid.Column="1" VerticalAlignment="Center">
+                                                    <Button Style="{StaticResource ModernDarkButtonStyle}" Command="{Binding SetKillCounterPresetCommand}" CommandParameter="Treant" Content="Treant" Padding="7,3" FontSize="10.5" Margin="0,0,4,4" />
+                                                    <Button Style="{StaticResource ModernDarkButtonStyle}" Command="{Binding SetKillCounterPresetCommand}" CommandParameter="Hound" Content="Hound" Padding="7,3" FontSize="10.5" Margin="0,0,4,4" />
+                                                    <Button Style="{StaticResource ModernDarkButtonStyle}" Command="{Binding SetKillCounterPresetCommand}" CommandParameter="Arachsiam" Content="Arachsiam" Padding="7,3" FontSize="10.5" Margin="0,0,4,4" />
+                                                    <Button Style="{StaticResource ModernDarkButtonStyle}" Command="{Binding SetKillCounterPresetCommand}" CommandParameter="Silo" Content="Silo" Padding="7,3" FontSize="10.5" Margin="0,0,4,4" />
+                                                    <Button Style="{StaticResource ModernDarkButtonStyle}" Command="{Binding SetKillCounterPresetCommand}" CommandParameter="Prime War" Content="Prime War" Padding="7,3" FontSize="10.5" Margin="0,0,4,4" />
+                                                </WrapPanel>
+                                            </Grid>
+
+                                            <Rectangle Height="1" Fill="#1E293B" Margin="0,2,0,10" />
+
+                                            <!-- Current Count with [-] and [+] Buttons -->
+                                            <Grid Margin="0,0,0,10">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{loc:Loc KillCounter_CurrentCount}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11" />
+                                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                                    <Button Style="{StaticResource ModernDarkButtonStyle}" Command="{Binding DecrementKillCountCommand}" Content="-" Padding="10,3" FontSize="13" FontWeight="Bold" Margin="0,0,6,0" />
+                                                    <TextBox Width="50" Text="{Binding KillCounterCurrentCount, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" FontSize="13" Margin="0,0,6,0" />
+                                                    <Button Style="{StaticResource PrimaryAccentButtonStyle}" Command="{Binding IncrementKillCountCommand}" Content="+" Padding="10,3" FontSize="13" FontWeight="Bold" />
+                                                </StackPanel>
+                                            </Grid>
+
+                                            <!-- Goal Checkbox & Number Input -->
+                                            <Grid Margin="0,0,0,10">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <CheckBox Content="{loc:Loc KillCounter_EnableGoal}" IsChecked="{Binding KillCounterEnableGoal}" Style="{StaticResource ModernCheckBoxStyle}" VerticalAlignment="Center" />
+                                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Visibility="{Binding KillCounterEnableGoal, Converter={StaticResource BoolToVis}}">
+                                                    <TextBlock Text="{loc:Loc KillCounter_GoalCount}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11" Margin="0,0,6,0" />
+                                                    <TextBox Width="50" Text="{Binding KillCounterGoalCount, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center" />
+                                                </StackPanel>
+                                            </Grid>
+
+                                            <!-- Total All-Time Count Display -->
+                                            <Grid Margin="0,0,0,12">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{loc:Loc KillCounter_TotalAllTime}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11" />
+                                                <TextBlock Grid.Column="1" Text="{Binding KillCounterTotalAllTimeCount}" FontWeight="Bold" FontSize="13" Foreground="{StaticResource AccentActiveBrush}" VerticalAlignment="Center" />
+                                            </Grid>
+
+                                            <!-- Reset Session Button -->
+                                            <Button Command="{Binding ResetKillCounterSessionCommand}"
+                                                    Style="{StaticResource DangerDarkButtonStyle}"
+                                                    Content="{loc:Loc KillCounter_ResetSession}"
+                                                    Padding="10,5" FontSize="11" HorizontalAlignment="Stretch" />
+                                        </StackPanel>
+                                    </Border>
+                                </StackPanel>
+
+                                <!-- Right Column: Activation, Hotkeys & Visuals -->
+                                <StackPanel Grid.Column="2">
+                                    <Border Background="#141D2B" BorderBrush="#2A384C" BorderThickness="1" CornerRadius="8" Padding="14,12">
+                                        <StackPanel>
+                                            <TextBlock Text="{loc:Loc KillCounter_CardActivation}" FontWeight="SemiBold" FontSize="12.5" Foreground="{StaticResource AccentWaitingBrush}" Margin="0,0,0,10" />
+
+                                            <!-- Enable Checkbox -->
+                                            <CheckBox Content="{loc:Loc KillCounter_Enable}" IsChecked="{Binding KillCounterEnabled}" Style="{StaticResource ModernCheckBoxStyle}" Margin="0,0,0,10" />
+
+                                            <!-- Increment Hotkey -->
+                                            <Grid Margin="0,0,0,10">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{loc:Loc KillCounter_IncrementHotkey}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11" />
+                                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                                    <controls:HotkeyBox Width="120" Height="28" Hotkey="{Binding KillCounterIncrementHotkey, Mode=TwoWay}" PromptText="{loc:Loc BossTimer_HotkeyRecorderPrompt}" Margin="0,0,6,0" />
+                                                    <Button Style="{StaticResource ModernDarkButtonStyle}" Command="{Binding ResetKillCounterIncrementHotkeyCommand}" Content="↺" ToolTip="{loc:Loc KillCounter_HotkeyResetTooltip}" Padding="8,4" FontSize="12" />
+                                                </StackPanel>
+                                            </Grid>
+
+                                            <!-- Decrement Hotkey -->
+                                            <Grid Margin="0,0,0,10">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{loc:Loc KillCounter_DecrementHotkey}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11" />
+                                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                                    <controls:HotkeyBox Width="120" Height="28" Hotkey="{Binding KillCounterDecrementHotkey, Mode=TwoWay}" PromptText="{loc:Loc BossTimer_HotkeyRecorderPrompt}" Margin="0,0,6,0" />
+                                                    <Button Style="{StaticResource ModernDarkButtonStyle}" Command="{Binding ResetKillCounterDecrementHotkeyCommand}" Content="↺" ToolTip="{loc:Loc KillCounter_HotkeyResetTooltip}" Padding="8,4" FontSize="12" />
+                                                </StackPanel>
+                                            </Grid>
+
+                                            <!-- Play Sound Confirmation -->
+                                            <CheckBox Content="{loc:Loc KillCounter_PlaySound}" IsChecked="{Binding KillCounterPlaySound}" Style="{StaticResource ModernCheckBoxStyle}" Margin="0,0,0,8" />
+
+                                            <!-- Auto-start Boss Timer -->
+                                            <CheckBox Content="{loc:Loc KillCounter_AutoStartBossTimer}" IsChecked="{Binding KillCounterAutoStartBossTimer}" Style="{StaticResource ModernCheckBoxStyle}" Margin="0,0,0,8" />
+
+                                            <!-- Flash on Goal Reached -->
+                                            <CheckBox Content="{loc:Loc KillCounter_FlashOnGoalReached}" IsChecked="{Binding KillCounterFlashOnGoalReached}" Style="{StaticResource ModernCheckBoxStyle}" Margin="0,0,0,8" />
+
+                                            <!-- Show in Mini-HUD -->
+                                            <CheckBox Content="{loc:Loc KillCounter_ShowInMiniHud}" IsChecked="{Binding KillCounterShowInMiniHud}" Style="{StaticResource ModernCheckBoxStyle}" Margin="0,0,0,10" />
+
+                                            <!-- Accent Color Picker & Hex Input -->
+                                            <Grid Margin="0,2,0,0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{loc:Loc KillCounter_Color}" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11" />
+                                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                                    <Button Command="{Binding PickKillCounterColorCommand}" 
+                                                            Style="{StaticResource ModernDarkButtonStyle}"
+                                                            Padding="8,4" Margin="0,0,6,0" Cursor="Hand"
+                                                            ToolTip="{loc:Loc KillCounter_ColorTooltip}">
+                                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                            <Border Width="16" Height="16" Background="{Binding KillCounterColorHex, FallbackValue='#EF4444', TargetNullValue='#EF4444'}" CornerRadius="3" BorderBrush="#334155" BorderThickness="1" Margin="0,0,6,0" />
+                                                            <TextBlock Text="🎨 " FontSize="11" VerticalAlignment="Center" />
+                                                            <TextBlock Text="{Binding KillCounterColorHex}" FontWeight="Bold" FontSize="11" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center" />
+                                                        </StackPanel>
+                                                    </Button>
+                                                    <TextBox Width="75" Text="{Binding KillCounterColorHex, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center" VerticalAlignment="Center" />
+                                                </StackPanel>
+                                            </Grid>
+                                        </StackPanel>
+                                    </Border>
+                                </StackPanel>
+                            </Grid>
+                        </ScrollViewer>
+                    </TabItem>
+
                     <!-- Tab 3: Appearance -->
                     <TabItem Header="{loc:Loc Settings_TabAppearance}">
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -1056,7 +1221,7 @@
                                         <Rectangle Height="1" Fill="#1E293B" Margin="0,0,0,14" />
 
                                         <!-- Row 4: Dedicated Boss Respawn Timer -->
-                                        <Grid Margin="0,0,0,4">
+                                        <Grid Margin="0,0,0,14">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*" />
                                                 <ColumnDefinition Width="Auto" />
@@ -1068,6 +1233,42 @@
                                             <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                                                 <controls:HotkeyBox Width="140" Height="28" Hotkey="{Binding BossTimerHotkey, Mode=TwoWay}" PromptText="{loc:Loc BossTimer_HotkeyRecorderPrompt}" Margin="0,0,6,0" />
                                                 <Button Style="{StaticResource ModernDarkButtonStyle}" Command="{Binding ResetBossTimerHotkeyCommand}" Content="↺" ToolTip="{loc:Loc BossTimer_HotkeyResetTooltip}" Padding="8,4" FontSize="12" />
+                                            </StackPanel>
+                                        </Grid>
+
+                                        <Rectangle Height="1" Fill="#1E293B" Margin="0,0,0,14" />
+
+                                        <!-- Row 5: Kill Counter Increment (+1) -->
+                                        <Grid Margin="0,0,0,14">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                                <TextBlock Text="{loc:Loc Settings_HotkeyKillIncrement}" Foreground="{StaticResource TextPrimaryBrush}" FontSize="12" FontWeight="SemiBold" />
+                                                <TextBlock Text="{loc:Loc Settings_HotkeyKillIncrementDesc}" Foreground="{StaticResource TextMutedBrush}" FontSize="10.5" Margin="0,2,0,0" />
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                                <controls:HotkeyBox Width="140" Height="28" Hotkey="{Binding KillCounterIncrementHotkey, Mode=TwoWay}" PromptText="{loc:Loc BossTimer_HotkeyRecorderPrompt}" Margin="0,0,6,0" />
+                                                <Button Style="{StaticResource ModernDarkButtonStyle}" Command="{Binding ResetKillCounterIncrementHotkeyCommand}" Content="↺" ToolTip="{loc:Loc KillCounter_HotkeyResetTooltip}" Padding="8,4" FontSize="12" />
+                                            </StackPanel>
+                                        </Grid>
+
+                                        <Rectangle Height="1" Fill="#1E293B" Margin="0,0,0,14" />
+
+                                        <!-- Row 6: Kill Counter Decrement / Undo (-1) -->
+                                        <Grid Margin="0,0,0,4">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                                <TextBlock Text="{loc:Loc Settings_HotkeyKillDecrement}" Foreground="{StaticResource TextPrimaryBrush}" FontSize="12" FontWeight="SemiBold" />
+                                                <TextBlock Text="{loc:Loc Settings_HotkeyKillDecrementDesc}" Foreground="{StaticResource TextMutedBrush}" FontSize="10.5" Margin="0,2,0,0" />
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                                <controls:HotkeyBox Width="140" Height="28" Hotkey="{Binding KillCounterDecrementHotkey, Mode=TwoWay}" PromptText="{loc:Loc BossTimer_HotkeyRecorderPrompt}" Margin="0,0,6,0" />
+                                                <Button Style="{StaticResource ModernDarkButtonStyle}" Command="{Binding ResetKillCounterDecrementHotkeyCommand}" Content="↺" ToolTip="{loc:Loc KillCounter_HotkeyResetTooltip}" Padding="8,4" FontSize="12" />
                                             </StackPanel>
                                         </Grid>
                                     </StackPanel>

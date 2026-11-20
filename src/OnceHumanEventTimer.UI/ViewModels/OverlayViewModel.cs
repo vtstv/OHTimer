@@ -97,7 +97,8 @@ public partial class OverlayViewModel : ObservableObject
         IEventScheduler scheduler,
         ISettingsService settingsService,
         ILocalizationService loc,
-        IBossTimerTracker? bossTimer = null)
+        IBossTimerTracker? bossTimer = null,
+        IKillCounterTracker? killCounter = null)
     {
         _scheduler = scheduler;
         _settingsService = settingsService;
@@ -111,6 +112,7 @@ public partial class OverlayViewModel : ObservableObject
 
         InitializeMultiTimer();
         InitializeBossTimer(bossTimer ?? new BossTimerTracker(settingsService));
+        InitializeKillCounter(killCounter ?? new KillCounterTracker(settingsService));
     }
 
     private void ApplySettings(UserSettings settings)

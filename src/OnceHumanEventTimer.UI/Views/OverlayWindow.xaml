@@ -144,6 +144,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
                 <!-- Full Mode Header -->
@@ -499,11 +500,110 @@
                                      Background="#1F2937" BorderThickness="0" Margin="0,2,0,0" />
                     </Grid>
                 </Border>
+
+                <!-- Full Mode Kill Counter Card -->
+                <Border Grid.Row="3" Margin="0,4,0,0" CornerRadius="6" Padding="8,6"
+                        Visibility="{Binding IsKillCounterActive, Converter={StaticResource BoolToVis}}">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Background" Value="#121824" />
+                            <Setter Property="BorderBrush" Value="{Binding KillCounterStatusColorHex}" />
+                            <Setter Property="BorderThickness" Value="1.2" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsKillCounterGoalReached}" Value="True">
+                                    <Setter Property="Background" Value="#1A10B981" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsKillCounterFlashing}" Value="True">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard x:Name="KillCardFlashStoryboard">
+                                            <Storyboard RepeatBehavior="Forever" AutoReverse="True">
+                                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                 From="1.0" To="0.35" Duration="0:0:0.4" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                    <DataTrigger.ExitActions>
+                                        <StopStoryboard BeginStoryboardName="KillCardFlashStoryboard" />
+                                    </DataTrigger.ExitActions>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ShowBackground}" Value="False">
+                                    <Setter Property="Background" Value="#01000000" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ShowBorder}" Value="False">
+                                    <Setter Property="BorderThickness" Value="0" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <!-- Card Header -->
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="💀 " FontSize="10.5" VerticalAlignment="Center" />
+                                <TextBlock Text="{Binding KillCounterBossName}" FontWeight="Bold" FontSize="10.5" Foreground="{Binding KillCounterStatusColorHex}" TextTrimming="CharacterEllipsis" MaxWidth="110" VerticalAlignment="Center" />
+                            </StackPanel>
+                            <Border Grid.Column="1" Background="#20FFFFFF" CornerRadius="3" Padding="4,1" Margin="0,0,4,0" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding KillCounterBadge}" FontSize="8.5" FontWeight="Bold" Foreground="{Binding KillCounterStatusColorHex}" />
+                            </Border>
+                            <Button Grid.Column="2" Style="{StaticResource HudIconButtonStyle}"
+                                    Command="{Binding DismissKillCounterCommand}"
+                                    ToolTip="{loc:Loc HUD_Close}" Padding="2,0">
+                                <TextBlock Text="✕" FontSize="8.5" Foreground="{StaticResource TextMutedBrush}" />
+                            </Button>
+                        </Grid>
+
+                        <!-- Card Body: Large Count & Interactive Micro-buttons -->
+                        <Grid Grid.Row="1" Margin="0,4,0,2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding KillCounterFormattedCount}"
+                                       Foreground="{StaticResource TextPrimaryBrush}"
+                                       FontFamily="Consolas, Segoe UI Mono, monospace"
+                                       FontSize="18"
+                                       FontWeight="Bold">
+                                <TextBlock.Effect>
+                                    <DropShadowEffect Color="{Binding KillCounterStatusColorHex}" BlurRadius="6" ShadowDepth="0" Opacity="0.6" />
+                                </TextBlock.Effect>
+                            </TextBlock>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Visibility="{Binding IsLocked, Converter={StaticResource InvBoolToVis}}">
+                                <Button Style="{StaticResource HudIconButtonStyle}" Command="{Binding DecrementKillCounterCommand}"
+                                        ToolTip="{loc:Loc KillCounter_DecrementHotkey}" Padding="4,1" Margin="0,0,4,0">
+                                    <TextBlock Text="-" FontSize="13" FontWeight="Bold" Foreground="{Binding KillCounterStatusColorHex}" />
+                                </Button>
+                                <Button Style="{StaticResource HudIconButtonStyle}" Command="{Binding IncrementKillCounterCommand}"
+                                        ToolTip="{loc:Loc KillCounter_IncrementHotkey}" Padding="4,1">
+                                    <TextBlock Text="+" FontSize="13" FontWeight="Bold" Foreground="{Binding KillCounterStatusColorHex}" />
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Mini Horizontal Progress Bar -->
+                        <ProgressBar Grid.Row="2" Height="2" Minimum="0" Maximum="1"
+                                     Value="{Binding KillCounterProgressRatio}"
+                                     Foreground="{Binding KillCounterStatusColorHex}"
+                                     Background="#1F2937" BorderThickness="0" Margin="0,2,0,0"
+                                     Visibility="{Binding KillCounterEnableGoal, Converter={StaticResource BoolToVis}}" />
+                    </Grid>
+                </Border>
             </Grid>
 
             <!-- 2. COMPACT MINI-HUD MODE (Floating Pill) -->
             <Grid Margin="10,6" Visibility="{Binding CompactMode, Converter={StaticResource BoolToVis}}">
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
@@ -743,6 +843,74 @@
                                      Value="{Binding BossTimerProgressRatio}"
                                      Foreground="{Binding BossTimerStatusColorHex}"
                                      Background="#1F2937" BorderThickness="0" Margin="0,2,0,0" />
+                    </Grid>
+                </Border>
+
+                <!-- Compact Mini-HUD Kill Counter Row -->
+                <Border Grid.Row="3" Margin="0,4,0,0" CornerRadius="4" Padding="6,3"
+                        Visibility="{Binding IsMiniKillCounterVisible, Converter={StaticResource BoolToVis}}">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Background" Value="#16121824" />
+                            <Setter Property="BorderBrush" Value="{Binding KillCounterStatusColorHex}" />
+                            <Setter Property="BorderThickness" Value="1" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsKillCounterGoalReached}" Value="True">
+                                    <Setter Property="Background" Value="#2510B981" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsKillCounterFlashing}" Value="True">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard x:Name="MiniKillFlashStoryboard">
+                                            <Storyboard RepeatBehavior="Forever" AutoReverse="True">
+                                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                 From="1.0" To="0.35" Duration="0:0:0.4" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                    <DataTrigger.ExitActions>
+                                        <StopStoryboard BeginStoryboardName="MiniKillFlashStoryboard" />
+                                    </DataTrigger.ExitActions>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="💀" FontSize="9" Margin="0,0,4,0" VerticalAlignment="Center" />
+                            <TextBlock Grid.Column="1" Text="{Binding KillCounterBossName}" FontWeight="SemiBold" FontSize="9.5"
+                                       Foreground="{Binding KillCounterStatusColorHex}" TextTrimming="CharacterEllipsis" MaxWidth="85" VerticalAlignment="Center" />
+                            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding KillCounterBadge}" FontSize="8" FontWeight="Bold" Foreground="{Binding KillCounterStatusColorHex}" Margin="0,0,4,0" VerticalAlignment="Center" />
+                                <TextBlock Text="{Binding KillCounterFormattedCount}" Foreground="{StaticResource TextPrimaryBrush}"
+                                           FontFamily="Consolas, Segoe UI Mono, monospace" FontSize="13" FontWeight="Bold" VerticalAlignment="Center" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center" Margin="4,0,0,0"
+                                        Visibility="{Binding IsLocked, Converter={StaticResource InvBoolToVis}}">
+                                <Button Style="{StaticResource HudIconButtonStyle}" Command="{Binding DecrementKillCounterCommand}"
+                                        ToolTip="{loc:Loc KillCounter_DecrementHotkey}" Padding="2,0" Margin="0,0,2,0">
+                                    <TextBlock Text="-" FontSize="9" FontWeight="Bold" Foreground="{StaticResource TextMutedBrush}" />
+                                </Button>
+                                <Button Style="{StaticResource HudIconButtonStyle}" Command="{Binding IncrementKillCounterCommand}"
+                                        ToolTip="{loc:Loc KillCounter_IncrementHotkey}" Padding="2,0">
+                                    <TextBlock Text="+" FontSize="9" FontWeight="Bold" Foreground="{Binding KillCounterStatusColorHex}" />
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                        <ProgressBar Grid.Row="1" Height="2" Minimum="0" Maximum="1"
+                                     Value="{Binding KillCounterProgressRatio}"
+                                     Foreground="{Binding KillCounterStatusColorHex}"
+                                     Background="#1F2937" BorderThickness="0" Margin="0,2,0,0"
+                                     Visibility="{Binding KillCounterEnableGoal, Converter={StaticResource BoolToVis}}" />
                     </Grid>
                 </Border>
             </Grid>

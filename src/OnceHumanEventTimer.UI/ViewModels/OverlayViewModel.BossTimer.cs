@@ -101,7 +101,8 @@ public partial class OverlayViewModel
     public void UpdateOverlayCardVisibility()
     {
         bool isBossEnabled = _settingsService?.Settings.BossTimer.IsEnabled ?? true;
-        IsOverlayCardVisible = IsTimerVisible || (IsBossTimerActive && isBossEnabled);
+        bool isKillEnabled = _settingsService?.Settings.KillCounter.IsEnabled ?? false;
+        IsOverlayCardVisible = IsTimerVisible || (IsBossTimerActive && isBossEnabled) || (IsKillCounterActive && isKillEnabled);
     }
 
     [RelayCommand]

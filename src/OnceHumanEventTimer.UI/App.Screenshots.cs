@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Microsoft.Extensions.DependencyInjection;
+using OnceHumanEventTimer.Core.Models;
 using OnceHumanEventTimer.Core.Services;
 using OnceHumanEventTimer.UI.ViewModels;
 using OnceHumanEventTimer.UI.Views;
@@ -76,14 +77,22 @@ public partial class App
                 var dg = settingsVm.Events.FirstOrDefault(e => e.Id == "drift-greenhouse");
                 if (dg != null) settingsVm.SelectedEvent = dg;
 
+                settingsVm.KillCounterEnabled = true;
+                settingsVm.KillCounterBossName = "Shadow Hound";
+                settingsVm.KillCounterCurrentCount = 14;
+                settingsVm.KillCounterEnableGoal = true;
+                settingsVm.KillCounterGoalCount = 20;
+                settingsVm.KillCounterTotalAllTimeCount = 86;
+
                 var tabCaptures = new (int index, string filename, bool isJpeg)[]
                 {
                     (0, "settings-events.jpg", true),
                     (1, "settings-audio.png", false),
                     (2, "settings-bosstimer.png", false),
-                    (3, "hud-appearance.jpg", true),
-                    (4, "settings-system.png", false),
-                    (5, "settings-hotkeys.png", false)
+                    (3, "settings-killcounter.png", false),
+                    (4, "hud-appearance.jpg", true),
+                    (5, "settings-system.png", false),
+                    (6, "settings-hotkeys.png", false)
                 };
 
                 foreach (var (idx, file, isJpg) in tabCaptures)
@@ -118,9 +127,21 @@ public partial class App
                 RadiusY = 0.85
             };
 
-            // 2A. Capture Full Multi-Timer HUD (shows Cargo Scramble, Gravity Abyss, Drift Greenhouse, and Boss Respawn)
+            // 2A. Capture Full Multi-Timer HUD (shows Cargo Scramble, Gravity Abyss, Drift Greenhouse, Boss Respawn, Kill Counter)
             var bossTracker = _serviceProvider!.GetRequiredService<IBossTimerTracker>();
             bossTracker.Start();
+            var killTracker = _serviceProvider!.GetRequiredService<IKillCounterTracker>();
+            killTracker.Configure(new KillCounterSettings
+            {
+                IsEnabled = true,
+                BossName = "Shadow Hound",
+                CurrentCount = 14,
+                EnableGoal = true,
+                GoalCount = 20,
+                TotalAllTimeCount = 86,
+                ColorHex = "#EF4444",
+                ShowInMiniHud = true
+            });
             await Task.Delay(200);
 
             overlayVm.CompactMode = false;
@@ -130,7 +151,7 @@ public partial class App
             overlayWindow.Show();
             overlayWindow.UpdateLayout();
             await Task.Delay(350);
-            CaptureVisual(overlayWindow, Path.Combine(docsDir, "hud-multitimer.png"), 520, 520, backdrop: hudBackdrop, drawBorderFrame: true);
+            CaptureVisual(overlayWindow, Path.Combine(docsDir, "hud-multitimer.png"), 520, 560, backdrop: hudBackdrop, drawBorderFrame: true);
             File.AppendAllText(logFile, $"Captured hud-multitimer.png (size: {overlayWindow.ActualWidth}x{overlayWindow.ActualHeight})\n");
 
             // 2B. Capture Mini-HUD (showcase Single-Timer Gravity Abyss floating pill with Boss Timer badge)
@@ -166,12 +187,10 @@ public partial class App
     {
         double rawW = !double.IsNaN(visual.ActualWidth) && visual.ActualWidth > 0 ? visual.ActualWidth : (!double.IsNaN(visual.Width) ? visual.Width : 0);
         double rawH = !double.IsNaN(visual.ActualHeight) && visual.ActualHeight > 0 ? visual.ActualHeight : (!double.IsNaN(visual.Height) ? visual.Height : 0);
-
         int outW = defaultW > 0 ? defaultW : (int)rawW;
         int outH = defaultH > 0 ? defaultH : (int)rawH;
         if (outW <= 0) outW = 400;
         if (outH <= 0) outH = 300;
-
         int visualW = (int)Math.Max(1, rawW > 0 ? rawW : outW);
         int visualH = (int)Math.Max(1, rawH > 0 ? rawH : outH);
 
@@ -184,33 +203,17 @@ public partial class App
                 var borderPen = drawBorderFrame ? new Pen(new SolidColorBrush(Color.FromArgb(0x35, 0x00, 0xF0, 0xFF)), 1.5) : null;
                 dc.DrawRoundedRectangle(backdrop, borderPen, new Rect(0.75, 0.75, Math.Max(1, outW - 1.5), Math.Max(1, outH - 1.5)), 10, 10);
             }
-
             int offsetX = outW > visualW ? (outW - visualW) / 2 : 0;
             int offsetY = outH > visualH ? (outH - visualH) / 2 : 0;
-
-            var brush = new VisualBrush(visual)
-            {
-                Stretch = Stretch.None,
-                Viewbox = new Rect(0, 0, visualW, visualH),
-                ViewboxUnits = BrushMappingMode.Absolute
-            };
+            var brush = new VisualBrush(visual) { Stretch = Stretch.None, Viewbox = new Rect(0, 0, visualW, visualH), ViewboxUnits = BrushMappingMode.Absolute };
             dc.DrawRectangle(brush, null, new Rect(offsetX, offsetY, visualW, visualH));
         }
         rtb.Render(dv);
 
         using var fs = File.Create(outputPath);
-        if (isJpeg)
-        {
-            var encoder = new JpegBitmapEncoder { QualityLevel = 95 };
-            encoder.Frames.Add(BitmapFrame.Create(rtb));
-            encoder.Save(fs);
-        }
-        else
-        {
-            var encoder = new PngBitmapEncoder();
-            encoder.Frames.Add(BitmapFrame.Create(rtb));
-            encoder.Save(fs);
-        }
+        BitmapEncoder encoder = isJpeg ? new JpegBitmapEncoder { QualityLevel = 95 } : new PngBitmapEncoder();
+        encoder.Frames.Add(BitmapFrame.Create(rtb));
+        encoder.Save(fs);
     }
 
     private static T? FindVisualChild<T>(DependencyObject parent) where T : DependencyObject

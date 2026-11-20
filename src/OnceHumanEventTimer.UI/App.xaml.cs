@@ -134,69 +134,32 @@ public partial class App : Application
         overlayVm.RequestHideOverlay = () => overlayWindow.Hide();
         overlayVm.RequestExitApp = ShutdownApp;
 
-        // 6. Setup Hotkeys & Boss Timer
+        // 6. Setup Hotkeys, Boss Timer & Kill Counter
         var bossTimer = _serviceProvider.GetRequiredService<IBossTimerTracker>();
         SetupBossTimerAlerts(bossTimer, settingsService, audio, loc, notifications);
+
+        var killCounter = _serviceProvider.GetRequiredService<IKillCounterTracker>();
+        SetupKillCounterAlerts(killCounter, bossTimer, settingsService, audio, loc, notifications);
 
         var hotkeyService = _serviceProvider.GetRequiredService<IHotkeyService>();
         if (hotkeyService is Win32HotkeyService winHotkey)
         {
             winHotkey.Initialize(overlayWindow.Handle);
-            RegisterHotkeys(winHotkey, settingsService.Settings, overlayWindow, overlayVm, loc, notifications, bossTimer);
+            RegisterHotkeys(winHotkey, settingsService.Settings, overlayWindow, overlayVm, loc, notifications, bossTimer, killCounter);
         }
 
-        // 7. Setup System Tray
-        _trayMenuWindow = new Tray.TrayMenuWindow(
-            loc,
-            toggleVisibilityAction: () => ToggleOverlayVisibility(overlayWindow),
-            toggleLockAction: () => Dispatcher.Invoke(() => overlayVm.ToggleLockCommand.Execute(null)),
-            openSettingsAction: OpenSettingsWindow,
-            exitAction: ShutdownApp,
-            togglePauseAlertsAction: () => Dispatcher.Invoke(() => overlayVm.TogglePauseAlertsCommand.Execute(null)),
-            areAlertsPausedFunc: () => settingsService.Settings.AreAlertsPaused,
-            isOverlayVisibleFunc: () => overlayWindow.IsVisible);
-
-        _trayService = new Win32TrayService(
-            toggleVisibilityAction: () => ToggleOverlayVisibility(overlayWindow),
-            showContextMenuAction: () => Dispatcher.Invoke(_trayMenuWindow.ShowMenu));
-
-        _trayService.Initialize();
-        if (notifications is WindowsNotificationService winNotif)
-            winNotif.OnShowNotification = (title, msg) => _trayService.ShowNotification(title, msg);
-
-        // 8. Setup Game Focus Monitor (Auto-hide when Once Human not in focus)
+        // 7. Setup System Tray & Game Focus Monitor
+        SetupSystemTray(loc, overlayWindow, overlayVm, settingsService, notifications);
         var focusMonitor = _serviceProvider.GetRequiredService<IGameFocusMonitor>();
-        focusMonitor.GameFocusChanged += (s, isFocused) =>
-        {
-            Dispatcher.BeginInvoke(new Action(() =>
-            {
-                if (!settingsService.Settings.AutoHideWhenGameOutOfFocus) return;
-
-                if (isFocused)
-                {
-                    if (!_userManuallyHidden && !overlayWindow.IsVisible)
-                    {
-                        overlayWindow.Show();
-                    }
-                }
-                else
-                {
-                    if (overlayWindow.IsVisible)
-                    {
-                        overlayWindow.Hide();
-                    }
-                }
-            }), System.Windows.Threading.DispatcherPriority.Normal);
-        };
-        focusMonitor.Start();
+        SetupFocusMonitor(focusMonitor, settingsService, overlayWindow);
 
         settingsService.SettingsChanged += (s, updatedSettings) =>
         {
-            Dispatcher.Invoke(() =>
+            Dispatcher.BeginInvoke(() =>
             {
                 if (hotkeyService is Win32HotkeyService winHotkey)
                 {
-                    RegisterHotkeys(winHotkey, updatedSettings, overlayWindow, overlayVm, loc, notifications, bossTimer);
+                    RegisterHotkeys(winHotkey, updatedSettings, overlayWindow, overlayVm, loc, notifications, bossTimer, killCounter);
                 }
 
                 if (!updatedSettings.AutoHideWhenGameOutOfFocus && !_userManuallyHidden && !overlayWindow.IsVisible)
@@ -219,17 +182,34 @@ public partial class App : Application
         }
     }
 
+    private void PersistSettingsOnExit()
+    {
+        try
+        {
+            var ss = _serviceProvider?.GetService<ISettingsService>();
+            if (ss is Infrastructure.Storage.FileSettingsService fss)
+            {
+                var options = new System.Text.Json.JsonSerializerOptions { WriteIndented = true, PropertyNameCaseInsensitive = true };
+                byte[] bytes = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(ss.Settings, options);
+                System.IO.File.WriteAllBytes(fss.SettingsFilePath, bytes);
+            }
+        }
+        catch { }
+    }
+
     private void ShutdownApp()
     {
+        PersistSettingsOnExit();
         _trayMenuWindow?.CloseForShutdown();
         _trayService?.Dispose();
-        _singleInstanceMutex?.ReleaseMutex();
+        try { _singleInstanceMutex?.ReleaseMutex(); } catch { }
         _singleInstanceMutex?.Dispose();
         Shutdown();
     }
 
     protected override void OnExit(ExitEventArgs e)
     {
+        PersistSettingsOnExit();
         _trayMenuWindow?.CloseForShutdown();
         _trayService?.Dispose();
         _serviceProvider?.Dispose();

@@ -37,7 +37,8 @@ public partial class App
         OverlayViewModel overlayVm,
         ILocalizationService? loc = null,
         INotificationService? notifications = null,
-        IBossTimerTracker? bossTimer = null)
+        IBossTimerTracker? bossTimer = null,
+        IKillCounterTracker? killCounter = null)
     {
         hotkeyService.UnregisterAll();
 
@@ -97,6 +98,35 @@ public partial class App
                     }
                 });
             });
+        }
+
+        if (killCounter != null && settings.KillCounter.IsEnabled)
+        {
+            if (!string.IsNullOrWhiteSpace(settings.KillCounter.IncrementHotkey))
+            {
+                hotkeyService.RegisterHotkey(settings.KillCounter.IncrementHotkey, () =>
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        killCounter.Increment();
+                        if (!overlayWindow.IsVisible && !_userManuallyHidden)
+                        {
+                            overlayWindow.Show();
+                        }
+                    });
+                });
+            }
+
+            if (!string.IsNullOrWhiteSpace(settings.KillCounter.DecrementHotkey))
+            {
+                hotkeyService.RegisterHotkey(settings.KillCounter.DecrementHotkey, () =>
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        killCounter.Decrement();
+                    });
+                });
+            }
         }
     }
 }

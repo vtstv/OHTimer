@@ -19,6 +19,7 @@ public partial class SettingsWindow : Window
         InitializeComponent();
 
         viewModel.RequestCloseSettings = Close;
+        Closed += (s, e) => viewModel.CleanupKillCounter();
         LoadWindowIcon();
     }
 

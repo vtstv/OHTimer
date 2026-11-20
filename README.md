@@ -4,7 +4,7 @@
 ![.NET 8](https://img.shields.io/badge/.NET-8.0_LTS-512BD4?logo=dotnet&logoColor=white)
 ![Platform](https://img.shields.io/badge/Platform-Windows_10%20%2F%2011-0078D6?logo=windows&logoColor=white)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-![Version](https://img.shields.io/badge/Release-v1.6.1-00F0FF)
+![Version](https://img.shields.io/badge/Release-v1.7.0-00F0FF)
 
 A modern, high-performance desktop HUD overlay for **Once Human** that tracks recurring in-game events in real time. Designed with a dark cyberpunk aesthetic, sub-second server clock synchronization, customizable sound alerts, and zero-impact click-through gameplay support.
 
@@ -40,6 +40,12 @@ A modern, high-performance desktop HUD overlay for **Once Human** that tracks re
   <img src="docs/images/settings-bosstimer.png" alt="Dedicated Boss Respawn Timer Configuration" width="760"/>
   <br/>
   <em>Dedicated boss respawn countdown timer with custom hotkey trigger, warning chimes, spawn alerts, and repeat notifications.</em>
+</p>
+
+<p align="center">
+  <img src="docs/images/settings-killcounter.png" alt="Smart Farm and Kill Tracker Configuration" width="760"/>
+  <br/>
+  <em>Smart farm and kill tracker with target goals, quick presets, hotkey controls, and chained boss timer triggers.</em>
 </p>
 
 <p align="center">
@@ -79,6 +85,13 @@ A modern, high-performance desktop HUD overlay for **Once Human** that tracks re
   - Granular alerts: early warning audio chimes, 00:00 spawn alarms, Windows Toast notifications, and configurable repeating alerts.
   - Dedicated HUD countdown card with instant one-click dismiss (<kbd>✕</kbd>) from both Full HUD and Mini-HUD.
   - Full customization: target name, quick presets (3m, 5m, 10m, 15m, 20m, 30m), auto-hide delay, and neon accent palette.
+
+- **Smart Farm & Kill Tracker**:
+  - Track boss kills, silo runs, and farming goals on demand with dedicated global hotkeys (<kbd>NumPad +</kbd> to add, <kbd>NumPad -</kbd> to undo) or interactive HUD micro-buttons.
+  - Target run goal system with real-time percentage badge, mini progress bar, triumphant celebration chimes, and optional HUD card flash on goal completion.
+  - Chained Boss Timer automation: auto-start the Boss Respawn Timer whenever a kill is registered, creating a seamless farm loop.
+  - Dedicated HUD cards across both Full HUD and Mini-HUD with custom neon accent colors and session reset.
+  - Quick target presets (*Treant*, *Hound*, *Arachsiam*, *Silo*, *Prime War*) for instantaneous setup.
 
 - **Game Focus Detection (Smart Auto-Hide)**:
   - Automatically conceals the overlay when *Once Human* is not the active window (e.g., when Alt-Tabbing to a web browser or another desktop app).
@@ -125,6 +138,8 @@ Releases are available in three distinct packages on the [GitHub Releases](https
 | Shortcut | Action |
 | :--- | :--- |
 | <kbd>NumPad 1</kbd> | Start / restart dedicated Boss Respawn Timer countdown |
+| <kbd>NumPad +</kbd> | Increment kill / run counter (+1) and optionally auto-start boss timer |
+| <kbd>NumPad -</kbd> | Decrement / undo kill counter (-1) |
 | <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>S</kbd> | Toggle HUD overlay visibility |
 | <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>L</kbd> | Toggle click-through mode and position lock |
 | <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>P</kbd> | Toggle pause / resume for audio alerts and notifications |

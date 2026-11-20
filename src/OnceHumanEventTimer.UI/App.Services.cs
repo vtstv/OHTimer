@@ -25,6 +25,7 @@ public partial class App
         services.AddSingleton<INotificationService, WindowsNotificationService>();
         services.AddSingleton<IEventScheduler, EventScheduler>();
         services.AddSingleton<IBossTimerTracker, BossTimerTracker>();
+        services.AddSingleton<IKillCounterTracker, KillCounterTracker>();
         services.AddSingleton<IHotkeyService, Win32HotkeyService>();
         services.AddSingleton<IUpdateService, GitHubUpdateService>();
         services.AddSingleton<IAutostartService, WindowsAutostartService>();

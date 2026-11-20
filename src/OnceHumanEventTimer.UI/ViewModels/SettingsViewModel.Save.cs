@@ -75,6 +75,21 @@ public partial class SettingsViewModel
         s.BossTimer.AutoHideSeconds = BossTimerAutoHideSeconds;
         s.BossTimer.ColorHex = BossTimerColorHex;
 
+        s.KillCounter.IsEnabled = KillCounterEnabled;
+        s.KillCounter.BossName = KillCounterBossName;
+        s.KillCounter.CurrentCount = KillCounterCurrentCount;
+        s.KillCounter.EnableGoal = KillCounterEnableGoal;
+        s.KillCounter.GoalCount = KillCounterGoalCount;
+        s.KillCounter.TotalAllTimeCount = KillCounterTotalAllTimeCount;
+        s.KillCounter.IncrementHotkey = KillCounterIncrementHotkey;
+        s.KillCounter.DecrementHotkey = KillCounterDecrementHotkey;
+        s.KillCounter.PlaySound = KillCounterPlaySound;
+        s.KillCounter.AutoStartBossTimer = KillCounterAutoStartBossTimer;
+        s.KillCounter.ShowInMiniHud = KillCounterShowInMiniHud;
+        s.KillCounter.FlashOnGoalReached = KillCounterFlashOnGoalReached;
+        s.KillCounter.ColorHex = KillCounterColorHex;
+        _killCounterTracker?.Configure(s.KillCounter);
+
         _autostartService?.SetAutostart(StartWithWindows);
 
         s.Events = Events.ToList();

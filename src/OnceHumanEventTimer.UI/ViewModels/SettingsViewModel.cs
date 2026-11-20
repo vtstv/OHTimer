@@ -114,7 +114,8 @@ public partial class SettingsViewModel : ObservableObject
         ILocalizationService loc,
         IUpdateService? updateService = null,
         IAutostartService? autostartService = null,
-        IBossTimerTracker? bossTimerTracker = null)
+        IBossTimerTracker? bossTimerTracker = null,
+        IKillCounterTracker? killCounterTracker = null)
     {
         _settingsService = settingsService;
         _scheduler = scheduler;
@@ -154,6 +155,7 @@ public partial class SettingsViewModel : ObservableObject
         InitializeSystem(current, autostartService);
         InitializeHotkeys(current);
         InitializeBossTimer(current, bossTimerTracker);
+        InitializeKillCounter(current, killCounterTracker);
     }
 
     [RelayCommand]

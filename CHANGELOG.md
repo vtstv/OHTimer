@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.7.0] - 2026-11-20
+
+### Added
+- **Smart Farm & Kill Tracker Feature**:
+  - Dedicated Kill Counter engine (`IKillCounterTracker`, `KillCounterTracker`, `KillCounterSettings`, `KillCounterSnapshot`) with thread-safe session tracking, all-time totals, run goals, and global hotkeys.
+  - Seamless Full HUD & Mini-HUD cards featuring custom neon glow, dynamic percentage badges, mini progress bars, and interactive `[-]` / `[+]` micro-buttons when hovered.
+  - Global hotkeys (`NumPad +` to increment, `NumPad -` to undo) with interactive hotkey recording in both Kill Counter and Hotkeys tabs.
+  - Audio & Celebration feedback: crisp confirmation clicks on count change, triumphant chime on goal completion, and optional HUD flash animation.
+  - Chained Boss Timer automation: auto-starts active Boss Respawn Timer upon kill increment for seamless farm loops.
+  - Zero-scroll 2-column cyberpunk configuration tab with quick target presets (*Treant*, *Hound*, *Arachsiam*, *Silo*, *Prime War*), goal controls, and native color picker.
+  - 100% strict localization parity across English, German, and Russian catalogs.
+
+---
+
 ## [1.6.2] - 2026-11-20
 
 ### Added
