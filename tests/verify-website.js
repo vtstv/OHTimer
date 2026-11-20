@@ -3,7 +3,7 @@ const path = require('path');
 const { execSync } = require('child_process');
 
 const rootDir = path.resolve(__dirname, '..');
-const websiteDir = path.join(rootDir, 'website');
+const websiteDir = path.join(rootDir, 'docs/website');
 const srcDir = path.join(websiteDir, 'src');
 const componentsDir = path.join(srcDir, 'components');
 const templatePath = path.join(srcDir, 'template.html');
