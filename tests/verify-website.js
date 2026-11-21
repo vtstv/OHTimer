@@ -147,10 +147,10 @@ if (!twitterImageMatch || !twitterImageMatch[1].startsWith('https://')) {
   console.log(`PASS: Valid absolute twitter:image: ${twitterImageMatch[1]}`);
 }
 
-// 7. Verify Direct Distribution Download Links & Dynamic Resolver
-const hasStandaloneLink = /href="https:\/\/github\.com\/vtstv\/OHTimer\/releases\/download\/[^"]+standalone\.zip"/i.test(html);
-const hasPortableLink = /href="https:\/\/github\.com\/vtstv\/OHTimer\/releases\/download\/[^"]+portable\.zip"/i.test(html);
-const hasSetupLink = /href="https:\/\/github\.com\/vtstv\/OHTimer\/releases\/download\/[^"]+Setup\.exe"/i.test(html);
+// 7. Verify Universal Direct Distribution Download Links
+const hasStandaloneLink = /href="https:\/\/github\.com\/vtstv\/OHTimer\/releases\/latest\/download\/OnceHumanTimer-standalone\.zip"/i.test(html);
+const hasPortableLink = /href="https:\/\/github\.com\/vtstv\/OHTimer\/releases\/latest\/download\/OnceHumanTimer-portable\.zip"/i.test(html);
+const hasSetupLink = /href="https:\/\/github\.com\/vtstv\/OHTimer\/releases\/latest\/download\/OnceHumanTimer-Setup\.exe"/i.test(html);
 const hasReleasesPageLink = html.includes('https://github.com/vtstv/OHTimer/releases');
 
 if (!hasStandaloneLink) {

@@ -214,6 +214,7 @@ if ($buildPortable) {
 
     Compress-Archive -Path "$portableDir\*" -DestinationPath $portableZip -Force
     Copy-Item $portableZip -Destination $defaultZip -Force
+    Copy-Item $portableZip -Destination (Join-Path $releaseBaseDir "OnceHumanTimer-portable.zip") -Force
 
     $pSize = [math]::Round((Get-Item $portableZip).Length / 1KB, 2)
     Write-Host "      Portable ZIP created: $portableZip ($pSize KB)" -ForegroundColor Green
@@ -230,6 +231,7 @@ if ($buildStandalone -or $buildInstaller) {
         $standaloneZip = Join-Path $releaseBaseDir "OnceHumanTimer-v$Version-standalone.zip"
         if (Test-Path $standaloneZip) { Remove-Item -Force $standaloneZip }
         Compress-Archive -Path "$standaloneDir\*" -DestinationPath $standaloneZip -Force
+        Copy-Item $standaloneZip -Destination (Join-Path $releaseBaseDir "OnceHumanTimer-standalone.zip") -Force
         $sSize = [math]::Round((Get-Item $standaloneZip).Length / 1MB, 2)
         Write-Host "      Standalone ZIP created: $standaloneZip ($sSize MB)" -ForegroundColor Green
     }
@@ -253,6 +255,7 @@ if ($buildInstaller) {
         & $iscc $installerArgs
         if ($LASTEXITCODE -eq 0) {
             $setupPath = Join-Path $releaseBaseDir "OnceHumanTimer-v$Version-Setup.exe"
+            Copy-Item $setupPath -Destination (Join-Path $releaseBaseDir "OnceHumanTimer-Setup.exe") -Force
             $setupSize = [math]::Round((Get-Item $setupPath).Length / 1MB, 2)
             Write-Host "      Installer created: $setupPath ($setupSize MB)" -ForegroundColor Green
         } else {
