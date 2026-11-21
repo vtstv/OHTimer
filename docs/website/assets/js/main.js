@@ -540,46 +540,4 @@
 
   window.addEventListener('scroll', updateActiveNavLink, { passive: true });
 
-  // ========================================================================
-  // 9. Dynamic Release Links Resolver (GitHub Releases API)
-  // ========================================================================
-  function initDynamicReleaseLinks() {
-    const standaloneBtn = document.querySelector('[data-dist="standalone"]');
-    const portableBtn = document.querySelector('[data-dist="portable"]');
-    const setupBtn = document.querySelector('[data-dist="setup"]');
-
-    if (!standaloneBtn && !portableBtn && !setupBtn) return;
-
-    fetch('https://api.github.com/repos/vtstv/OHTimer/releases/latest')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('GitHub API HTTP ' + response.status);
-        }
-        return response.json();
-      })
-      .then(release => {
-        if (!release || !Array.isArray(release.assets)) return;
-
-        release.assets.forEach(asset => {
-          const name = (asset.name || '').toLowerCase();
-          const downloadUrl = asset.browser_download_url;
-          if (!downloadUrl) return;
-
-          if (standaloneBtn && name.includes('standalone') && name.endsWith('.zip')) {
-            standaloneBtn.href = downloadUrl;
-          } else if (portableBtn && name.includes('portable') && name.endsWith('.zip')) {
-            portableBtn.href = downloadUrl;
-          } else if (setupBtn && name.includes('setup') && name.endsWith('.exe')) {
-            setupBtn.href = downloadUrl;
-          }
-        });
-      })
-      .catch(err => {
-        // Silently preserve static fallback links in HTML
-        console.debug('Failed to fetch latest release assets from GitHub API:', err);
-      });
-  }
-
-  initDynamicReleaseLinks();
-
 })();

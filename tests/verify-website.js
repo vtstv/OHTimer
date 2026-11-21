@@ -169,20 +169,6 @@ if (!hasStandaloneLink) {
   console.log('PASS: Direct distribution download links verified (Standalone, Portable, Setup) with releases fallback link');
 }
 
-// Verify dynamic release resolver in main.js
-const mainJsContent = fs.readFileSync(jsPath, 'utf8');
-const hasApiCall = mainJsContent.includes('api.github.com/repos/vtstv/OHTimer/releases/latest');
-const hasStandaloneResolver = mainJsContent.includes('standalone') && mainJsContent.includes('.zip');
-const hasPortableResolver = mainJsContent.includes('portable') && mainJsContent.includes('.zip');
-const hasSetupResolver = mainJsContent.includes('setup') && mainJsContent.includes('.exe');
-
-if (!hasApiCall || !hasStandaloneResolver || !hasPortableResolver || !hasSetupResolver) {
-  console.error('FAIL: main.js missing dynamic release resolver for GitHub release assets');
-  errors++;
-} else {
-  console.log('PASS: Dynamic release resolver in main.js verified (fetches latest release assets for Standalone, Portable, Setup)');
-}
-
 // 8. Verify CSS syntax and url() references
 const css = fs.readFileSync(cssPath, 'utf8');
 let openBrackets = 0;
