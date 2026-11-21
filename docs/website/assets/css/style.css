@@ -1908,10 +1908,6 @@ code {
   color: var(--cyan-primary);
 }
 
-.footer-analytics a:hover {
-  opacity: 1 !important;
-}
-
 .back-to-top-btn {
   display: inline-flex;
   align-items: center;
