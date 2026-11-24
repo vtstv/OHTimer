@@ -77,6 +77,46 @@
         <li><a href="#screenshots" class="nav-link" data-i18n="nav.screenshots">Screenshots</a></li>
         <li><a href="#download" class="nav-link" data-i18n="nav.download">Download</a></li>
         <li><a href="#faq" class="nav-link" data-i18n="nav.faq">FAQ</a></li>
+        <li class="mobile-menu-divider" aria-hidden="true"></li>
+        <li class="mobile-menu-controls">
+          <!-- Mobile Language Switch -->
+          <div class="mobile-lang-switch">
+            <div class="mobile-control-header">
+              <svg class="icon-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="2" y1="12" x2="22" y2="12"></line>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+              </svg>
+              <span data-i18n="nav.language">Language</span>
+            </div>
+            <div class="mobile-lang-options" role="group" aria-label="Language selection">
+              <button type="button" class="mobile-lang-btn active" data-lang="en">English</button>
+              <button type="button" class="mobile-lang-btn" data-lang="de">Deutsch</button>
+              <button type="button" class="mobile-lang-btn" data-lang="ru">Русский</button>
+            </div>
+          </div>
+
+          <!-- Mobile Theme Toggle -->
+          <div class="mobile-theme-switch">
+            <button type="button" class="mobile-theme-btn" id="mobile-theme-toggle-btn" aria-label="Switch to light theme" title="Toggle Theme">
+              <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+              </svg>
+              <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+              </svg>
+              <span class="mobile-theme-label" data-i18n="nav.theme">Theme</span>
+            </button>
+          </div>
+        </li>
       </ul>
     </nav>
 

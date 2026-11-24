@@ -20,6 +20,8 @@
       'nav.download': 'Download',
       'nav.faq': 'FAQ',
       'header.download': 'Download',
+      'nav.language': 'Language',
+      'nav.theme': 'Theme',
 
       // Hero
       'hero.pill.events': 'Live Event HUD',
@@ -187,6 +189,8 @@
       'nav.download': 'Download',
       'nav.faq': 'FAQ',
       'header.download': 'Download',
+      'nav.language': 'Sprache',
+      'nav.theme': 'Design',
 
       // Hero
       'hero.pill.events': 'Live Event-HUD',
@@ -354,6 +358,8 @@
       'nav.download': 'Скачать',
       'nav.faq': 'FAQ',
       'header.download': 'Скачать',
+      'nav.language': 'Язык',
+      'nav.theme': 'Тема',
 
       // Hero
       'hero.pill.events': 'Live-HUD событий',

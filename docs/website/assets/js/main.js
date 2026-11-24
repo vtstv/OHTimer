@@ -12,6 +12,7 @@
   // ========================================================================
   const THEME_STORAGE_KEY = 'ohtimer-theme';
   const themeToggleBtn = document.getElementById('theme-toggle-btn');
+  const mobileThemeToggleBtn = document.getElementById('mobile-theme-toggle-btn');
 
   function getPreferredTheme() {
     const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
@@ -23,7 +24,8 @@
   }
 
   function applyTheme(theme) {
-    if (theme === 'light') {
+    const isLight = theme === 'light';
+    if (isLight) {
       document.documentElement.setAttribute('data-theme', 'light');
       const metaTheme = document.querySelector('meta[name="theme-color"]');
       if (metaTheme) metaTheme.setAttribute('content', '#f8fafc');
@@ -32,9 +34,20 @@
       const metaTheme = document.querySelector('meta[name="theme-color"]');
       if (metaTheme) metaTheme.setAttribute('content', '#070a0f');
     }
+    const ariaLabel = isLight ? 'Switch to dark theme' : 'Switch to light theme';
     if (themeToggleBtn) {
-      themeToggleBtn.setAttribute('aria-label', theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme');
+      themeToggleBtn.setAttribute('aria-label', ariaLabel);
     }
+    if (mobileThemeToggleBtn) {
+      mobileThemeToggleBtn.setAttribute('aria-label', ariaLabel);
+    }
+  }
+
+  function toggleTheme() {
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    const newTheme = isLight ? 'dark' : 'light';
+    localStorage.setItem(THEME_STORAGE_KEY, newTheme);
+    applyTheme(newTheme);
   }
 
   // Initialize theme
@@ -42,12 +55,10 @@
   applyTheme(currentTheme);
 
   if (themeToggleBtn) {
-    themeToggleBtn.addEventListener('click', () => {
-      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-      const newTheme = isLight ? 'dark' : 'light';
-      localStorage.setItem(THEME_STORAGE_KEY, newTheme);
-      applyTheme(newTheme);
-    });
+    themeToggleBtn.addEventListener('click', toggleTheme);
+  }
+  if (mobileThemeToggleBtn) {
+    mobileThemeToggleBtn.addEventListener('click', toggleTheme);
   }
 
   // ========================================================================
@@ -58,6 +69,7 @@
   const langBtn = document.getElementById('lang-btn');
   const langCurrent = document.getElementById('lang-current');
   const langOptions = document.querySelectorAll('.lang-option');
+  const mobileLangButtons = document.querySelectorAll('.mobile-lang-btn');
 
   const LANG_NAMES = {
     en: 'English',
@@ -90,11 +102,15 @@
       langCurrent.textContent = LANG_NAMES[lang];
     }
 
-    langOptions.forEach(opt => {
+    // Update active class and aria attributes across desktop dropdown and mobile buttons
+    const allLangElements = document.querySelectorAll('.lang-option, .mobile-lang-btn');
+    allLangElements.forEach(opt => {
       if (opt.getAttribute('data-lang') === lang) {
         opt.classList.add('active');
+        opt.setAttribute('aria-pressed', 'true');
       } else {
         opt.classList.remove('active');
+        opt.setAttribute('aria-pressed', 'false');
       }
     });
 
@@ -114,6 +130,17 @@
   // Initialize Language
   currentLang = getPreferredLanguage();
   applyLanguage(currentLang);
+
+  // Mobile Language Buttons Interaction
+  if (mobileLangButtons.length > 0) {
+    mobileLangButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const selectedLang = btn.getAttribute('data-lang');
+        applyLanguage(selectedLang);
+      });
+    });
+  }
 
   // Dropdown UI Interaction
   if (langBtn && langSelector) {
